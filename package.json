@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check --proxy-config proxy.config.js",
+    "start-ssl": "ng serve --host 0.0.0.0 --disable-host-check --ssl --ssl-key localhost.key --ssl-cert localhost.crt --proxy-config proxy.config.js",
+    "build-stage": "ng build --configuration stage --aot --build-optimizer --progress --common-chunk --vendor-chunk --verbose --source-map=true --base-href=/ --output-path=dist/certified",
+    "build": "ng build --configuration production --aot --build-optimizer --progress --common-chunk --vendor-chunk --verbose --source-map=true --base-href=/ --output-path=dist/certified",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
