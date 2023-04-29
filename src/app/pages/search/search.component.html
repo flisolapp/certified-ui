@@ -13,15 +13,12 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="searching">
+<ng-container *ngIf="searching || downloading">
   <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
     <img src="assets/images/logo.svg" alt="Image" height="100" class="mb-6">
-    <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
-    <div class="fa-3x">
-      <i class="fa-solid fa-magnifying-glass fa-beat-fade"
-         style="--fa-beat-fade-opacity: 0.1; --fa-beat-fade-scale: 1.25;"></i>
-    </div>
-    <p class="text-600 line-height-3 mb-6 searching">Searching</p>
+    <div class="text-2xl text-900 font-bold mb-6">Certificate verifier</div>
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+                       animationDuration=".5s"></p-progressSpinner>
   </div>
 </ng-container>
 
@@ -39,7 +36,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length > 0)">
+<ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length > 0) && (!downloading)">
   <div class="surface-section text-center">
     <img src="assets/images/logo.svg" alt="Image" height="100">
     <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
@@ -47,11 +44,10 @@
     <p class="text-600 line-height-3 mb-6" *ngIf="items.length === 1">Certificate found. <a (click)="doClear()">Try
       another search.</a></p>
     <p class="text-600 line-height-3 mb-6" *ngIf="items.length > 1">Certificates found. <a (click)="doClear()">Try
-      another
-      search.</a></p>
+      another search.</a></p>
 
     <!-- Desktop -->
-    <div class="grid hidden md:block">
+    <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
       <p-table [value]="items" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
@@ -64,12 +60,13 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
           <tr>
-            <td>2023</td>
-            <td>Local</td>
-            <td>Francisco Teixeira</td>
-            <td>Participant</td>
+            <td>{{ item.edition }}</td>
+            <td>{{ item.unit }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.enjoyedAs }}</td>
             <td>
-              <p-button icon="fa-solid fa-download" styleClass="p-button-rounded p-button-text"></p-button>
+              <p-button icon="fa-solid fa-download" styleClass="p-button-rounded p-button-text"
+                        (click)="doDownload(item)"></p-button>
             </td>
           </tr>
         </ng-template>
@@ -83,19 +80,14 @@
           <div class="p-4 h-full text-left">
             <div class="flex justify-content-between">
               <div>
-                <span class="text-900 font-medium text-2xl">Edition</span>
+                <span class="text-900 font-medium text-2xl">{{ item.edition }}</span>
+              </div>
+              <div>
+                <span class="text-black-alpha-50 text-sm">{{ item.enjoyedAs }}</span>
               </div>
             </div>
-
-            <div class="text-black-alpha-50 text-sm mt-3">Unity</div>
-            <div class="text-black mt-2">Local</div>
-
-            <div class="text-black-alpha-50 text-sm mt-3">Name</div>
-            <div class="text-black mt-2">Francisco Teixeira</div>
-
-            <div class="text-black-alpha-50 text-sm mt-3">Enjoyed as</div>
-            <div class="text-black mt-2">Participant</div>
-
+            <div class="text-black mt-2">{{ item.unit }}</div>
+            <div class="text-black mt-2">{{ item.name }}</div>
             <div class="mt-4">
               <div class="flex flex-column md:flex-row card-container justify-content-center">
                 <div class="flex align-items-center justify-content-center m-2">
