@@ -5,8 +5,8 @@
     <p class="text-600 line-height-3 mb-6">Verify easily the validity of a certificate emitted by FLISol. Centered.
       Fast.</p>
     <div class="flex align-items-center justify-content-center">
-      <input pInputText placeholder="Enter your email or code" class="p-3 border-noround border-round-left"
-             style="min-width: 250px" [(ngModel)]="term" autofocus>
+      <input id="term" pInputText placeholder="Enter your email or code" class="p-3 border-noround border-round-left"
+             [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40" autofocus>
       <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
               (click)="doSearch()"></button>
     </div>
@@ -28,8 +28,9 @@
     <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
     <p class="text-600 line-height-3 mb-6 not-found">No results found. Please, try again.</p>
     <div class="flex align-items-center justify-content-center">
-      <input pInputText placeholder="Enter your email or code" class="p-3 border-noround border-round-left"
-             style="min-width: 250px" [(ngModel)]="term" autofocus>
+      <input id="not-found-term" pInputText placeholder="Enter your email or code"
+             class="p-3 border-noround border-round-left" [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40"
+             autofocus>
       <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
               (click)="doSearch()"></button>
     </div>

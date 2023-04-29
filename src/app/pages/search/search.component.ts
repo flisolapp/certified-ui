@@ -34,6 +34,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (this.term !== null) //
         this.doSearch();
     });
+
+    setTimeout(() => document.getElementById('term')?.focus(), 200);
   }
 
   ngOnDestroy = () => this.disposeSubscriptions();
@@ -51,8 +53,18 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.certificateService.search(this.term).subscribe({
       next: (data: any) => this.items = data,
-      error: () => this.searching = false,
-      complete: () => this.searching = false
+      error: () => {
+        this.searching = false;
+
+        if (this.items?.length === 0) //
+          setTimeout(() => document.getElementById('not-found-term')?.focus(), 200);
+      },
+      complete: () => {
+        this.searching = false;
+
+        if (this.items?.length === 0) //
+          setTimeout(() => document.getElementById('not-found-term')?.focus(), 200);
+      }
     }));
   }
 
@@ -63,6 +75,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searched = this.searching = false;
     this.items = null;
     this.location.replaceState('/');
+
+    setTimeout(() => document.getElementById('term')?.focus(), 200);
   }
 
   doDownload(item: any): void {
