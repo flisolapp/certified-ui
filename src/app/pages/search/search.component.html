@@ -1,6 +1,6 @@
 <ng-container *ngIf="(!searched) && (!searching) && (items === null)">
   <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img src="assets/images/logo.svg" alt="Image" height="100" class="mb-6">
+    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
     <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
     <p class="text-600 line-height-3 mb-6">Verify easily the validity of a certificate emitted by FLISol. Centered.
       Fast.</p>
@@ -15,7 +15,7 @@
 
 <ng-container *ngIf="searching || downloading">
   <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img src="assets/images/logo.svg" alt="Image" height="100" class="mb-6">
+    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
     <div class="text-2xl text-900 font-bold mb-6">Certificate verifier</div>
     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
                        animationDuration=".5s"></p-progressSpinner>
@@ -24,7 +24,7 @@
 
 <ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length === 0)">
   <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img src="assets/images/logo.svg" alt="Image" height="100" class="mb-6">
+    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
     <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
     <p class="text-600 line-height-3 mb-6 not-found">No results found. Please, try again.</p>
     <div class="flex align-items-center justify-content-center">
@@ -39,13 +39,11 @@
 
 <ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length > 0) && (!downloading)">
   <div class="surface-section text-center">
-    <img src="assets/images/logo.svg" alt="Image" height="100">
+    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223">
     <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
 
-    <p class="text-600 line-height-3 mb-6" *ngIf="items.length === 1">Certificate found. <a (click)="doClear()">Try
-      another search.</a></p>
-    <p class="text-600 line-height-3 mb-6" *ngIf="items.length > 1">Certificates found. <a (click)="doClear()">Try
-      another search.</a></p>
+    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">Certificate found.</span><span
+      *ngIf="items.length > 1">Certificates found.</span>&nbsp;<a (click)="doClear()">Do another search.</a></p>
 
     <!-- Desktop -->
     <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
@@ -53,9 +51,10 @@
         <ng-template pTemplate="header">
           <tr>
             <th>Edition</th>
-            <th>Unity</th>
+            <th>Unit</th>
             <th>Name</th>
             <th>Enjoyed as</th>
+            <th>Code</th>
             <th>Download</th>
           </tr>
         </ng-template>
@@ -65,6 +64,7 @@
             <td>{{ item.unit }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.enjoyedAs }}</td>
+            <td>{{ item.code }}</td>
             <td>
               <p-button icon="fa-solid fa-download" styleClass="p-button-rounded p-button-text"
                         (click)="doDownload(item)"></p-button>
@@ -84,7 +84,7 @@
                 <span class="text-900 font-medium text-2xl">{{ item.edition }}</span>
               </div>
               <div>
-                <span class="text-black-alpha-50 text-sm">{{ item.enjoyedAs }}</span>
+                <span class="text-black-alpha-50 text-sm code">{{ item.enjoyedAs }} #{{ item.code }}</span>
               </div>
             </div>
             <div class="text-black mt-2">{{ item.unit }}</div>
@@ -103,3 +103,5 @@
     </div>
   </div>
 </ng-container>
+
+<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '50vw'}" rejectButtonStyleClass="p-button-text"></p-confirmDialog>

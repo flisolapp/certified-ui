@@ -12,6 +12,10 @@ import {SearchComponent} from './pages/search/search.component';
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {NgOptimizedImage} from '@angular/common';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,6 +24,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     ButtonModule,
@@ -28,9 +33,13 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     AutoFocusModule,
     TableModule,
     FormsModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    NgOptimizedImage,
+    ConfirmDialogModule
   ],
-  providers: [],
+  providers: [
+    ConfirmationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

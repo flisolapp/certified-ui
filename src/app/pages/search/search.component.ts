@@ -3,6 +3,7 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ScrollService} from '../../services/scroll/scroll.service';
 import {Location} from '@angular/common';
 import {CertificateService} from '../../services/certificate/certificate.service';
+import {ConfirmationService, ConfirmEventType} from 'primeng/api';
 
 @Component({
   selector: 'app-search',
@@ -22,7 +23,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private certificateService: CertificateService
+    private certificateService: CertificateService,
+    private confirmationService: ConfirmationService
   ) {
   }
 
@@ -80,13 +82,30 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   doDownload(item: any): void {
-    this.disposeSubscriptions();
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to proceed?',
+      header: 'Confirmation',
+      icon: 'fa-solid fa-download',
+      accept: () => {
+        this.disposeSubscriptions();
 
-    this.downloading = true;
-    this.certificateService.download(item.code).then((): void => {
-      this.downloading = false;
-    }).catch((): void => {
-      this.downloading = false;
+        this.downloading = true;
+        this.certificateService.download(item.code).then((): void => {
+          this.downloading = false;
+        }).catch((): void => {
+          this.downloading = false;
+        });
+      },
+      reject: (type: number): void => {
+        switch (type) {
+          case ConfirmEventType.REJECT:
+            // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+            break;
+          case ConfirmEventType.CANCEL:
+            // this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
+            break;
+        }
+      }
     });
   }
 
