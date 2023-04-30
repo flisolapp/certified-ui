@@ -1,49 +1,34 @@
-<ng-container *ngIf="(!searched) && (!searching) && (items === null)">
-  <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
-    <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
-    <p class="text-600 line-height-3 mb-6">Verify easily the validity of a certificate emitted by FLISol. Centered.
-      Fast.</p>
+<div class="surface-section text-center"
+     [ngClass]="{'px-4 py-8 md:px-6 lg:px-8': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
+  <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223"
+       [ngClass]="{'mb-6': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
+  <div class="text-2xl text-900 font-bold"
+       [ngClass]="{'mb-3': isStatusStart() || isStatusItemsNotFound() || isStatusItemsFound(), 'mb-6': isStatusProcessing()}">
+    Certificate verifier
+  </div>
+
+  <p class="text-600 line-height-3 mb-6" *ngIf="isStatusStart()">Verify easily the validity of a certificate emitted by
+    FLISoL. Centered. Fast.</p>
+  <p class="text-600 line-height-3 mb-6 not-found" *ngIf="isStatusItemsNotFound()">No results found. Please, try again.</p>
+
+  <ng-container *ngIf="isStatusStart() || isStatusItemsNotFound()">
     <div class="flex align-items-center justify-content-center">
       <input id="term" pInputText placeholder="Enter your email or code" class="p-3 border-noround border-round-left"
              [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40" autofocus>
       <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
               (click)="doSearch()"></button>
     </div>
-  </div>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="searching || downloading">
-  <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
-    <div class="text-2xl text-900 font-bold mb-6">Certificate verifier</div>
+  <ng-container *ngIf="isStatusProcessing()">
     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
                        animationDuration=".5s"></p-progressSpinner>
-  </div>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length === 0)">
-  <div class="surface-section text-center px-4 py-8 md:px-6 lg:px-8">
-    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" class="mb-6">
-    <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
-    <p class="text-600 line-height-3 mb-6 not-found">No results found. Please, try again.</p>
-    <div class="flex align-items-center justify-content-center">
-      <input id="not-found-term" pInputText placeholder="Enter your email or code"
-             class="p-3 border-noround border-round-left" [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40"
-             autofocus>
-      <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
-              (click)="doSearch()"></button>
-    </div>
-  </div>
-</ng-container>
-
-<ng-container *ngIf="(searched) && (!searching) && (items !== null) && (items.length > 0) && (!downloading)">
-  <div class="surface-section text-center">
-    <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223">
-    <div class="text-2xl text-900 font-bold mb-3">Certificate verifier</div>
-
-    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">Certificate found.</span><span
-      *ngIf="items.length > 1">Certificates found.</span>&nbsp;<a (click)="doClear()">Do another search.</a></p>
+  <ng-container *ngIf="isStatusItemsFound() && (items !== null)">
+    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">1 certificate found.</span><span
+      *ngIf="items.length > 1">{{ items.length }} certificates found.</span>&nbsp;<a (click)="doClear()">Do another
+      search.</a></p>
 
     <!-- Desktop -->
     <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
@@ -101,7 +86,9 @@
         </div>
       </ng-container>
     </div>
-  </div>
-</ng-container>
+  </ng-container>
 
-<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '50vw'}" rejectButtonStyleClass="p-button-text"></p-confirmDialog>
+</div>
+
+<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '50vw'}"
+                 rejectButtonStyleClass="p-button-text"></p-confirmDialog>

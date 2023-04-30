@@ -59,15 +59,31 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searching = false;
 
         if (this.items?.length === 0) //
-          setTimeout(() => document.getElementById('not-found-term')?.focus(), 200);
+          setTimeout(() => document.getElementById('term')?.focus(), 200);
       },
       complete: () => {
         this.searching = false;
 
         if (this.items?.length === 0) //
-          setTimeout(() => document.getElementById('not-found-term')?.focus(), 200);
+          setTimeout(() => document.getElementById('term')?.focus(), 200);
       }
     }));
+  }
+
+  isStatusStart(): boolean {
+    return (!this.searched) && (!this.searching) && (this.items === null);
+  }
+
+  isStatusProcessing(): boolean {
+    return this.searching || this.downloading;
+  }
+
+  isStatusItemsNotFound(): boolean {
+    return (this.searched) && (!this.searching) && (this.items !== null) && (this.items.length === 0);
+  }
+
+  isStatusItemsFound(): boolean {
+    return (this.searched) && (!this.searching) && (this.items !== null) && (this.items.length > 0) && (!this.downloading);
   }
 
   public doClear(): void {
