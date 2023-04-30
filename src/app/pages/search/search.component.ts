@@ -3,7 +3,7 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ScrollService} from '../../services/scroll/scroll.service';
 import {Location} from '@angular/common';
 import {CertificateService} from '../../services/certificate/certificate.service';
-import {ConfirmationService, ConfirmEventType} from 'primeng/api';
+import {ConfirmationService, ConfirmEventType, MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-search',
@@ -12,6 +12,7 @@ import {ConfirmationService, ConfirmEventType} from 'primeng/api';
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
+  languages: MenuItem[] = [];
   term: any = null;
   searched: boolean = false;
   searching: boolean = false;
@@ -29,6 +30,30 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.languages = [
+      {
+        label: 'English',
+        icon: 'pi pi-refresh',
+        command: () => {
+          //this.update();
+        }
+      },
+      {
+        label: 'Portuguese',
+        icon: 'pi pi-refresh',
+        command: () => {
+          //this.update();
+        }
+      },
+      {
+        label: 'Spanish',
+        icon: 'pi pi-times',
+        command: () => {
+          //this.delete();
+        }
+      }
+    ];
+
     ScrollService.toTop();
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.term = paramMap.get('term');

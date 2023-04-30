@@ -1,3 +1,9 @@
+<p-menu #languagesMenu [model]="languages" [popup]="true"></p-menu>
+<div class="text-right">
+  <p-button icon="fa-solid fa-check" styleClass="p-button-rounded p-button-text"
+            (click)="languagesMenu.toggle($event)"></p-button>
+</div>
+
 <div class="surface-section text-center"
      [ngClass]="{'px-4 py-8 md:px-6 lg:px-8': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
   <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223"
@@ -9,7 +15,8 @@
 
   <p class="text-600 line-height-3 mb-6" *ngIf="isStatusStart()">Verify easily the validity of a certificate emitted by
     FLISoL. Centered. Fast.</p>
-  <p class="text-600 line-height-3 mb-6 not-found" *ngIf="isStatusItemsNotFound()">No results found. Please, try again.</p>
+  <p class="text-600 line-height-3 mb-6 not-found" *ngIf="isStatusItemsNotFound()">No results found. Please, try
+    again.</p>
 
   <ng-container *ngIf="isStatusStart() || isStatusItemsNotFound()">
     <div class="flex align-items-center justify-content-center">

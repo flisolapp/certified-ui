@@ -16,6 +16,7 @@ import {NgOptimizedImage} from '@angular/common';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MenuModule} from 'primeng/menu';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     FormsModule,
     ProgressSpinnerModule,
     NgOptimizedImage,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MenuModule
   ],
   providers: [
     ConfirmationService
