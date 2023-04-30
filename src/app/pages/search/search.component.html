@@ -1,27 +1,27 @@
 <p-menu #languagesMenu [model]="languages" [popup]="true"></p-menu>
 <div class="text-right">
-  <p-button [icon]="language.icon" styleClass="p-button-rounded p-button-text" [pTooltip]="language.label"
+  <p-button [icon]="language?.icon" styleClass="p-button-rounded p-button-text" [pTooltip]="language?.label"
             tooltipPosition="left" (click)="languagesMenu.toggle($event)"></p-button>
 </div>
 
 <div class="surface-section text-center"
      [ngClass]="{'px-4 py-8 md:px-6 lg:px-8': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
-  <img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223"
-       [ngClass]="{'mb-6': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
+  <a href="/"><img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223"
+                   [ngClass]="{'mb-6': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}"></a>
   <div class="text-2xl text-900 font-bold"
        [ngClass]="{'mb-3': isStatusStart() || isStatusItemsNotFound() || isStatusItemsFound(), 'mb-6': isStatusProcessing()}">
-    Certificate verifier
+    {{ 'search.title' | translate }}
   </div>
 
-  <p class="text-600 line-height-3 mb-6" *ngIf="isStatusStart()">Verify easily the validity of a certificate emitted by
-    FLISoL. Centered. Fast.</p>
-  <p class="text-600 line-height-3 mb-6 not-found" *ngIf="isStatusItemsNotFound()">No results found. Please, try
-    again.</p>
+  <p class="text-600 line-height-3 mb-6" *ngIf="isStatusStart()">{{ 'search.description' | translate }}</p>
+  <p class="text-600 line-height-3 mb-6 not-found"
+     *ngIf="isStatusItemsNotFound()">{{ 'search.notFound' | translate }}</p>
 
   <ng-container *ngIf="isStatusStart() || isStatusItemsNotFound()">
     <div class="flex align-items-center justify-content-center">
-      <input id="term" pInputText placeholder="Enter your email or code" class="p-3 border-noround border-round-left"
-             [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40" autofocus>
+      <input id="term" pInputText placeholder="{{ 'search.termSearchPlace' | translate }}"
+             class="p-3 border-noround border-round-left" [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40"
+             autofocus>
       <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
               (click)="doSearch()"></button>
     </div>
@@ -33,21 +33,21 @@
   </ng-container>
 
   <ng-container *ngIf="isStatusItemsFound() && (items !== null)">
-    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">1 certificate found.</span><span
-      *ngIf="items.length > 1">{{ items.length }} certificates found.</span>&nbsp;<a (click)="doClear()">Do another
-      search.</a></p>
+    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">1 {{ 'search.oneFound' | translate }}
+      .</span><span *ngIf="items.length > 1">{{ items.length }} {{ 'search.manyFound' | translate }}.</span>&nbsp;<a
+      (click)="doClear()">{{ 'search.repeatSearch' | translate }}.</a></p>
 
     <!-- Desktop -->
     <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
       <p-table [value]="items" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
-            <th>Edition</th>
-            <th>Unit</th>
-            <th>Name</th>
-            <th>Enjoyed as</th>
-            <th>Code</th>
-            <th>Download</th>
+            <th>{{ 'search.edition' | translate }}</th>
+            <th>{{ 'search.unit' | translate }}</th>
+            <th>{{ 'search.name' | translate }}</th>
+            <th>{{ 'search.enjoyedAs' | translate }}</th>
+            <th>{{ 'search.code' | translate }}</th>
+            <th>{{ 'search.download' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
@@ -84,8 +84,8 @@
             <div class="mt-4">
               <div class="flex flex-column md:flex-row card-container justify-content-center">
                 <div class="flex align-items-center justify-content-center m-2">
-                  <button pButton type="button" label="Download" icon="fa-solid fa-download" class="w-full p-button"
-                          (click)="doDownload(item)"></button>
+                  <button pButton type="button" label="{{ 'search.download' | translate }}" icon="fa-solid fa-download"
+                          class="w-full p-button" (click)="doDownload(item)"></button>
                 </div>
               </div>
             </div>

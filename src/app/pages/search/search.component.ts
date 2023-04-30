@@ -5,6 +5,8 @@ import {Location} from '@angular/common';
 import {CertificateService} from '../../services/certificate/certificate.service';
 import {ConfirmationService, ConfirmEventType} from 'primeng/api';
 import {MenuItemWithCode} from '../../models/menu-item-with-code';
+import {LanguageService} from '../../services/language/language.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search',
@@ -27,11 +29,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private location: Location,
     private certificateService: CertificateService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private languageService: LanguageService,
+    public translate: TranslateService
   ) {
   }
 
   ngOnInit(): void {
+    // LANGUAGE OPERATIONS: START --------------------------------------------------------------------------------------
     this.languages = [
       {
         label: 'English (USA)',
@@ -41,34 +46,44 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
           this.language = this.languages[0];
           this.language.styleClass = 'active';
+          this.languageService.setSelected(LanguageService.LANGUAGES[0]);
           console.log(this.language);
         }
       },
       {
-        label: 'Portuguese (Brazil)',
+        label: 'Português (Brazil)',
         icon: 'fi fi-br',
-        code: 'pt',
+        code: 'pt-BR',
         command: (): void => {
           this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
           this.language = this.languages[1];
           this.language.styleClass = 'active';
+          this.languageService.setSelected(LanguageService.LANGUAGES[1]);
           console.log(this.language);
         }
       },
       {
-        label: 'Spanish (Spain)',
+        label: 'Español (Spain)',
         icon: 'fi fi-es',
         code: 'es',
         command: (): void => {
           this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
           this.language = this.languages[2];
           this.language.styleClass = 'active';
+          this.languageService.setSelected(LanguageService.LANGUAGES[2]);
           console.log(this.language);
         }
       }
     ];
-    this.language = this.languages[0];
-    this.language.styleClass = 'active';
+
+    this.language = null;
+    for (let i: number = 0; i < this.languages.length; i++) {
+      if (this.languages[i].code === this.languageService.getSelected().code) {
+        this.language = this.languages[i];
+        this.language.styleClass = 'active';
+      }
+    }
+    // LANGUAGE OPERATIONS: END ----------------------------------------------------------------------------------------
 
     ScrollService.toTop();
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -139,29 +154,33 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   doDownload(item: any): void {
-    this.confirmationService.confirm({
-      message: 'Are you sure that you want to proceed?',
-      header: 'Confirmation',
-      icon: 'fa-solid fa-download',
-      accept: () => {
-        this.disposeSubscriptions();
+    this.translate.get(['search.confirmation.title', 'search.confirmation.description']).subscribe({
+      next: (values: any): void => {
+        this.confirmationService.confirm({
+          message: values['search.confirmation.description'],
+          header: values['search.confirmation.title'],
+          icon: 'fa-solid fa-download',
+          accept: (): void => {
+            this.disposeSubscriptions();
 
-        this.downloading = true;
-        this.certificateService.download(item.code).then((): void => {
-          this.downloading = false;
-        }).catch((): void => {
-          this.downloading = false;
+            this.downloading = true;
+            this.certificateService.download(item.code).then((): void => {
+              this.downloading = false;
+            }).catch((): void => {
+              this.downloading = false;
+            });
+          },
+          reject: (type: number): void => {
+            switch (type) {
+              case ConfirmEventType.REJECT:
+                // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+                break;
+              case ConfirmEventType.CANCEL:
+                // this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
+                break;
+            }
+          }
         });
-      },
-      reject: (type: number): void => {
-        switch (type) {
-          case ConfirmEventType.REJECT:
-            // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-            break;
-          case ConfirmEventType.CANCEL:
-            // this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
-            break;
-        }
       }
     });
   }
