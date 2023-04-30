@@ -3,7 +3,8 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ScrollService} from '../../services/scroll/scroll.service';
 import {Location} from '@angular/common';
 import {CertificateService} from '../../services/certificate/certificate.service';
-import {ConfirmationService, ConfirmEventType, MenuItem} from 'primeng/api';
+import {ConfirmationService, ConfirmEventType} from 'primeng/api';
+import {MenuItemWithCode} from '../../models/menu-item-with-code';
 
 @Component({
   selector: 'app-search',
@@ -12,7 +13,8 @@ import {ConfirmationService, ConfirmEventType, MenuItem} from 'primeng/api';
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
-  languages: MenuItem[] = [];
+  language: any = null;
+  languages: MenuItemWithCode[] = [];
   term: any = null;
   searched: boolean = false;
   searching: boolean = false;
@@ -32,27 +34,41 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.languages = [
       {
-        label: 'English',
-        icon: 'pi pi-refresh',
-        command: () => {
-          //this.update();
+        label: 'English (USA)',
+        icon: 'fi fi-us',
+        code: 'en',
+        command: (): void => {
+          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
+          this.language = this.languages[0];
+          this.language.styleClass = 'active';
+          console.log(this.language);
         }
       },
       {
-        label: 'Portuguese',
-        icon: 'pi pi-refresh',
-        command: () => {
-          //this.update();
+        label: 'Portuguese (Brazil)',
+        icon: 'fi fi-br',
+        code: 'pt',
+        command: (): void => {
+          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
+          this.language = this.languages[1];
+          this.language.styleClass = 'active';
+          console.log(this.language);
         }
       },
       {
-        label: 'Spanish',
-        icon: 'pi pi-times',
-        command: () => {
-          //this.delete();
+        label: 'Spanish (Spain)',
+        icon: 'fi fi-es',
+        code: 'es',
+        command: (): void => {
+          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
+          this.language = this.languages[2];
+          this.language.styleClass = 'active';
+          console.log(this.language);
         }
       }
     ];
+    this.language = this.languages[0];
+    this.language.styleClass = 'active';
 
     ScrollService.toTop();
     this.route.paramMap.subscribe((paramMap: ParamMap) => {

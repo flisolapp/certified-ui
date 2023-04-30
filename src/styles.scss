@@ -4,9 +4,18 @@
 @import 'primeng/resources/primeng.css';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
+@import 'flag-icons/css/flag-icons.min.css';
 
 body {
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.p-menuitem.active {
+  background-color: #FFC107;
+
+  .p-menuitem-text {
+    color: #212529;
+  }
 }

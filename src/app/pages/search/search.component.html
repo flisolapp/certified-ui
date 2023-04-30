@@ -1,7 +1,7 @@
 <p-menu #languagesMenu [model]="languages" [popup]="true"></p-menu>
 <div class="text-right">
-  <p-button icon="fa-solid fa-check" styleClass="p-button-rounded p-button-text"
-            (click)="languagesMenu.toggle($event)"></p-button>
+  <p-button [icon]="language.icon" styleClass="p-button-rounded p-button-text" [pTooltip]="language.label"
+            tooltipPosition="left" (click)="languagesMenu.toggle($event)"></p-button>
 </div>
 
 <div class="surface-section text-center"
