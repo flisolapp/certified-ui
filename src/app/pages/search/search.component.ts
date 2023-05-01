@@ -3,7 +3,7 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ScrollService} from '../../services/scroll/scroll.service';
 import {Location} from '@angular/common';
 import {CertificateService} from '../../services/certificate/certificate.service';
-import {ConfirmationService, ConfirmEventType} from 'primeng/api';
+import {ConfirmationService} from 'primeng/api';
 import {MenuItemWithCode} from '../../models/menu-item-with-code';
 import {LanguageService} from '../../services/language/language.service';
 import {TranslateService} from '@ngx-translate/core';
@@ -36,56 +36,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // LANGUAGE OPERATIONS: START --------------------------------------------------------------------------------------
-    this.languages = [
-      {
-        label: 'English (USA)',
-        icon: 'fi fi-us',
-        code: 'en',
-        command: (): void => {
-          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
-          this.language = this.languages[0];
-          this.language.styleClass = 'active';
-          this.languageService.setSelected(LanguageService.LANGUAGES[0]);
-          console.log(this.language);
-        }
-      },
-      {
-        label: 'Português (Brazil)',
-        icon: 'fi fi-br',
-        code: 'pt-BR',
-        command: (): void => {
-          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
-          this.language = this.languages[1];
-          this.language.styleClass = 'active';
-          this.languageService.setSelected(LanguageService.LANGUAGES[1]);
-          console.log(this.language);
-        }
-      },
-      {
-        label: 'Español (Spain)',
-        icon: 'fi fi-es',
-        code: 'es',
-        command: (): void => {
-          this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
-          this.language = this.languages[2];
-          this.language.styleClass = 'active';
-          this.languageService.setSelected(LanguageService.LANGUAGES[2]);
-          console.log(this.language);
-        }
-      }
-    ];
-
-    this.language = null;
-    for (let i: number = 0; i < this.languages.length; i++) {
-      if (this.languages[i].code === this.languageService.getSelected().code) {
-        this.language = this.languages[i];
-        this.language.styleClass = 'active';
-      }
-    }
-    // LANGUAGE OPERATIONS: END ----------------------------------------------------------------------------------------
-
     ScrollService.toTop();
+    this.prepareLanguages();
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.term = paramMap.get('term');
 
@@ -94,6 +47,32 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
 
     setTimeout(() => document.getElementById('term')?.focus(), 200);
+  }
+
+  private prepareLanguages(): void {
+    this.languages = [];
+
+    for (let i: number = 0; i < LanguageService.LANGUAGES.length; i++) //
+      this.languages.push({
+        label: LanguageService.LANGUAGES[i].name,
+        icon: 'fi fi-' + LanguageService.LANGUAGES[i].flag.toLowerCase(),
+        code: LanguageService.LANGUAGES[i].code,
+        command: (): void => this.selectLanguage(i)
+      });
+
+    this.language = null;
+    for (let i: number = 0; i < this.languages.length; i++) //
+      if (this.languages[i].code === this.languageService.getSelected().code) //
+        this.selectLanguage(i);
+  }
+
+  private selectLanguage(id: number, global: boolean = true): void {
+    this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
+    this.language = this.languages[id];
+    this.language.styleClass = 'active';
+
+    if (global) //
+      this.languageService.setSelected(LanguageService.LANGUAGES[id]);
   }
 
   ngOnDestroy = () => this.disposeSubscriptions();
@@ -164,21 +143,10 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.disposeSubscriptions();
 
             this.downloading = true;
-            this.certificateService.download(item.code).then((): void => {
-              this.downloading = false;
-            }).catch((): void => {
-              this.downloading = false;
-            });
-          },
-          reject: (type: number): void => {
-            switch (type) {
-              case ConfirmEventType.REJECT:
-                // this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-                break;
-              case ConfirmEventType.CANCEL:
-                // this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'You have cancelled' });
-                break;
-            }
+            this.certificateService //
+              .download(item.code) //
+              .then((): boolean => this.downloading = false) //
+              .catch((): boolean => this.downloading = false);
           }
         });
       }

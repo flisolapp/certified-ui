@@ -10,9 +10,9 @@ export class LanguageService {
 
   private static LANGUAGE_KEY: string = 'flisolapp.Language';
   public static LANGUAGES: any[] = [
-    {name: 'English (US)', code: 'en', flag: 'US'},
-    {name: 'Português (BR)', code: 'pt-BR', flag: 'BR'},
-    {name: 'España (ES)', code: 'es', flag: 'ES'}
+    {name: 'English (USA)', code: 'en', flag: 'US'},
+    {name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR'},
+    {name: 'Español (España)', code: 'es', flag: 'ES'}
   ];
   private selected: any = null;
 
