@@ -9,7 +9,7 @@ import {LanguageService} from '../../services/language/language.service';
 import {TranslateService} from '@ngx-translate/core';
 
 // FIX: Error: Should not import the named export 'version' (imported as 'packageInfo') from default-exporting module (only default export is available soon)
-import { default as packageInfo } from '../../../../package.json';
+import {default as packageInfo} from '../../../../package.json';
 
 @Component({
   selector: 'app-search',
@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   language: any = null;
   languages: MenuItemWithCode[] = [];
-  version: string = packageInfo.version; 
+  version: string = packageInfo.version;
   term: any = null;
   searched: boolean = false;
   searching: boolean = false;

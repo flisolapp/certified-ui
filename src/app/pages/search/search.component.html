@@ -13,11 +13,15 @@
     {{ 'search.title' | translate }}
   </div>
 
-  <p class="text-600 line-height-3 mb-6" *ngIf="isStatusStart()">{{ 'search.description' | translate }}</p>
-  <p class="text-600 line-height-3 mb-6 not-found"
-     *ngIf="isStatusItemsNotFound()">{{ 'search.notFound' | translate }}</p>
+  @if (isStatusStart()) {
+    <p class="text-600 line-height-3 mb-6">{{ 'search.description' | translate }}</p>
+  }
 
-  <ng-container *ngIf="isStatusStart() || isStatusItemsNotFound()">
+  @if (isStatusItemsNotFound()) {
+    <p class="text-600 line-height-3 mb-6 not-found">{{ 'search.notFound' | translate }}</p>
+  }
+
+  @if (isStatusStart() || isStatusItemsNotFound()) {
     <div class="flex align-items-center justify-content-center">
       <input id="term" pInputText placeholder="{{ 'search.termSearchPlace' | translate }}"
              class="p-3 border-noround border-round-left" [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40"
@@ -25,17 +29,25 @@
       <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
               (click)="doSearch()"></button>
     </div>
-  </ng-container>
+  }
 
-  <ng-container *ngIf="isStatusProcessing()">
+  @if (isStatusProcessing()) {
     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
                        animationDuration=".5s"></p-progressSpinner>
-  </ng-container>
+  }
 
-  <ng-container *ngIf="isStatusItemsFound() && (items !== null)">
-    <p class="text-600 line-height-3 mb-6"><span *ngIf="items.length === 1">1 {{ 'search.oneFound' | translate }}
-      .</span><span *ngIf="items.length > 1">{{ items.length }} {{ 'search.manyFound' | translate }}.</span>&nbsp;<a
-      (click)="doClear()">{{ 'search.repeatSearch' | translate }}.</a></p>
+  @if (isStatusItemsFound() && (items !== null)) {
+    <p class="text-600 line-height-3 mb-6">
+      @if (items.length === 1) {
+        <span>1 {{ 'search.oneFound' | translate }}.</span>
+      }
+
+      @if (items.length > 1) {
+        <span>{{ items.length }} {{ 'search.manyFound' | translate }}.</span>
+      }
+
+      &nbsp;<a (click)="doClear()">{{ 'search.repeatSearch' | translate }}.</a>
+    </p>
 
     <!-- Desktop -->
     <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
@@ -68,7 +80,7 @@
 
     <!-- Mobile -->
     <div class="block sm:hidden">
-      <ng-container *ngFor="let item of items">
+      @for (item of items; track $index) {
         <div class="shadow-1 border-round surface-card mb-3 m-2 h-full flex-column justify-content-between flex">
           <div class="p-4 h-full text-left">
             <div class="flex justify-content-between">
@@ -91,10 +103,9 @@
             </div>
           </div>
         </div>
-      </ng-container>
+      }
     </div>
-  </ng-container>
-
+  }
 </div>
 
 <p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '50vw'}"
