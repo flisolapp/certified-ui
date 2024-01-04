@@ -7,7 +7,14 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
         }
       },
       "root": "",
@@ -15,11 +22,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/certified-ui",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -81,9 +88,7 @@
               "sourceMap": true
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -95,10 +100,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "certified-ui:build:production"
+              "buildTarget": "certified-ui:build:production"
             },
             "development": {
-              "browserTarget": "certified-ui:build:development"
+              "buildTarget": "certified-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -106,7 +111,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "certified-ui:build"
+            "buildTarget": "certified-ui:build"
           }
         },
         "test": {
@@ -132,6 +137,6 @@
     }
   },
   "cli": {
-    "analytics": "d128e3a3-97c8-4068-8cdd-2a6de96e472b"
+    "analytics": false
   }
 }

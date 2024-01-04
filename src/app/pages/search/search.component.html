@@ -6,7 +6,7 @@
 
 <div class="surface-section text-center"
      [ngClass]="{'px-4 py-8 md:px-6 lg:px-8': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
-  <a href="/"><img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223"
+  <a href="/"><img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" priority="1"
                    [ngClass]="{'mb-6': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}"></a>
   <div class="text-2xl text-900 font-bold"
        [ngClass]="{'mb-3': isStatusStart() || isStatusItemsNotFound() || isStatusItemsFound(), 'mb-6': isStatusProcessing()}">

@@ -2,9 +2,12 @@
 @import 'primeflex/primeflex.css';
 @import 'primeng/resources/themes/saga-orange/theme.css';
 @import 'primeng/resources/primeng.css';
-@import '@fortawesome/fontawesome-free/scss/fontawesome';
-@import '@fortawesome/fontawesome-free/scss/solid';
-@import 'flag-icons/css/flag-icons.min.css';
+// @import '@fortawesome/fontawesome-free/scss/fontawesome';
+// @import '@fortawesome/fontawesome-free/scss/solid';
+@import 'assets/fonts/fontawesome/fontawesome.scss';
+@import 'assets/fonts/fontawesome/solid';
+// @import 'flag-icons/css/flag-icons.min.css';
+@import 'assets/fonts/flag-icons/flag-icons.scss';
 
 body {
   font-family: var(--font-family);
