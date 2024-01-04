@@ -1,6 +1,6 @@
 const proxy = [{
   context: '/api',
-  target: 'https://api.admin.flisoldf.blog.br',
+  target: 'http://localhost:8080',
   pathRewrite: {
     '^/api': ''
   }
