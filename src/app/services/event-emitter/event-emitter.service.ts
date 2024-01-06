@@ -9,9 +9,6 @@ export class EventEmitterService {
     [name: string]: EventEmitter<any>
   } = {};
 
-  constructor() {
-  }
-
   static get(name: string): EventEmitter<any> {
     if (!this.emitters[name]) //
       this.emitters[name] = new EventEmitter<any>();

@@ -1,112 +1,23 @@
-<p-menu #languagesMenu [model]="languages" [popup]="true"></p-menu>
-<div class="text-right">
-  <p-button [icon]="language?.icon" styleClass="p-button-rounded p-button-text" [pTooltip]="language?.label"
-            tooltipPosition="left" (click)="languagesMenu.toggle($event)"></p-button>
-</div>
+<app-page-structure>
+  <h1 class="title">{{ 'search.title' | translate }}</h1>
 
-<div class="surface-section text-center"
-     [ngClass]="{'px-4 py-8 md:px-6 lg:px-8': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}">
-  <a href="/"><img ngSrc="assets/images/logo.svg" alt="FLISoL" height="100" width="223" priority="1"
-                   [ngClass]="{'mb-6': isStatusStart() || isStatusProcessing() || isStatusItemsNotFound()}"></a>
-  <div class="text-2xl text-900 font-bold"
-       [ngClass]="{'mb-3': isStatusStart() || isStatusItemsNotFound() || isStatusItemsFound(), 'mb-6': isStatusProcessing()}">
-    {{ 'search.title' | translate }}
-  </div>
+  @if (!searching) {
+    <p class="description">{{ 'search.description' | translate }}</p>
 
-  @if (isStatusStart()) {
-    <p class="text-600 line-height-3 mb-6">{{ 'search.description' | translate }}</p>
+    <form class="term-form">
+      <mat-form-field class="term-field">
+        <mat-label>{{ 'search.termSearchPlace' | translate }}</mat-label>
+        <input id="term" matInput placeholder="Ex. tux@linux.org" [(ngModel)]="term"
+               [ngModelOptions]="{ standalone: true }">
+
+        @if (term) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="doSearch()">
+            <span class="material-symbols-outlined">search</span>
+          </button>
+        }
+      </mat-form-field>
+    </form>
   }
 
-  @if (isStatusItemsNotFound()) {
-    <p class="text-600 line-height-3 mb-6 not-found">{{ 'search.notFound' | translate }}</p>
-  }
-
-  @if (isStatusStart() || isStatusItemsNotFound()) {
-    <div class="flex align-items-center justify-content-center">
-      <input id="term" pInputText placeholder="{{ 'search.termSearchPlace' | translate }}"
-             class="p-3 border-noround border-round-left" [(ngModel)]="term" (keyup.enter)="doSearch()" maxlength="40"
-             autofocus>
-      <button pButton pRipple icon="fa-solid fa-magnifying-glass" class="border-noround border-round-right p-3 w-auto"
-              (click)="doSearch()"></button>
-    </div>
-  }
-
-  @if (isStatusProcessing()) {
-    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
-                       animationDuration=".5s"></p-progressSpinner>
-  }
-
-  @if (isStatusItemsFound() && (items !== null)) {
-    <p class="text-600 line-height-3 mb-6">
-      @if (items.length === 1) {
-        <span>1 {{ 'search.oneFound' | translate }}.</span>
-      }
-
-      @if (items.length > 1) {
-        <span>{{ items.length }} {{ 'search.manyFound' | translate }}.</span>
-      }
-
-      &nbsp;<a (click)="doClear()">{{ 'search.repeatSearch' | translate }}.</a>
-    </p>
-
-    <!-- Desktop -->
-    <div class="grid hidden md:block shadow-1 border-round surface-card mb-3 m-2 h-full">
-      <p-table [value]="items" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>{{ 'search.edition' | translate }}</th>
-            <th>{{ 'search.unit' | translate }}</th>
-            <th>{{ 'search.name' | translate }}</th>
-            <th>{{ 'search.enjoyedAs' | translate }}</th>
-            <th>{{ 'search.code' | translate }}</th>
-            <th>{{ 'search.download' | translate }}</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-item>
-          <tr>
-            <td>{{ item.edition }}</td>
-            <td>{{ item.unit }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.enjoyedAs }}</td>
-            <td>{{ item.code }}</td>
-            <td>
-              <p-button icon="fa-solid fa-download" styleClass="p-button-rounded p-button-text"
-                        (click)="doDownload(item)"></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <!-- Mobile -->
-    <div class="block sm:hidden">
-      @for (item of items; track $index) {
-        <div class="shadow-1 border-round surface-card mb-3 m-2 h-full flex-column justify-content-between flex">
-          <div class="p-4 h-full text-left">
-            <div class="flex justify-content-between">
-              <div>
-                <span class="text-900 font-medium text-2xl">{{ item.edition }}</span>
-              </div>
-              <div>
-                <span class="text-black-alpha-50 text-sm code">{{ item.enjoyedAs }} #{{ item.code }}</span>
-              </div>
-            </div>
-            <div class="text-black mt-2">{{ item.unit }}</div>
-            <div class="text-black mt-2">{{ item.name }}</div>
-            <div class="mt-4">
-              <div class="flex flex-column md:flex-row card-container justify-content-center">
-                <div class="flex align-items-center justify-content-center m-2">
-                  <button pButton type="button" label="{{ 'search.download' | translate }}" icon="fa-solid fa-download"
-                          class="w-full p-button" (click)="doDownload(item)"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-  }
-</div>
-
-<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '50vw'}"
-                 rejectButtonStyleClass="p-button-text"></p-confirmDialog>
+  <router-outlet></router-outlet>
+</app-page-structure>

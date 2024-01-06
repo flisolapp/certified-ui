@@ -1,0 +1,17 @@
+<div class="toolbar" role="banner">
+  <img ngSrc="assets/images/logo.svg" class="logo" alt="FLISoL" height="40" width="89"/>
+  <div class="spacer"></div>
+  <button mat-icon-button class="language-menu" [matMenuTriggerFor]="menu" xPosition="before"
+          [matTooltip]="language.name" [matTooltipPosition]="'left'">
+    <img [ngSrc]="'assets/images/flags/' + language.flag.toLowerCase() + '.svg'" alt="" height="18" width="24"/>
+  </button>
+  <mat-menu #menu="matMenu">
+    @for (item of languageService.getLanguages(); track $index) {
+      <button mat-menu-item class="language-menu-item" [disabled]="item.code === language.code"
+              (click)="selectLanguage(item)">
+        <img [ngSrc]="'assets/images/flags/' + item.flag.toLowerCase() + '.svg'" alt="" height="18" width="24"/>
+        <span>{{ item.name }}</span>
+      </button>
+    }
+  </mat-menu>
+</div>

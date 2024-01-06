@@ -1,0 +1,112 @@
+@if (isStatusSearching()) {
+  <mat-spinner class="spinner"></mat-spinner>
+}
+
+@if (isStatusItemsNotFound()) {
+  <p class="items-not-found">{{ 'search.notFound' | translate }}</p>
+}
+
+@if (isStatusItemsFound()) {
+  <p class="result-message">
+    @if (dataSource.length === 1) {
+      <span>1 {{ 'search.oneFound' | translate }}</span>
+    }
+
+    @if (dataSource.length > 1) {
+      <span>{{ dataSource.length }} {{ 'search.manyFound' | translate }}</span>
+    }
+
+    <a (click)="doClear()">{{ 'search.repeatSearch' | translate }}</a>
+  </p>
+
+  @if (!platform.ANDROID && !platform.IOS) {
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <!-- Edition Column -->
+      <ng-container matColumnDef="edition">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.edition' | translate }}</th>
+        <td mat-cell *matCellDef="let element"> {{ element.edition }}</td>
+      </ng-container>
+
+      <!-- Unit Column -->
+      <ng-container matColumnDef="unit">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.unit' | translate }}</th>
+        <td mat-cell *matCellDef="let element"> {{ element.unit }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.name' | translate }}</th>
+        <td mat-cell *matCellDef="let element"> {{ element.name }}</td>
+      </ng-container>
+
+      <!-- Enjoyed as Column -->
+      <ng-container matColumnDef="enjoyedAs">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.enjoyedAs' | translate }}</th>
+        <td mat-cell
+            *matCellDef="let element"> {{ 'search.role.' + element.enjoyedAs.toLocaleLowerCase() | translate }}
+        </td>
+      </ng-container>
+
+      <!-- Code Column -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.code' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button (click)="doCopyCodeToClipboard(element)" class="code">
+            {{ element.code }}
+            <span class="material-symbols-outlined">content_copy</span>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="download">
+        <th mat-header-cell *matHeaderCellDef> {{ 'search.download' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="download">
+          @if (element.code === downloadingItem?.code) {
+            <span class="material-symbols-outlined icon-fadeInOut">downloading</span>
+          } @else {
+            <button mat-icon-button (click)="doDownload(element)">
+              <span class="material-symbols-outlined">download</span>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  }
+
+  @if (platform.ANDROID || platform.IOS) {
+    @for (item of dataSource; track $index) {
+      <mat-card style="margin-bottom: 1rem;min-width: 200px;">
+        <mat-card-header style="margin-bottom:1rem;">
+          <mat-card-title>
+            <div style="display: flex;justify-content: space-between;">
+              <div style="font-weight:600;">{{ item.edition }}</div>
+              <div
+                style="margin-left: 3rem;font-size: .6rem !important;color:#00000080 !important">{{ 'search.role.' + item.enjoyedAs.toLocaleLowerCase() | translate }}
+                #{{ item.code }}
+              </div>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="margin-bottom:.5rem;">
+          <p style="margin-bottom:1rem;">{{ item.unit }}</p>
+          <p>{{ item.name }}</p>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button (click)="doDownload(item)"><span class="material-symbols-outlined">download</span></button>
+        </mat-card-actions>
+
+        @if (item.code === downloadingItem?.code) {
+          <mat-card-footer>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </mat-card-footer>
+        }
+      </mat-card>
+    }
+  }
+}
+
+<br/><br/><br/>

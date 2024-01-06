@@ -20,23 +20,21 @@ export class CertificateService {
     return this.httpClient.get<any>(this.baseUrl + '/' + term);
   }
 
-  public download(code: string): Promise<void> {
+  public async download(code: string): Promise<void> {
     const url: string = this.baseUrl + '/' + code + '/download';
     const name: string = 'certificate_' + code + '.png';
 
-    return fetch(url)
-      .then((response: Response) => response.blob())
-      .then((blob: Blob): void => {
-        const url: string = window.URL.createObjectURL(blob);
-        const a: HTMLAnchorElement = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        // the filename you want
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const url_1: string = window.URL.createObjectURL(blob);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url_1;
+    // the filename you want
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url_1);
   }
 
 }

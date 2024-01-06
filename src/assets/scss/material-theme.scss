@@ -1,0 +1,35 @@
+@use '@angular/material' as mat;
+
+@use '@angular/material/core/theming/all-theme';
+@use '@angular/material/core/core';
+@use './palette';
+@use '@angular/material/core/theming/theming';
+@use '@angular/material/core/typography/typography';
+
+
+// Include non-theme styles for core.
+@include core.core();
+
+// Define a theme.
+
+// Original
+$primary: theming.define-palette(palette.$indigo-palette);
+$accent: theming.define-palette(palette.$pink-palette, A200, A100, A400);
+
+// FLISol
+$primary: theming.define-palette(palette.$orange-palette);
+$accent: theming.define-palette(palette.$grey-palette, A200, A100, A400);
+
+$theme: theming.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent
+  ),
+  typography: typography.define-typography-config(),
+  density: 0,
+));
+
+// Include all theme styles for the components.
+@include all-theme.all-component-themes($theme);
+
+@include typography.typography-hierarchy($theme);

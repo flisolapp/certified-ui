@@ -1,7 +1,5 @@
 import {Component} from '@angular/core';
-import {BrowserDetectorService} from './services/browser-detector/browser-detector.service';
 import {LanguageService} from './services/language/language.service';
-import {PrimeNGConfig} from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +10,8 @@ export class AppComponent {
 
   title: string = 'certified-ui';
 
-  constructor(
-    public browserDetectorService: BrowserDetectorService,
-    private languageService: LanguageService,
-    private primengConfig: PrimeNGConfig
-  ) {
-    browserDetectorService.init();
+  constructor(private languageService: LanguageService) {
     languageService.init();
-    primengConfig.ripple = true;
   }
 
 }

@@ -9,19 +9,16 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import {ButtonModule} from 'primeng/button';
-import {RippleModule} from 'primeng/ripple';
-import {InputTextModule} from 'primeng/inputtext';
-import {AutoFocusModule} from 'primeng/autofocus';
-import {TableModule} from 'primeng/table';
-import {FormsModule} from '@angular/forms';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {NgOptimizedImage, registerLocaleData} from '@angular/common';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {MenuModule} from 'primeng/menu';
-
-import {SearchComponent} from './pages/search/search.component';
+// // import {ButtonModule} from 'primeng/button';
+// // import {RippleModule} from 'primeng/ripple';
+// // import {InputTextModule} from 'primeng/inputtext';
+// // import {AutoFocusModule} from 'primeng/autofocus';
+// // import {TableModule} from 'primeng/table';
+// import {FormsModule} from '@angular/forms';
+// // import {ProgressSpinnerModule} from 'primeng/progressspinner';
+// import {NgOptimizedImage, registerLocaleData} from '@angular/common';
+import {registerLocaleData} from '@angular/common';
+import {SearchModule} from './pages/search/search.module';
 
 import localePt from '@angular/common/locales/pt';
 import {LanguageProvider} from './providers/language/language.provider';
@@ -36,7 +33,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    SearchComponent
+    // SearchComponent,
+    // SearchResultComponent
   ],
   imports: [
     BrowserModule,
@@ -50,20 +48,21 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    ButtonModule,
-    RippleModule,
-    InputTextModule,
-    AutoFocusModule,
-    TableModule,
-    FormsModule,
-    ProgressSpinnerModule,
-    NgOptimizedImage,
-    ConfirmDialogModule,
-    MenuModule
+    // // ButtonModule,
+    // // RippleModule,
+    // // InputTextModule,
+    // // AutoFocusModule,
+    // // TableModule,
+    // FormsModule,
+    // // ProgressSpinnerModule,
+    // NgOptimizedImage,
+    // // ConfirmDialogModule,
+    // // MenuModule
+    SearchModule,
   ],
   providers: [
-    ConfirmationService,
-    MessageService,
+    // ConfirmationService,
+    // MessageService,
     LanguageProvider,
   ],
   bootstrap: [AppComponent]

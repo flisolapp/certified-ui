@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {MessageService, PrimeNGConfig} from 'primeng/api';
+// import {MessageService, PrimeNGConfig} from 'primeng/api';
 import {EventEmitterService} from '../event-emitter/event-emitter.service';
 
 @Injectable({
@@ -11,8 +11,8 @@ export class LanguageService {
   private static LANGUAGE_KEY: string = 'flisolapp.Language';
   public static LANGUAGES: any[] = [
     {name: 'English (USA)', code: 'en', flag: 'US'},
-    {name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR'},
-    {name: 'Español (España)', code: 'es', flag: 'ES'}
+    {name: 'Español (España)', code: 'es', flag: 'ES'},
+    {name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR'}
   ];
   private selected: any = null;
 
@@ -27,9 +27,10 @@ export class LanguageService {
   }
 
   constructor(
-    private config: PrimeNGConfig,
+    // private config: PrimeNGConfig,
     private translate: TranslateService,
-    private messageService: MessageService) {
+    // private messageService: MessageService
+  ) {
   }
 
   init(): void {
@@ -67,7 +68,7 @@ export class LanguageService {
       this._locale = language;
       this.translate.use(language);
       this.translate.setDefaultLang(language);
-      this.translate.get('primeng').subscribe(res => this.config.setTranslation(res));
+      // this.translate.get('primeng').subscribe(res => this.config.setTranslation(res));
       localStorage.setItem(LanguageService.LANGUAGE_KEY, JSON.stringify(this.selected));
       EventEmitterService.get('set-language').emit(this.selected.code);
     }
@@ -83,9 +84,9 @@ export class LanguageService {
 
   setSelected(language: any): void {
     this.selected = language;
-    this.messageService.clear();
+    // this.messageService.clear();
     this.translate.use(this.selected.code);
-    this.translate.get('primeng').subscribe(res => this.config.setTranslation(res));
+    // this.translate.get('primeng').subscribe(res => this.config.setTranslation(res));
     localStorage.setItem(LanguageService.LANGUAGE_KEY, JSON.stringify(this.selected));
     EventEmitterService.get('set-language').emit(this.selected.code);
     // window.location.reload();

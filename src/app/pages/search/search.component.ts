@@ -1,15 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {ScrollService} from '../../services/scroll/scroll.service';
-import {Location} from '@angular/common';
-import {CertificateService} from '../../services/certificate/certificate.service';
-import {ConfirmationService} from 'primeng/api';
-import {MenuItemWithCode} from '../../models/menu-item-with-code';
-import {LanguageService} from '../../services/language/language.service';
 import {TranslateService} from '@ngx-translate/core';
-
-// FIX: Error: Should not import the named export 'version' (imported as 'packageInfo') from default-exporting module (only default export is available soon)
-import {default as packageInfo} from '../../../../package.json';
+import {EventEmitterService} from '../../services/event-emitter/event-emitter.service';
 
 @Component({
   selector: 'app-search',
@@ -18,143 +11,58 @@ import {default as packageInfo} from '../../../../package.json';
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
-  language: any = null;
-  languages: MenuItemWithCode[] = [];
-  version: string = packageInfo.version;
-  term: any = null;
-  searched: boolean = false;
+  term: string | null = '';
   searching: boolean = false;
-  items: any[] | null = null;
-  downloading: boolean = false;
 
   private subscriptions: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
-    private certificateService: CertificateService,
-    private confirmationService: ConfirmationService,
-    private languageService: LanguageService,
+    private router: Router,
     public translate: TranslateService
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     ScrollService.toTop();
-    this.prepareLanguages();
 
-    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+    this.route.paramMap.subscribe((paramMap: ParamMap): void => {
       this.term = paramMap.get('term');
 
       if (this.term !== null) //
-        this.doSearch();
+        this.searching = true;
     });
 
-    setTimeout(() => document.getElementById('term')?.focus(), 200);
-  }
+    this.setFocusOnTermInputField();
 
-  private prepareLanguages(): void {
-    this.languages = [];
-
-    for (let i: number = 0; i < LanguageService.LANGUAGES.length; i++) //
-      this.languages.push({
-        label: LanguageService.LANGUAGES[i].name,
-        icon: 'fi fi-' + LanguageService.LANGUAGES[i].flag.toLowerCase(),
-        code: LanguageService.LANGUAGES[i].code,
-        command: (): void => this.selectLanguage(i)
-      });
-
-    this.language = null;
-    for (let i: number = 0; i < this.languages.length; i++) //
-      if (this.languages[i].code === this.languageService.getSelected().code) //
-        this.selectLanguage(i);
-  }
-
-  private selectLanguage(id: number, global: boolean = true): void {
-    this.languages.forEach((item: MenuItemWithCode): string => item.styleClass = '');
-    this.language = this.languages[id];
-    this.language.styleClass = 'active';
-
-    if (global) //
-      this.languageService.setSelected(LanguageService.LANGUAGES[id]);
-  }
-
-  ngOnDestroy = () => this.disposeSubscriptions();
-  private disposeSubscriptions = () =>
-    this.subscriptions.forEach((item, index, array) => array.shift().unsubscribe());
-
-  public doSearch(): void {
-    this.disposeSubscriptions();
-
-    ScrollService.toTop();
-    this.location.replaceState('/' + encodeURIComponent(this.term));
-    this.searched = this.searching = true;
-
-    this.items = [];
-
-    this.subscriptions.push(this.certificateService.search(this.term).subscribe({
-      next: (data: any) => this.items = data,
-      error: () => {
-        this.searching = false;
-
-        if (this.items?.length === 0) //
-          setTimeout(() => document.getElementById('term')?.focus(), 200);
-      },
-      complete: () => {
-        this.searching = false;
-
-        if (this.items?.length === 0) //
-          setTimeout(() => document.getElementById('term')?.focus(), 200);
-      }
+    this.subscriptions.push(EventEmitterService.get('search-items-not-found').subscribe((): void => {
+      this.searching = false;
+      this.setFocusOnTermInputField();
+    }));
+    this.subscriptions.push(EventEmitterService.get('search-clear').subscribe((): void => {
+      this.term = null;
+      EventEmitterService.get('search-items-not-found').emit();
     }));
   }
 
-  isStatusStart(): boolean {
-    return (!this.searched) && (!this.searching) && (this.items === null);
-  }
-
-  isStatusProcessing(): boolean {
-    return this.searching || this.downloading;
-  }
-
-  isStatusItemsNotFound(): boolean {
-    return (this.searched) && (!this.searching) && (this.items !== null) && (this.items.length === 0);
-  }
-
-  isStatusItemsFound(): boolean {
-    return (this.searched) && (!this.searching) && (this.items !== null) && (this.items.length > 0) && (!this.downloading);
-  }
-
-  public doClear(): void {
+  public ngOnDestroy(): void {
     this.disposeSubscriptions();
+  }
 
-    this.term = null;
-    this.searched = this.searching = false;
-    this.items = null;
-    this.location.replaceState('/');
+  private disposeSubscriptions = () =>
+    this.subscriptions.forEach((item, index, array) => array.shift().unsubscribe());
 
+  private setFocusOnTermInputField(): void {
     setTimeout(() => document.getElementById('term')?.focus(), 200);
   }
 
-  doDownload(item: any): void {
-    this.translate.get(['search.confirmation.title', 'search.confirmation.description']).subscribe({
-      next: (values: any): void => {
-        this.confirmationService.confirm({
-          message: values['search.confirmation.description'],
-          header: values['search.confirmation.title'],
-          icon: 'fa-solid fa-download',
-          accept: (): void => {
-            this.disposeSubscriptions();
-
-            this.downloading = true;
-            this.certificateService //
-              .download(item.code) //
-              .then((): boolean => this.downloading = false) //
-              .catch((): boolean => this.downloading = false);
-          }
-        });
-      }
+  public doSearch(): void {
+    ScrollService.toTop();
+    this.searching = true;
+    this.router.navigate(['/', this.term]).then((result: boolean): void => {
+      // Do nothing.
     });
+    EventEmitterService.get('search-result-do-search').emit(this.term);
   }
 
 }
