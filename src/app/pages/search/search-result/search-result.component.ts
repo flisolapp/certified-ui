@@ -69,8 +69,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   public doSearch(term: string): void {
     this.disposeSubscriptions();
 
-    this.searched = this.searching = true;
     this.dataSource = [];
+    this.searched = this.searching = true;
+    EventEmitterService.get('searching').emit(this.searching);
 
     setTimeout((): void => {
       this.subscriptions.push(this.certificateService.search(term).subscribe({

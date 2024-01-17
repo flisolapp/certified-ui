@@ -35,6 +35,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.setFocusOnTermInputField();
 
+    this.subscriptions.push(EventEmitterService.get('searching').subscribe((searching: boolean): void => {
+      this.searching = searching;
+    }));
     this.subscriptions.push(EventEmitterService.get('search-items-not-found').subscribe((): void => {
       this.searching = false;
       this.setFocusOnTermInputField();
