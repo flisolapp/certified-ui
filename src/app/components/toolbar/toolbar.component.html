@@ -1,10 +1,13 @@
 <div class="toolbar" role="banner">
 
-  @if (darkMode) {
-    <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"/>
-  } @else {
-    <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89"/>
-  }
+  <a href="/">
+    @if (darkMode) {
+      <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"
+           [priority]="true"/>
+    } @else {
+      <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89" [priority]="true"/>
+    }
+  </a>
 
   <div class="spacer"></div>
 

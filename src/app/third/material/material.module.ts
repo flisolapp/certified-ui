@@ -11,6 +11,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatListModule} from '@angular/material/list';
+import {MatRippleModule} from '@angular/material/core';
 
 @NgModule({
   exports: [
@@ -25,7 +27,9 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatProgressBarModule,
     ClipboardModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule,
+    MatRippleModule
   ]
 })
 export class MaterialModule {

@@ -7,16 +7,28 @@
     <form class="term-form">
       <mat-form-field class="term-field">
         <mat-label>{{ 'search.termSearchPlace' | translate }}</mat-label>
-        <input id="term" matInput placeholder="Ex. tux@linux.org" [(ngModel)]="term"
-               [ngModelOptions]="{ standalone: true }">
+        <input id="term" type="email" matInput placeholder="Ex. tux@linux.org" [(ngModel)]="term"
+               [ngModelOptions]="{ standalone: true }" autocomplete="off">
 
         @if (term) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="doSearch()">
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="doSearch(this.term)">
             <span class="material-symbols-outlined">search</span>
           </button>
         }
       </mat-form-field>
     </form>
+
+    @if (showHistory) {
+      <mat-list>
+        @for (item of history; track item) {
+          <mat-list-item matRipple (click)="doSearch(item.term)" style="cursor: pointer">
+            <mat-icon matListItemIcon>history</mat-icon>
+            <div matListItemTitle (click)="doSearch(item.term)">{{ item.term }}</div>
+            <div matListItemLine (click)="doSearch(item.term)">{{ item.searched | date }}</div>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
   }
 
   <router-outlet></router-outlet>

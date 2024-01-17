@@ -1,21 +1,22 @@
-h1.title {
-  font-size: 1.5rem !important;
-}
-
-p.description {
-  color: #757575;
-  line-height: 1.5 !important;
-}
-
 h1.title, p.description {
   margin-bottom: 2rem;
   text-align: center;
   cursor: default;
+
+  // Specific styles for h1.title
+  &.title {
+    font-size: 1.5rem !important;
+  }
+
+  // Specific styles for p.description
+  &.description {
+    color: #757575;
+    line-height: 1.5 !important;
+  }
 }
 
 .term-form {
   min-width: 150px;
-  max-width: 500px;
   width: 100%;
 
   .term-field {
