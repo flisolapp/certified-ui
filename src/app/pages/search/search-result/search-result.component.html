@@ -79,20 +79,19 @@
 
   @if (platform.ANDROID || platform.IOS) {
     @for (item of dataSource; track $index) {
-      <mat-card style="margin-bottom: 1rem;min-width: 200px;">
-        <mat-card-header style="margin-bottom:1rem;">
+      <mat-card class="card">
+        <mat-card-header>
           <mat-card-title>
-            <div style="display: flex;justify-content: space-between;">
-              <div style="font-weight:600;">{{ item.edition }}</div>
-              <div
-                style="margin-left: 3rem;font-size: .6rem !important;color:#00000080 !important">{{ 'search.role.' + item.enjoyedAs.toLocaleLowerCase() | translate }}
+            <div>
+              <div>{{ item.edition }}</div>
+              <div>{{ 'search.role.' + item.enjoyedAs.toLocaleLowerCase() | translate }}
                 #{{ item.code }}
               </div>
             </div>
           </mat-card-title>
         </mat-card-header>
-        <mat-card-content style="margin-bottom:.5rem;">
-          <p style="margin-bottom:1rem;">{{ item.unit }}</p>
+        <mat-card-content>
+          <p>{{ item.unit }}</p>
           <p>{{ item.name }}</p>
         </mat-card-content>
         <mat-card-actions align="end">

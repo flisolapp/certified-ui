@@ -27,3 +27,35 @@
 th, td {
   cursor: default;
 }
+
+.card {
+  margin-bottom: 1rem;
+  min-width: 200px;
+
+  mat-card-header {
+    margin-bottom: 1rem;
+
+    mat-card-title div:first-child {
+      display: flex;
+      justify-content: space-between;
+
+      div:first-child {
+        font-weight: 600;
+      }
+
+      div:last-child {
+        margin-left: 3rem;
+        font-size: .6rem !important;
+        color: #000;
+      }
+    }
+
+    mat-card-content {
+      margin-bottom: .5rem;
+
+      p:first-child {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

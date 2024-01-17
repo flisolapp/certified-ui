@@ -1,6 +1,21 @@
 <div class="toolbar" role="banner">
-  <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89"/>
+
+  @if (className === 'darkMode') {
+    <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"/>
+  } @else {
+    <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89"/>
+  }
+
   <div class="spacer"></div>
+
+  <button mat-icon-button (click)="toggleColorScheme()">
+    @if (className === 'darkMode') {
+      <mat-icon>dark_mode</mat-icon>
+    } @else {
+      <mat-icon>light_mode</mat-icon>
+    }
+  </button>
+
   <button mat-icon-button class="language-menu" [matMenuTriggerFor]="menu" xPosition="before"
           [matTooltip]="language.name" [matTooltipPosition]="'left'">
     <img [ngSrc]="'assets/images/flags/' + language.flag.toLowerCase() + '.svg'" alt="" height="18" width="24"/>

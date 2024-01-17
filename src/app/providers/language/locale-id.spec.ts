@@ -1,4 +1,4 @@
-import { LocaleId } from './locale-id';
+import {LocaleId} from './locale-id';
 
 describe('LocaleId', () => {
   it('should create an instance', () => {

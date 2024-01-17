@@ -6,7 +6,6 @@
 @use '@angular/material/core/theming/theming';
 @use '@angular/material/core/typography/typography';
 
-
 // Include non-theme styles for core.
 @include core.core();
 
@@ -16,8 +15,41 @@
 $primary: theming.define-palette(palette.$indigo-palette);
 $accent: theming.define-palette(palette.$pink-palette, A200, A100, A400);
 
+$black-palette: (
+  50: #f5f5f5,
+  100: #e9e9e9,
+  200: #d9d9d9,
+  300: #c4c4c4,
+  400: #9d9d9d,
+  500: #7b7b7b,
+  600: #555555,
+  700: #434343,
+  800: #262626,
+  900: #000000,
+  A100: #e9e9e9,
+  A200: #d9d9d9,
+  A400: #9d9d9d,
+  A700: #434343,
+  contrast: (
+    50: palette.$dark-primary-text,
+    100: palette.$dark-primary-text,
+    200: palette.$dark-primary-text,
+    300: palette.$dark-primary-text,
+    400: palette.$light-primary-text,
+    500: palette.$light-primary-text,
+    600: palette.$light-primary-text,
+    700: palette.$light-primary-text,
+    800: palette.$light-primary-text,
+    900: palette.$light-primary-text,
+    A100: palette.$dark-primary-text,
+    A200: palette.$dark-primary-text,
+    A400: palette.$light-primary-text,
+    A700: palette.$light-primary-text,
+  )
+);
+
 // FLISol
-$primary: theming.define-palette(palette.$orange-palette);
+$primary: theming.define-palette($black-palette);
 $accent: theming.define-palette(palette.$grey-palette, A200, A100, A400);
 
 $theme: theming.define-light-theme((
@@ -33,3 +65,21 @@ $theme: theming.define-light-theme((
 @include all-theme.all-component-themes($theme);
 
 @include typography.typography-hierarchy($theme);
+
+// Dark Mode
+$angular-primary: mat.define-palette(mat.$orange-palette, 500, 100, 900);
+$angular-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$angular-warn: mat.define-palette(mat.$red-palette);
+$angular-dark-theme: mat.define-dark-theme(
+    (
+      color: (
+        primary: $angular-primary,
+        accent: $angular-accent,
+        warn: $angular-warn,
+      ),
+    )
+);
+
+.darkMode {
+  @include mat.all-component-colors($angular-dark-theme);
+}

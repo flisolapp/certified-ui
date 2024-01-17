@@ -1,0 +1,31 @@
+body.darkMode {
+  background-color: #333;
+
+  .toolbar mat-icon.material-icons, .material-symbols-outlined {
+    color: #fff;
+  }
+
+  h1.title {
+    color: #fff;
+  }
+
+  p.description {
+    color: #fff;
+  }
+
+  p.result-message {
+    color: #fff;
+
+    a {
+      color: #7CACF8 !important;
+    }
+  }
+
+  .card * {
+    color: white !important;
+  }
+
+  footer {
+    color: #fff;
+  }
+}
