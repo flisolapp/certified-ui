@@ -2,9 +2,9 @@
 
 Page that a person can validity or retrieve your certification.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.9.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.10.
 
-Using [NodeJS](https://nodejs.org) version 20.10.0.
+Using [NodeJS](https://nodejs.org) version 20.11.0.
 
 ## Development server
 
