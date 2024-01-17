@@ -1,6 +1,6 @@
 {
   "name": "certified-ui",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -23,6 +23,7 @@
     "@angular/platform-browser": "17.0.9",
     "@angular/platform-browser-dynamic": "17.0.9",
     "@angular/router": "17.0.9",
+    "@angular/service-worker": "17.0.9",
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
     "rxjs": "7.8.1",

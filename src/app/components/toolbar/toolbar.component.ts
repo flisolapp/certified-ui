@@ -8,9 +8,7 @@ import {LanguageService} from '../../services/language/language.service';
 })
 export class ToolbarComponent implements OnInit {
 
-  private darkMode: boolean = false;
-  private darkClassName = 'darkMode';
-  className = '';
+  darkMode: boolean = false;
   language: any = null;
 
   constructor(public languageService: LanguageService) {
@@ -43,12 +41,12 @@ export class ToolbarComponent implements OnInit {
   }
 
   private applyColorScheme(): void {
-    this.className = this.darkMode ? this.darkClassName : '';
+    const darkClassName: string = 'darkMode';
 
     if (this.darkMode) {
-      document.body.classList.add(this.darkClassName);
+      document.body.classList.add(darkClassName);
     } else {
-      document.body.classList.remove(this.darkClassName);
+      document.body.classList.remove(darkClassName);
     }
   }
 
