@@ -78,6 +78,10 @@ p {
   --mdc-icon-button-icon-size: 16px !important;
 }
 
+.mat-mdc-snack-bar-label {
+  cursor: default;
+}
+
 // search-result
 td {
   .code .mdc-button__label {

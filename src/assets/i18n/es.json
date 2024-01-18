@@ -22,11 +22,17 @@
     "confirmation": {
       "title": "Confirmación",
       "description": "¿Estás seguro de que quieres continuar?"
+    },
+    "error": {
+      "-1": "El término no es válido para buscar. Es requerido.",
+      "-2": "El término no es válido para buscar.",
+      "-3": "El término no es válido para buscar. Debe ser un correo electrónico o un código de certificado."
     }
   },
   "common": {
     "copied": "Copiado",
     "accept": "Sí",
-    "reject": "No"
+    "reject": "No",
+    "ok": "OK"
   }
 }

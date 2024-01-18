@@ -6,6 +6,7 @@ import {EventEmitterService} from '../../services/event-emitter/event-emitter.se
 import {HistoryItem} from '../../models/history-item';
 import {UuidService} from '../../services/uuid/uuid.service';
 import {TermService} from '../../services/term/term.service';
+import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
 
 /**
  * SearchComponent - An Angular component for handling search functionality.
@@ -41,6 +42,7 @@ import {TermService} from '../../services/term/term.service';
 export class SearchComponent implements OnInit, OnDestroy {
 
   term: string | undefined | null = '';
+  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
   searching: boolean = false;
   showHistory: boolean = true;
   history: HistoryItem[] = [];
@@ -64,11 +66,13 @@ export class SearchComponent implements OnInit, OnDestroy {
    * - `translate` is marked as public, making it accessible to both the class and its templates, useful for dynamic translations.
    * - This constructor doesn't contain any custom initialization logic. Its primary purpose is to inject dependencies
    *   needed by the component. Actual initialization is often performed in Angular lifecycle hooks like `ngOnInit`.
+   * @param snackBar
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public translate: TranslateService
+    private translate: TranslateService,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -211,20 +215,36 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public doSearch(term: string | undefined | null): void {
     ScrollService.toTop();
-    this.searching = true;
+
+    if (this.snackBarRef !== null) //
+      this.snackBarRef.dismiss();
 
     if (term !== null || term !== '') //
       this.term = term;
 
-    this.term = TermService.prepare(this.term);
+    try {
+      this.term = TermService.prepare(this.term);
 
-    this.router.navigate(['/', this.term]).then((result: boolean): void => {
-      // Do nothing.
-    });
-    EventEmitterService.get('search-result-do-search').emit(this.term);
+      this.searching = true;
+      this.router.navigate(['/', this.term]).then((result: boolean): void => {
+        // Do nothing.
+      });
+      EventEmitterService.get('search-result-do-search').emit(this.term);
 
-    this.showHistory = true;
-    this.saveHistory();
+      this.showHistory = true;
+      this.saveHistory(this.term);
+    } catch (e: any) {
+      console.error(e?.message, e?.cause);
+
+      this.translate.get(['search.error.' + e?.cause, 'common.ok']).subscribe({
+        next: (values: any): void => {
+          this.snackBarRef = this.snackBar.open(values['search.error.' + e?.cause], values['common.ok'], {
+            duration: 3 * 1000,
+          });
+          this.setFocusOnTermInputField();
+        }
+      });
+    }
   }
 
   /**
@@ -282,15 +302,13 @@ export class SearchComponent implements OnInit, OnDestroy {
    * - The method does not return any value.
    * - If the term is null or empty, the method does not perform any operation.
    */
-  private saveHistory(): void {
-    const termPrepared: string | undefined = TermService.prepare(this.term);
-
+  private saveHistory(term: string): void {
     // If term could be searched
-    if (termPrepared && termPrepared.length > 0) {
+    if (term && term.length > 0) {
       // Insert a new item at the start of the history
       const historyItem: HistoryItem = {
         id: UuidService.generateUUID(),
-        term: termPrepared,
+        term: term,
         searched: new Date()
       };
       this.history.unshift(historyItem);

@@ -22,11 +22,17 @@
     "confirmation": {
       "title": "Confirmação",
       "description": "Tem certeza de que deseja prosseguir?"
+    },
+    "error": {
+      "-1": "O termo é inválido para pesquisa. É necessário.",
+      "-2": "O termo é inválido para pesquisa.",
+      "-3": "O termo é inválido para pesquisa. Deve ser um e-mail ou código de certificado."
     }
   },
   "common": {
     "copied": "Copiado",
     "accept": "Sim",
-    "reject": "Não"
+    "reject": "Não",
+    "ok": "OK"
   }
 }

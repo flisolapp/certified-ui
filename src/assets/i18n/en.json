@@ -22,11 +22,17 @@
     "confirmation": {
       "title": "Confirmation",
       "description": "Are you sure that you want to proceed?"
+    },
+    "error": {
+      "-1": "The term is invalid to search. It is required.",
+      "-2": "The term is invalid to search.",
+      "-3": "The term is invalid to search. Must be an e-mail or certificate's code."
     }
   },
   "common": {
     "copied": "Copied",
     "accept": "Yes",
-    "reject": "No"
+    "reject": "No",
+    "ok": "OK"
   }
 }
