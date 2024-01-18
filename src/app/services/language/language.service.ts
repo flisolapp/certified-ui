@@ -89,7 +89,9 @@ export class LanguageService {
     // this.translate.get('primeng').subscribe(res => this.config.setTranslation(res));
     localStorage.setItem(LanguageService.LANGUAGE_KEY, JSON.stringify(this.selected));
     EventEmitterService.get('set-language').emit(this.selected.code);
-    // window.location.reload();
+
+    // DONE: Only reloads because when change the language, the pipe Date doesn't updates
+    window.location.reload();
   }
 
   static getLanguageCode(): string {

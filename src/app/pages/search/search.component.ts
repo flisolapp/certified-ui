@@ -5,6 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {EventEmitterService} from '../../services/event-emitter/event-emitter.service';
 import {HistoryItem} from '../../models/history-item';
 import {UuidService} from '../../services/uuid/uuid.service';
+import {TermService} from '../../services/term/term.service';
 
 /**
  * SearchComponent - An Angular component for handling search functionality.
@@ -39,7 +40,7 @@ import {UuidService} from '../../services/uuid/uuid.service';
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
-  term: string | null = '';
+  term: string | undefined | null = '';
   searching: boolean = false;
   showHistory: boolean = true;
   history: HistoryItem[] = [];
@@ -208,12 +209,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    * - It does not return any value.
    * - The search term is required for navigation but can be null or empty, which might result in different UI behaviors.
    */
-  public doSearch(term: string | null): void {
+  public doSearch(term: string | undefined | null): void {
     ScrollService.toTop();
     this.searching = true;
 
     if (term !== null || term !== '') //
       this.term = term;
+
+    this.term = TermService.prepare(this.term);
 
     this.router.navigate(['/', this.term]).then((result: boolean): void => {
       // Do nothing.
@@ -280,27 +283,25 @@ export class SearchComponent implements OnInit, OnDestroy {
    * - If the term is null or empty, the method does not perform any operation.
    */
   private saveHistory(): void {
-    // If term could be searched
-    if (this.term !== null && this.term.trim().length > 0) {
-      // Remove item if already exists on history
-      this.history = this.history.filter((item: HistoryItem): boolean => //
-        item.term.trim().toLowerCase() !== this.term?.trim().toLowerCase());
+    const termPrepared: string | undefined = TermService.prepare(this.term);
 
-      // Insert a new one
+    // If term could be searched
+    if (termPrepared && termPrepared.length > 0) {
+      // Insert a new item at the start of the history
       const historyItem: HistoryItem = {
         id: UuidService.generateUUID(),
-        term: this.term.trim(),
+        term: termPrepared,
         searched: new Date()
-      } as HistoryItem;
+      };
       this.history.unshift(historyItem);
 
-      // Sort by seached date in descending order (last search is the first)
-      this.history = this.history.sort((objA: HistoryItem, objB: HistoryItem) => //
-        Number(objB.searched) - Number(objA.searched));
+      // Remove older duplicates of the same term
+      this.history = this.history.filter((item: HistoryItem, index: number, self: HistoryItem[]): boolean => //
+        index === self.findIndex((t: HistoryItem): boolean => t.term.toLowerCase() === item.term.toLowerCase()));
 
-      // Maintain with 5 elements only
+      // Limit the history to 5 elements
       if (this.history.length > 5) //
-        this.history = this.history.slice(0, 5);
+        this.history.length = 5;
 
       localStorage.setItem('flisolapp.History', JSON.stringify(this.history));
     }

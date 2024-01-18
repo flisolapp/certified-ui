@@ -21,10 +21,10 @@
     @if (showHistory) {
       <mat-list>
         @for (item of history; track item) {
-          <mat-list-item matRipple (click)="doSearch(item.term)" style="cursor: pointer">
+          <mat-list-item matRipple (click)="doSearch(item.term)" class="history-item">
             <mat-icon matListItemIcon>history</mat-icon>
             <div matListItemTitle (click)="doSearch(item.term)">{{ item.term }}</div>
-            <div matListItemLine (click)="doSearch(item.term)">{{ item.searched | date }}</div>
+            <div matListItemLine (click)="doSearch(item.term)">{{ item.searched | date: 'medium' }}</div>
           </mat-list-item>
         }
       </mat-list>
