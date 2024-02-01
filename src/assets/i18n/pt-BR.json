@@ -1,4 +1,10 @@
 {
+  "common": {
+    "ok": "OK",
+    "accept": "Sim",
+    "reject": "Não",
+    "copied": "Copiado"
+  },
   "search": {
     "title": "Validador de Certificado",
     "description": "Valide de forma centralizada, fácil e rápida o certificado emitido pelo FLISoL.",
@@ -28,11 +34,5 @@
       "-2": "O termo é inválido para pesquisa.",
       "-3": "O termo é inválido para pesquisa. Deve ser um e-mail ou código de certificado."
     }
-  },
-  "common": {
-    "copied": "Copiado",
-    "accept": "Sim",
-    "reject": "Não",
-    "ok": "OK"
   }
 }

@@ -1,4 +1,10 @@
 {
+  "common": {
+    "ok": "OK",
+    "accept": "Yes",
+    "reject": "No",
+    "copied": "Copied"
+  },
   "search": {
     "title": "Certificate Verifier",
     "description": "Verify easily the validity of a certificate emitted by FLISoL. Centered. Fast.",
@@ -28,11 +34,5 @@
       "-2": "The term is invalid to search.",
       "-3": "The term is invalid to search. Must be an e-mail or certificate's code."
     }
-  },
-  "common": {
-    "copied": "Copied",
-    "accept": "Yes",
-    "reject": "No",
-    "ok": "OK"
   }
 }
