@@ -11,7 +11,9 @@
 
   <div class="spacer"></div>
 
-  <button mat-icon-button (click)="toggleColorScheme()">
+  <button mat-icon-button (click)="toggleColorScheme()"
+          matTooltip="{{ (darkMode ? 'common.turnOnLightMode' : 'common.turnOnDarkMode') | translate }}"
+          [matTooltipPosition]="'below'">
     @if (darkMode) {
       <mat-icon>dark_mode</mat-icon>
     } @else {
@@ -20,7 +22,7 @@
   </button>
 
   <button mat-icon-button class="language-menu" [matMenuTriggerFor]="menu" xPosition="before"
-          [matTooltip]="language.name" [matTooltipPosition]="'left'">
+          [matTooltip]="language.name" [matTooltipPosition]="'below'">
     @if (darkMode) {
       <img [ngSrc]="'assets/images/flags/' + language.flag.toLowerCase() + '-white.svg'" alt="" height="18" width="24"/>
     } @else {

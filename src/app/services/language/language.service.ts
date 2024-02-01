@@ -55,11 +55,9 @@ export class LanguageService {
         // Do nothing.
       }
 
-      for (let i = 0; i < LanguageService.LANGUAGES.length; i++) {
-        if (LanguageService.LANGUAGES[i].code === language) {
+      for (let i = 0; i < LanguageService.LANGUAGES.length; i++) //
+        if (LanguageService.LANGUAGES[i].code === language) //
           this.selected = LanguageService.LANGUAGES[i];
-        }
-      }
 
       this.translate.addLangs(['en', 'pt-BR']);
       // this.translate.setDefaultLang('en');
@@ -90,8 +88,8 @@ export class LanguageService {
     localStorage.setItem(LanguageService.LANGUAGE_KEY, JSON.stringify(this.selected));
     EventEmitterService.get('set-language').emit(this.selected.code);
 
-    // DONE: Only reloads because when change the language, the pipe Date doesn't updates
-    window.location.reload();
+    // // DONE: Only reloads because when change the language, the pipe Date doesn't updates
+    // window.location.reload();
   }
 
   static getLanguageCode(): string {
