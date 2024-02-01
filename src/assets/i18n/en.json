@@ -3,6 +3,8 @@
     "ok": "OK",
     "accept": "Yes",
     "reject": "No",
+    "turnOnLightMode": "Turn on light mode",
+    "turnOnDarkMode": "Turn on dark mode",
     "copied": "Copied"
   },
   "search": {
