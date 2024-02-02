@@ -7,6 +7,9 @@ import {HistoryItem} from '../../models/history-item';
 import {UuidService} from '../../services/uuid/uuid.service';
 import {TermService} from '../../services/term/term.service';
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
+import {FormControl, Validators} from '@angular/forms';
+import {CustomValidators} from '../../forms/custom-validators';
+import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher';
 
 /**
  * SearchComponent - An Angular component for handling search functionality.
@@ -41,7 +44,13 @@ import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/s
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
-  term: string | undefined | null = '';
+  termFormControl: FormControl<string | null> = new FormControl('', [
+    Validators.required,
+    CustomValidators.term,
+  ]);
+  matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
+
+  // term: string | undefined | null = '';
   private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
   searching: boolean = false;
   showHistory: boolean = true;
@@ -101,9 +110,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     ScrollService.toTop();
 
     this.route.paramMap.subscribe((paramMap: ParamMap): void => {
-      this.term = paramMap.get('term');
+      this.termFormControl.setValue(paramMap.get('term'));
 
-      if (this.term !== null) //
+      if (this.termFormControl.valid) //
         this.searching = true;
     });
 
@@ -119,7 +128,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.setFocusOnTermInputField();
     }));
     this.subscriptions.push(EventEmitterService.get('search-clear').subscribe((): void => {
-      this.term = null;
+      this.termFormControl.setValue(null);
       this.searching = false;
       this.showHistory = true;
       this.setFocusOnTermInputField();
@@ -220,19 +229,19 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.snackBarRef.dismiss();
 
     if (term !== null || term !== '') //
-      this.term = term;
+      this.termFormControl.setValue(term!);
 
     try {
-      this.term = TermService.prepare(this.term);
+      this.termFormControl.setValue(TermService.prepare(this.termFormControl.value));
 
       this.searching = true;
-      this.router.navigate(['/', this.term]).then((result: boolean): void => {
+      this.router.navigate(['/', this.termFormControl.value]).then((result: boolean): void => {
         // Do nothing.
       });
-      EventEmitterService.get('search-result-do-search').emit(this.term);
+      EventEmitterService.get('search-result-do-search').emit(this.termFormControl.value);
 
       this.showHistory = true;
-      this.saveHistory(this.term);
+      this.saveHistory(this.termFormControl.value!);
     } catch (e: any) {
       console.error(e?.message, e?.cause);
 
