@@ -103,8 +103,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.disposeSubscriptions();
 
-    if (this.doSearchSubscription !== null) //
+    if (this.doSearchSubscription?.unsubscribe) {
       this.doSearchSubscription.unsubscribe();
+    }
   }
 
   private disposeSubscriptions(): void {

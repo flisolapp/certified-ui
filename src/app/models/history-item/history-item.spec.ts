@@ -1,7 +1,16 @@
-import {HistoryItem} from './history-item';
+import { HistoryItem } from './history-item';
 
-describe('HistoryItem', () => {
-  it('should create an instance', () => {
-    expect(new HistoryItem()).toBeTruthy();
+describe('HistoryItem Interface', () => {
+  it('should create a valid HistoryItem object', () => {
+    const historyItem: HistoryItem = {
+      id: '1',
+      term: 'angular',
+      searched: new Date('2025-04-27T00:00:00Z')
+    };
+
+    expect(historyItem).toBeTruthy();
+    expect(historyItem.id).toBe('1');
+    expect(historyItem.term).toBe('angular');
+    expect(historyItem.searched instanceof Date).toBeTrue();
   });
 });

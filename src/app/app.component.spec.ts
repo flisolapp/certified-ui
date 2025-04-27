@@ -1,10 +1,26 @@
-import {TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+import { RouterOutlet } from '@angular/router';
+import { LanguageService } from './services/language/language.service';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
+  let languageServiceMock: jasmine.SpyObj<LanguageService>;
+
   beforeEach(async () => {
+    languageServiceMock = jasmine.createSpyObj('LanguageService', ['init']);
+
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [
+        AppComponent,
+        RouterOutlet,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
+        })
+      ],
+      providers: [
+        { provide: LanguageService, useValue: languageServiceMock }
+      ]
     }).compileComponents();
   });
 
@@ -14,16 +30,8 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'certified-ui' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('certified-ui');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, certified-ui');
+  it('should call languageService.init() on construction', () => {
+    TestBed.createComponent(AppComponent);
+    expect(languageServiceMock.init).toHaveBeenCalled();
   });
 });

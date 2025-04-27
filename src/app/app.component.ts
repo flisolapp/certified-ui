@@ -10,8 +10,6 @@ import {LanguageService} from './services/language/language.service';
 })
 export class AppComponent {
 
-  title = 'certified-ui';
-
   constructor(private languageService: LanguageService) {
     languageService.init();
   }

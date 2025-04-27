@@ -24,10 +24,11 @@
   <button mat-icon-button class="language-menu" [matTooltip]="language?.name" [matTooltipPosition]="'below'"
           [matMenuTriggerFor]="menu" xPosition="before">
     @if (darkMode) {
-      <img [ngSrc]="'assets/images/flags/' + language?.flag.toLowerCase() + '-white.svg'" alt="" height="18"
-           width="24"/>
+      <img [ngSrc]="'assets/images/flags/' + (language?.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
+           height="18" width="24"/>
     } @else {
-      <img [ngSrc]="'assets/images/flags/' + language?.flag.toLowerCase() + '.svg'" alt="" height="18" width="24"/>
+      <img [ngSrc]="'assets/images/flags/' + (language?.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
+           width="24"/>
     }
   </button>
   <mat-menu #menu="matMenu">
@@ -35,9 +36,11 @@
       <button mat-menu-item class="language-menu-item" [disabled]="item.code === language?.code"
               (click)="selectLanguage(item)">
         @if (darkMode) {
-          <img [ngSrc]="'assets/images/flags/' + item.flag.toLowerCase() + '-white.svg'" alt="" height="18" width="24"/>
+          <img [ngSrc]="'assets/images/flags/' + (item.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
+               height="18" width="24"/>
         } @else {
-          <img [ngSrc]="'assets/images/flags/' + item.flag.toLowerCase() + '.svg'" alt="" height="18" width="24"/>
+          <img [ngSrc]="'assets/images/flags/' + (item.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
+               width="24"/>
         }
         <span>{{ item.name }}</span>
       </button>
