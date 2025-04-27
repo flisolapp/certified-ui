@@ -7,6 +7,14 @@
   text-align: center;
   color: tomato;
   cursor: default;
+
+  a {
+    cursor: pointer;
+    color: rgb(0, 102, 204);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin-left: .3rem;
+  }
 }
 
 .result-message {
@@ -26,6 +34,31 @@
 
 th, td {
   cursor: default;
+}
+
+td .code .material-symbols-outlined {
+  font-size: 1rem;
+  vertical-align: sub;
+}
+
+td.download {
+  text-align: center;
+
+  .material-symbols-outlined {
+    // Fade In/Out effect
+    @keyframes fadeInOut {
+      0%, 100% {
+        opacity: .1;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    &.icon-fadeInOut {
+      animation: fadeInOut 3s infinite;
+    }
+  }
 }
 
 .card {

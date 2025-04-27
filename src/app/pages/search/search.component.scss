@@ -27,6 +27,21 @@ h1.title, p.description {
 .history-item {
   cursor: pointer !important;
   border-radius: 4px !important;
+  display: flex;
+  align-items: center; /* Vertical centering */
+
+  mat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px; /* Space between icon and text */
+    font-size: 24px; /* Ensure consistent icon size */
+  }
+
+  .mdc-list-item__content {
+    display: flex;
+    align-items: center; /* Vertical centering for text */
+  }
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.04);

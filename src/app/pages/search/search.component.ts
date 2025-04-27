@@ -1,15 +1,21 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {ScrollService} from '../../services/scroll/scroll.service';
-import {TranslateService} from '@ngx-translate/core';
-import {EventEmitterService} from '../../services/event-emitter/event-emitter.service';
-import {HistoryItem} from '../../models/history-item';
-import {UuidService} from '../../services/uuid/uuid.service';
-import {TermService} from '../../services/term/term.service';
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CustomValidators} from '../../forms/custom-validators/custom-validators';
+import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher/custom-error-state-matcher';
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
-import {FormControl, Validators} from '@angular/forms';
-import {CustomValidators} from '../../forms/custom-validators';
-import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher';
+import {HistoryItem} from '../../models/history-item/history-item';
+import {ActivatedRoute, ParamMap, Router, RouterOutlet} from '@angular/router';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {ScrollService} from '../../services/scroll/scroll.service';
+import {EventEmitterService} from '../../services/event-emitter/event-emitter.service';
+import {TermService} from '../../services/term/term.service';
+import {UuidService} from '../../services/uuid/uuid.service';
+import {PageStructureComponent} from '../../components/page-structure/page-structure.component';
+import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
+import {MatIconButton} from '@angular/material/button';
+import {MatList, MatListItem} from '@angular/material/list';
+import {MatRipple} from '@angular/material/core';
+import {MatIcon} from '@angular/material/icon';
 
 /**
  * SearchComponent - An Angular component for handling search functionality.
@@ -39,22 +45,37 @@ import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher';
  */
 @Component({
   selector: 'app-search',
+  imports: [
+    PageStructureComponent,
+    TranslatePipe,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatInput,
+    ReactiveFormsModule,
+    MatIconButton,
+    MatList,
+    MatListItem,
+    MatRipple,
+    MatIcon,
+    RouterOutlet,
+    FormsModule
+  ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss'
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
-  termFormControl: FormControl<string | null> = new FormControl('', [
+  public termFormControl: FormControl<string | null> = new FormControl('', [
     Validators.required,
     CustomValidators.term,
   ]);
-  matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
+  public matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
 
-  // term: string | undefined | null = '';
   private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
-  searching: boolean = false;
-  showHistory: boolean = true;
-  history: HistoryItem[] = [];
+  public searching: boolean = false;
+  public showHistory: boolean = true;
+  public history: HistoryItem[] = [];
 
   private subscriptions: any[] = [];
 
@@ -225,11 +246,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   public doSearch(term: string | undefined | null): void {
     ScrollService.toTop();
 
-    if (this.snackBarRef !== null) //
+    if (this.snackBarRef !== null) {
       this.snackBarRef.dismiss();
+    }
 
-    if (term !== null || term !== '') //
+    if (term !== null || term !== '') {
       this.termFormControl.setValue(term!);
+    }
 
     try {
       this.termFormControl.setValue(TermService.prepare(this.termFormControl.value));
@@ -331,6 +354,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.history.length = 5;
 
       localStorage.setItem('flisolapp.History', JSON.stringify(this.history));
+    }
+  }
+
+  public onSubmit(event: Event): void {
+    event.preventDefault();
+
+    if (this.termFormControl.valid) {
+      this.doSearch(this.termFormControl.value);
     }
   }
 

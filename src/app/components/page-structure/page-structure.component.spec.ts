@@ -6,10 +6,12 @@ describe('PageStructureComponent', () => {
   let component: PageStructureComponent;
   let fixture: ComponentFixture<PageStructureComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [PageStructureComponent]
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PageStructureComponent]
+    })
+      .compileComponents();
+
     fixture = TestBed.createComponent(PageStructureComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

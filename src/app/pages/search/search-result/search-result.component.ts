@@ -1,30 +1,76 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Platform} from '@angular/cdk/platform';
+import {CertificateElement} from '../../../models/certificate-element/certificate-element';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {ScrollService} from '../../../services/scroll/scroll.service';
+import {Platform} from '@angular/cdk/platform';
 import {CertificateService} from '../../../services/certificate/certificate.service';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ScrollService} from '../../../services/scroll/scroll.service';
 import {EventEmitterService} from '../../../services/event-emitter/event-emitter.service';
 import {Clipboard} from '@angular/cdk/clipboard';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {CertificateElement} from '../../../models/certificate-element';
-import {TranslateService} from '@ngx-translate/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {
   SearchResultDownloadCertificateComponent
 } from './search-result-download-certificate/search-result-download-certificate.component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable
+} from '@angular/material/table';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {
+  MatCard,
+  MatCardActions,
+  MatCardContent,
+  MatCardFooter,
+  MatCardHeader,
+  MatCardTitle
+} from '@angular/material/card';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-search-result',
+  imports: [
+    MatProgressSpinner,
+    TranslatePipe,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatCell,
+    MatCellDef,
+    MatButton,
+    MatIconButton,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatCardActions,
+    MatCardFooter,
+    MatProgressBar
+  ],
   templateUrl: './search-result.component.html',
   styleUrl: './search-result.component.scss'
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
 
-  searched: boolean = false;
-  searching: boolean = false;
-  displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'download'];
-  dataSource: CertificateElement[] = [];
-  downloadingItem: CertificateElement | null = null;
+  public searched: boolean = false;
+  public searching: boolean = false;
+  public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'download'];
+  public dataSource: CertificateElement[] = [];
+  public downloadingItem: CertificateElement | null = null;
 
   private subscriptions: any[] = [];
   private doSearchSubscription: any;
@@ -41,7 +87,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     ScrollService.toTop();
 
     this.route.paramMap.subscribe((paramMap: ParamMap): void => {
@@ -54,7 +100,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.disposeSubscriptions();
 
     if (this.doSearchSubscription !== null) //
@@ -92,15 +138,15 @@ export class SearchResultComponent implements OnInit, OnDestroy {
     }, 500);
   }
 
-  isStatusSearching(): boolean {
+  public isStatusSearching(): boolean {
     return this.searching;
   }
 
-  isStatusItemsNotFound(): boolean {
+  public isStatusItemsNotFound(): boolean {
     return (this.searched) && (!this.searching) && (this.dataSource !== null) && (this.dataSource.length === 0);
   }
 
-  isStatusItemsFound(): boolean {
+  public isStatusItemsFound(): boolean {
     return (this.searched) && (!this.searching) && (this.dataSource !== null) && (this.dataSource.length > 0);
   }
 

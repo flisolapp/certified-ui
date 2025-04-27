@@ -11,7 +11,7 @@
     "title": "Validador de Certificado",
     "description": "Valide de forma centralizada, fácil y rápido o certificado emitido pelo FLISoL.",
     "termSearchPlace": "Introduce tu email o código",
-    "notFound": "No se han encontrado resultados. Inténtalo de nuevo.",
+    "notFound": "No se han encontrado resultados.",
     "oneFound": "certificado encontrado.",
     "manyFound": "certificados encontrados.",
     "repeatSearch": "Haz otra búsqueda.",

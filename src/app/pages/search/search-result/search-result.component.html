@@ -3,7 +3,11 @@
 }
 
 @if (isStatusItemsNotFound()) {
-  <p class="items-not-found">{{ 'search.notFound' | translate }}</p>
+  <p class="items-not-found">
+    {{ 'search.notFound' | translate }}
+
+    <a (click)="doClear()">{{ 'search.repeatSearch' | translate }}</a>
+  </p>
 }
 
 @if (isStatusItemsFound()) {

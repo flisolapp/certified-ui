@@ -8,7 +8,7 @@ describe('SearchResultDownloadCertificateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SearchResultDownloadCertificateComponent]
+      imports: [SearchResultDownloadCertificateComponent]
     })
       .compileComponents();
 

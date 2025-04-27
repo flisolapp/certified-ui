@@ -11,7 +11,7 @@
     "title": "Certificate Verifier",
     "description": "Verify easily the validity of a certificate emitted by FLISoL. Centered. Fast.",
     "termSearchPlace": "Enter your email or code",
-    "notFound": "No results found. Please, try again.",
+    "notFound": "No results found.",
     "oneFound": "certificate found.",
     "manyFound": "certificates found.",
     "repeatSearch": "Do another search.",

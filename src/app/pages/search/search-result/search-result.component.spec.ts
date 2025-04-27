@@ -8,7 +8,7 @@ describe('SearchResultComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SearchResultComponent]
+      imports: [SearchResultComponent]
     })
       .compileComponents();
 

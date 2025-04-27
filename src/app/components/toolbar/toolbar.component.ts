@@ -1,15 +1,31 @@
 import {Component, OnInit} from '@angular/core';
 import {LanguageService} from '../../services/language/language.service';
+import {NgOptimizedImage} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {TranslatePipe} from '@ngx-translate/core';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 @Component({
   selector: 'app-toolbar',
+  imports: [
+    NgOptimizedImage,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    TranslatePipe,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
+  ],
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent implements OnInit {
 
-  darkMode: boolean = false;
-  language: any = null;
+  public darkMode: boolean = false;
+  public language: any = null;
 
   constructor(public languageService: LanguageService) {
   }
