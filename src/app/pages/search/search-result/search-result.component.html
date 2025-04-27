@@ -24,7 +24,7 @@
   </p>
 
   @if (!platform.ANDROID && !platform.IOS) {
-    <table mat-table [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" class="striped-table mat-elevation-z8">
 
       <!-- Edition Column -->
       <ng-container matColumnDef="edition">

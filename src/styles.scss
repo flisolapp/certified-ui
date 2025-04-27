@@ -63,6 +63,19 @@ app-search-result .mat-mdc-card-header-text {
   width: 100%;
 }
 
+// Table
+.striped-table .mat-mdc-header-row {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.striped-table .mat-mdc-row:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.04); // Light gray for light theme
+}
+
+.striped-table .mat-mdc-row:hover {
+  background-color: rgba(33, 150, 243, 0.1); // Optional hover effect (light blue tint)
+}
+
 // Dark mode
 body.darkMode {
   color-scheme: dark;
@@ -91,5 +104,18 @@ body.darkMode {
   // Applying the color to all child elements of .card
   .card * {
     color: white !important;
+  }
+
+  // Table
+  .striped-table .mat-mdc-header-row {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .striped-table .mat-mdc-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.06); // Light white for dark theme
+  }
+
+  .striped-table .mat-mdc-row:hover {
+    background-color: rgba(33, 150, 243, 0.2); // Stronger hover in dark mode
   }
 }
