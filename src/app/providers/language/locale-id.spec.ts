@@ -1,5 +1,5 @@
 import {LocaleId} from './locale-id';
-import {LanguageService} from '../../services/language/language.service';
+import {LanguageService} from '../../services/language/language-service';
 
 describe('LocaleId', () => {
   let languageServiceMock: jasmine.SpyObj<LanguageService>;

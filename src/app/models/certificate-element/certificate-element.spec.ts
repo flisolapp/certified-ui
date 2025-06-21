@@ -1,4 +1,4 @@
-import { CertificateElement } from './certificate-element';
+import {CertificateElement} from './certificate-element';
 
 describe('CertificateElement Interface', () => {
   it('should create a valid CertificateElement object', () => {

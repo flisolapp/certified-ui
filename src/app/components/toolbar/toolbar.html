@@ -1,7 +1,7 @@
 <div class="toolbar" role="banner">
 
   <a href="/">
-    @if (darkMode) {
+    @if (darkMode()) {
       <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"
            [priority]="true"/>
     } @else {
@@ -12,30 +12,35 @@
   <div class="spacer"></div>
 
   <button mat-icon-button (click)="toggleColorScheme()"
-          matTooltip="{{ (darkMode ? 'common.turnOnLightMode' : 'common.turnOnDarkMode') | translate }}"
+          matTooltip="{{ (darkMode() ? 'common.turnOnLightMode' : 'common.turnOnDarkMode') | translate }}"
           [matTooltipPosition]="'below'">
-    @if (darkMode) {
+    @if (darkMode()) {
       <mat-icon fontIcon="dark_mode"></mat-icon>
     } @else {
       <mat-icon fontIcon="light_mode"></mat-icon>
     }
   </button>
 
-  <button mat-icon-button class="language-menu" [matTooltip]="language?.name" [matTooltipPosition]="'below'"
-          [matMenuTriggerFor]="menu" xPosition="before">
-    @if (darkMode) {
-      <img [ngSrc]="'assets/images/flags/' + (language?.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
+  <button mat-icon-button class="language-menu"
+          [matTooltip]="language()?.name"
+          [matTooltipPosition]="'below'"
+          [matMenuTriggerFor]="menu"
+          xPosition="before">
+    @if (darkMode()) {
+      <img [ngSrc]="'assets/images/flags/' + (language()?.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
            height="18" width="24"/>
     } @else {
-      <img [ngSrc]="'assets/images/flags/' + (language?.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
+      <img [ngSrc]="'assets/images/flags/' + (language()?.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
            width="24"/>
     }
   </button>
+
   <mat-menu #menu="matMenu">
     @for (item of languageService.getLanguages(); track $index) {
-      <button mat-menu-item class="language-menu-item" [disabled]="item.code === language?.code"
+      <button mat-menu-item class="language-menu-item"
+              [disabled]="item.code === language()?.code"
               (click)="selectLanguage(item)">
-        @if (darkMode) {
+        @if (darkMode()) {
           <img [ngSrc]="'assets/images/flags/' + (item.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
                height="18" width="24"/>
         } @else {
@@ -46,4 +51,5 @@
       </button>
     }
   </mat-menu>
+
 </div>

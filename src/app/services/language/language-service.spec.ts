@@ -1,6 +1,6 @@
-import { LanguageService } from './language.service';
-import { TranslateService } from '@ngx-translate/core';
-import { EventEmitterService } from '../event-emitter/event-emitter.service';
+import {LanguageService} from './language-service';
+import {TranslateService} from '@ngx-translate/core';
+import {EventEmitterService} from '../event-emitter/event-emitter-service';
 
 describe('LanguageService', () => {
   let service: LanguageService;
@@ -63,7 +63,7 @@ describe('LanguageService', () => {
     });
 
     it('should initialize language from saved localStorage', () => {
-      const savedLang = { name: 'Español (España)', code: 'es', flag: 'ES' };
+      const savedLang = {name: 'Español (España)', code: 'es', flag: 'ES'};
       localStorage.setItem('flisolapp.Language', JSON.stringify(savedLang));
 
       translateServiceMock.getBrowserLang.and.returnValue('es');
@@ -92,12 +92,12 @@ describe('LanguageService', () => {
 
   describe('getSelected and setSelected', () => {
     it('should return selected language', () => {
-      (service as any).selected = { code: 'en' };
-      expect(service.getSelected()).toEqual({ code: 'en' });
+      (service as any).selected = {code: 'en'};
+      expect(service.getSelected()).toEqual({code: 'en'});
     });
 
     it('should set selected language and emit event', () => {
-      const lang = { code: 'es', name: 'Español', flag: 'ES' };
+      const lang = {code: 'es', name: 'Español', flag: 'ES'};
       service.setSelected(lang);
 
       expect(translateServiceMock.use).toHaveBeenCalledWith('es');
@@ -108,7 +108,7 @@ describe('LanguageService', () => {
 
   describe('getLanguageCode (static)', () => {
     it('should return code from localStorage', () => {
-      localStorage.setItem('flisolapp.Language', JSON.stringify({ code: 'pt-BR' }));
+      localStorage.setItem('flisolapp.Language', JSON.stringify({code: 'pt-BR'}));
       expect(LanguageService.getLanguageCode()).toBe('pt-BR');
     });
 

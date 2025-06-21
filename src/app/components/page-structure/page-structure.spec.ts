@@ -1,8 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {PageStructureComponent} from './page-structure.component';
-import {Component} from '@angular/core';
+import {PageStructure} from './page-structure';
+import {Component, provideZonelessChangeDetection} from '@angular/core';
 import packageInfo from '../../../../package.json';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 
 // Mock ToolbarComponent as Standalone
@@ -14,14 +14,17 @@ import {TranslateFakeLoader, TranslateLoader, TranslateModule, TranslateService}
 class MockToolbarComponent {
 }
 
-describe('PageStructureComponent', () => {
-  let component: PageStructureComponent;
-  let fixture: ComponentFixture<PageStructureComponent>;
+describe('PageStructure', () => {
+  let component: PageStructure;
+  let fixture: ComponentFixture<PageStructure>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideZonelessChangeDetection()
+      ],
       imports: [
-        PageStructureComponent,   // Import your standalone component
+        PageStructure,   // Import your standalone component
         MockToolbarComponent,     // Mocked toolbar to avoid real dependencies
         TranslateModule.forRoot({
           loader: {
@@ -32,7 +35,7 @@ describe('PageStructureComponent', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageStructureComponent);
+    fixture = TestBed.createComponent(PageStructure);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -42,6 +45,6 @@ describe('PageStructureComponent', () => {
   });
 
   it('should have version set from package.json', () => {
-    expect(component.version).toBe(packageInfo.version);  // Should be "2.5.0"
+    expect(component.version()).toBe(packageInfo.version);  // Should be "2.5.0"
   });
 });

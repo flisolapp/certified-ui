@@ -11,6 +11,7 @@ import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-search-result-download-certificate',
+  standalone: true,
   imports: [
     MatDialogTitle,
     TranslatePipe,
@@ -19,18 +20,17 @@ import {MatButton} from '@angular/material/button';
     MatButton,
     MatDialogClose
   ],
-  templateUrl: './search-result-download-certificate.component.html',
-  styleUrl: './search-result-download-certificate.component.scss'
+  templateUrl: './search-result-download-certificate.html',
+  styleUrl: './search-result-download-certificate.scss'
 })
-export class SearchResultDownloadCertificateComponent {
+export class SearchResultDownloadCertificate {
 
   constructor(
-    public dialogRef: MatDialogRef<SearchResultDownloadCertificateComponent>
+    public dialogRef: MatDialogRef<SearchResultDownloadCertificate>
   ) {
   }
 
   public onNoClick(): void {
     this.dialogRef.close();
   }
-
 }

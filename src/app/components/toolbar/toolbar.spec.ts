@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ToolbarComponent } from './toolbar.component';
-import { LanguageService } from '../../services/language/language.service';
-import { Component } from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {Toolbar} from './toolbar';
+import {LanguageService} from '../../services/language/language-service';
+import {Component, provideZonelessChangeDetection} from '@angular/core';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 // Mock TranslatePipe to avoid real translation logic
@@ -9,25 +9,26 @@ import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-transl
   selector: 'span[translate]',
   template: ''
 })
-class MockTranslatePipe {}
+class MockTranslatePipe {
+}
 
-describe('ToolbarComponent', () => {
-  let component: ToolbarComponent;
-  let fixture: ComponentFixture<ToolbarComponent>;
+describe('Toolbar', () => {
+  let component: Toolbar;
+  let fixture: ComponentFixture<Toolbar>;
   let languageServiceMock: jasmine.SpyObj<LanguageService>;
 
   beforeEach(async () => {
     languageServiceMock = jasmine.createSpyObj('LanguageService', ['getSelected', 'setSelected', 'getLanguages']);
 
-    languageServiceMock.getSelected.and.returnValue({ code: 'en', name: 'English', flag: 'EN' });
+    languageServiceMock.getSelected.and.returnValue({code: 'en', name: 'English', flag: 'EN'});
     languageServiceMock.getLanguages.and.returnValue([
-      { code: 'en', name: 'English', flag: 'EN' },
-      { code: 'pt-BR', name: 'Português', flag: 'BR' }
+      {code: 'en', name: 'English', flag: 'EN'},
+      {code: 'pt-BR', name: 'Português', flag: 'BR'}
     ]);
 
     await TestBed.configureTestingModule({
       imports: [
-        ToolbarComponent,
+        Toolbar,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -36,15 +37,16 @@ describe('ToolbarComponent', () => {
         }),
       ],
       providers: [
-        { provide: LanguageService, useValue: languageServiceMock }
+        provideZonelessChangeDetection(),
+        {provide: LanguageService, useValue: languageServiceMock}
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ToolbarComponent);
+    fixture = TestBed.createComponent(Toolbar);
     component = fixture.componentInstance;
 
     // Ensure language is initialized to avoid template errors
-    component.language = { code: 'en', name: 'English', flag: 'EN' };
+    component.language.set({code: 'en', name: 'English', flag: 'EN'});
 
     fixture.detectChanges();
   });
@@ -58,32 +60,32 @@ describe('ToolbarComponent', () => {
       spyOn(component, 'detectAndLoadColorScheme').and.callThrough();
       component.ngOnInit();
       expect(component.detectAndLoadColorScheme).toHaveBeenCalled();
-      expect(component.language).toEqual({ code: 'en', name: 'English', flag: 'EN' });
+      expect(component.language()).toEqual({code: 'en', name: 'English', flag: 'EN'});
     });
   });
 
   describe('detectAndLoadColorScheme', () => {
     beforeEach(() => {
-      spyOn(window, 'matchMedia').and.returnValue({ matches: true } as MediaQueryList);
+      spyOn(window, 'matchMedia').and.returnValue({matches: true} as MediaQueryList);
       spyOn(component as any, 'applyColorScheme').and.callThrough();
     });
 
     it('should detect dark mode from system preference', () => {
       localStorage.removeItem('flisolapp.DarkMode');
       component.detectAndLoadColorScheme();
-      expect(component.darkMode).toBeTrue();
+      expect(component.darkMode()).toBeTrue();
     });
 
     it('should override dark mode if localStorage is set to false', () => {
       localStorage.setItem('flisolapp.DarkMode', 'false');
       component.detectAndLoadColorScheme();
-      expect(component.darkMode).toBeFalse();
+      expect(component.darkMode()).toBeFalse();
     });
 
     it('should override dark mode if localStorage is set to true', () => {
       localStorage.setItem('flisolapp.DarkMode', 'true');
       component.detectAndLoadColorScheme();
-      expect(component.darkMode).toBeTrue();
+      expect(component.darkMode()).toBeTrue();
     });
 
     it('should call applyColorScheme', () => {
@@ -98,13 +100,13 @@ describe('ToolbarComponent', () => {
     });
 
     it('should toggle darkMode and update localStorage', () => {
-      component.darkMode = false;
+      component.darkMode.set(false);
       component.toggleColorScheme();
-      expect(component.darkMode).toBeTrue();
+      expect(component.darkMode()).toBeTrue();
       expect(localStorage.getItem('flisolapp.DarkMode')).toBe('true');
 
       component.toggleColorScheme();
-      expect(component.darkMode).toBeFalse();
+      expect(component.darkMode()).toBeFalse();
       expect(localStorage.getItem('flisolapp.DarkMode')).toBe('false');
     });
 
@@ -116,14 +118,14 @@ describe('ToolbarComponent', () => {
 
   describe('applyColorScheme', () => {
     it('should add darkMode class when darkMode is true', () => {
-      component.darkMode = true;
+      component.darkMode.set(true);
       const addSpy = spyOn(document.body.classList, 'add');
       component['applyColorScheme']();
       expect(addSpy).toHaveBeenCalledWith('darkMode');
     });
 
     it('should remove darkMode class when darkMode is false', () => {
-      component.darkMode = false;
+      component.darkMode.set(false);
       const removeSpy = spyOn(document.body.classList, 'remove');
       component['applyColorScheme']();
       expect(removeSpy).toHaveBeenCalledWith('darkMode');
@@ -132,9 +134,9 @@ describe('ToolbarComponent', () => {
 
   describe('selectLanguage', () => {
     it('should set language and call languageService.setSelected', () => {
-      const lang = { code: 'pt-BR', name: 'Português', flag: 'BR' };
+      const lang = {code: 'pt-BR', name: 'Português', flag: 'BR'};
       component.selectLanguage(lang);
-      expect(component.language).toEqual(lang);
+      expect(component.language()).toEqual(lang);
       expect(languageServiceMock.setSelected).toHaveBeenCalledWith(lang);
     });
   });

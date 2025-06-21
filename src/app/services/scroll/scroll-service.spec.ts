@@ -1,4 +1,4 @@
-import { ScrollService } from './scroll.service';
+import {ScrollService} from './scroll-service';
 
 describe('ScrollService', () => {
   beforeEach(() => {

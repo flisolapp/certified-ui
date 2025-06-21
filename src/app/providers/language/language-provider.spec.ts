@@ -1,19 +1,20 @@
-import { TestBed } from '@angular/core/testing';
-import { LOCALE_ID } from '@angular/core';
-import { LanguageProvider } from './language-provider';
-import { LanguageService } from '../../services/language/language.service';
-import { LocaleId } from './locale-id';
+import {TestBed} from '@angular/core/testing';
+import {LOCALE_ID, provideZonelessChangeDetection} from '@angular/core';
+import {LanguageProvider} from './language-provider';
+import {LanguageService} from '../../services/language/language-service';
+import {LocaleId} from './locale-id';
 
 describe('LanguageProvider', () => {
   let languageServiceMock: jasmine.SpyObj<LanguageService>;
 
   beforeEach(() => {
-    languageServiceMock = jasmine.createSpyObj('LanguageService', [], { locale: 'pt-BR' });
+    languageServiceMock = jasmine.createSpyObj('LanguageService', [], {locale: 'pt-BR'});
 
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         LanguageProvider,
-        { provide: LanguageService, useValue: languageServiceMock }
+        {provide: LanguageService, useValue: languageServiceMock}
       ]
     });
   });

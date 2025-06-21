@@ -1,4 +1,4 @@
-import { HistoryItem } from './history-item';
+import {HistoryItem} from './history-item';
 
 describe('HistoryItem Interface', () => {
   it('should create a valid HistoryItem object', () => {

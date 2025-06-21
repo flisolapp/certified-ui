@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 // import {MessageService, PrimeNGConfig} from 'primeng/api';
-import {EventEmitterService} from '../event-emitter/event-emitter.service';
+import {EventEmitterService} from '../event-emitter/event-emitter-service';
 
 @Injectable({
   providedIn: 'root'

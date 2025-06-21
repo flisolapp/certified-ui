@@ -1,4 +1,4 @@
-import {LanguageService} from '../../services/language/language.service';
+import {LanguageService} from '../../services/language/language-service';
 
 export class LocaleId extends String {
 

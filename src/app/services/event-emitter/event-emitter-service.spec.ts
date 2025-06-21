@@ -1,5 +1,5 @@
-import { EventEmitter } from '@angular/core';
-import { EventEmitterService } from './event-emitter.service';
+import {EventEmitter} from '@angular/core';
+import {EventEmitterService} from './event-emitter-service';
 
 describe('EventEmitterService', () => {
 

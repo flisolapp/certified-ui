@@ -1,7 +1,7 @@
 <app-page-structure>
   <h1 class="title">{{ 'search.title' | translate }}</h1>
 
-  @if (!searching) {
+  @if (!searching()) {
     <p class="description">{{ 'search.description' | translate }}</p>
 
     <form class="term-form" (ngSubmit)="onSubmit($event)">
@@ -9,26 +9,30 @@
         <mat-label>{{ 'search.termSearchPlace' | translate }}</mat-label>
         <input id="term" type="email" matInput [formControl]="termFormControl" [errorStateMatcher]="matcher"
                placeholder="Ex. tux@linux.org" autocomplete="off">
+
         @if (termFormControl.valid) {
           <button matSuffix mat-icon-button aria-label="Clear" (click)="doSearch(termFormControl.value)">
             <mat-icon>search</mat-icon>
           </button>
         }
+
         @if (termFormControl.hasError('term') && !termFormControl.hasError('invalid') && !termFormControl.hasError('required')) {
           <mat-error>{{ 'search.error.-3' | translate }}</mat-error>
         }
+
         @if (termFormControl.hasError('invalid') && !termFormControl.hasError('required')) {
           <mat-error>{{ 'search.error.-2' | translate }}</mat-error>
         }
+
         @if (termFormControl.hasError('required')) {
           <mat-error>{{ 'search.error.-1' | translate }}</mat-error>
         }
       </mat-form-field>
     </form>
 
-    @if (showHistory) {
+    @if (showHistory()) {
       <mat-list>
-        @for (item of history; track item) {
+        @for (item of history(); track item.id) {
           <mat-list-item matRipple (click)="doSearch(item.term)" class="history-item">
             <mat-icon matListItemIcon>history</mat-icon>
             <div matListItemTitle>{{ item.term }}</div>

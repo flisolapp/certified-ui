@@ -1,8 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { CertificateService } from './certificate.service';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import {TestBed} from '@angular/core/testing';
+import {CertificateService} from './certificate-service';
+import {HttpClient} from '@angular/common/http';
+import {of} from 'rxjs';
+import {environment} from '../../../environments/environment';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('CertificateService', () => {
   let service: CertificateService;
@@ -13,8 +14,9 @@ describe('CertificateService', () => {
 
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         CertificateService,
-        { provide: HttpClient, useValue: httpClientSpy }
+        {provide: HttpClient, useValue: httpClientSpy}
       ]
     });
 
@@ -29,7 +31,7 @@ describe('CertificateService', () => {
   describe('search', () => {
     it('should call httpClient.get with correct URL', () => {
       const term = 'test-term';
-      const expectedResponse = { data: 'mockData' };
+      const expectedResponse = {data: 'mockData'};
 
       httpClientSpy.get.and.returnValue(of(expectedResponse));
 
@@ -49,14 +51,14 @@ describe('CertificateService', () => {
     let revokeObjectURLSpy: jasmine.Spy;
 
     beforeEach(() => {
-      const mockBlob = new Blob(['mock content'], { type: 'image/png' });
+      const mockBlob = new Blob(['mock content'], {type: 'image/png'});
 
       fetchSpy = spyOn(window, 'fetch').and.resolveTo({
         blob: async () => mockBlob
       } as Response);
 
       const anchorMock = {
-        style: { display: '' },
+        style: {display: ''},
         href: '',
         download: '',
         click: jasmine.createSpy('click')

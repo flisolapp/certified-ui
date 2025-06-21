@@ -1,4 +1,4 @@
-import { TermService } from './term.service';
+import {TermService} from './term-service';
 
 describe('TermService', () => {
 
