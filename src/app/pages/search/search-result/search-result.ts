@@ -14,15 +14,7 @@ import {
   MatTable
 } from '@angular/material/table';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {
-  MatCard,
-  MatCardActions,
-  MatCardContent,
-  MatCardFooter,
-  MatCardHeader,
-  MatCardTitle
-} from '@angular/material/card';
-import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {CertificateElement} from '../../../models/certificate-element/certificate-element';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CertificateService} from '../../../services/certificate/certificate-service';
@@ -30,10 +22,13 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ScrollService} from '../../../services/scroll/scroll-service';
 import {EventEmitterService} from '../../../services/event-emitter/event-emitter-service';
-import {SearchResultDownloadCertificate} from './search-result-download-certificate/search-result-download-certificate';
+import {
+  SearchResultDownloadCertificateDialog
+} from './search-result-download-certificate-dialog/search-result-download-certificate-dialog';
 import {Platform} from '@angular/cdk/platform';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {first, firstValueFrom} from 'rxjs';
+import {SearchResultImagePreviewDialog} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
 
 @Component({
   selector: 'app-search-result',
@@ -57,9 +52,7 @@ import {first, firstValueFrom} from 'rxjs';
     MatCardHeader,
     MatCardTitle,
     MatCardContent,
-    MatCardActions,
-    MatCardFooter,
-    MatProgressBar
+    MatCardActions
   ],
   templateUrl: './search-result.html',
   styleUrl: './search-result.scss'
@@ -71,7 +64,7 @@ export class SearchResult implements OnInit, OnDestroy {
   public dataSource = signal<CertificateElement[]>([]);
   public downloadingItem = signal<CertificateElement | null>(null);
 
-  public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'download'];
+  public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'preview'];
 
   private subscriptions: any[] = [];
   private doSearchSubscription: any;
@@ -181,9 +174,33 @@ export class SearchResult implements OnInit, OnDestroy {
     });
   }
 
+  public async doPreview(item: CertificateElement): Promise<void> {
+    this.disposeSubscriptions();
+    this.downloadingItem.set(item);
+
+    try {
+      const data: Blob = await this.certificateService.certificate(item.code);  // Assuming this returns a PNG Blob
+      this.downloadingItem.set(null);
+
+      const imageUrl: string = URL.createObjectURL(data);
+
+      const dialogRef: MatDialogRef<SearchResultImagePreviewDialog> = this.dialog.open(SearchResultImagePreviewDialog, {
+        data: {imageUrl, code: item.code},
+        width: '800px'
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        URL.revokeObjectURL(imageUrl);  // Clean up memory after dialog closes
+      });
+    } catch (error) {
+      console.error('Preview failed', error);
+      this.downloadingItem.set(null);
+    }
+  }
+
   public async doDownload(item: CertificateElement): Promise<void> {
-    const dialogRef: MatDialogRef<SearchResultDownloadCertificate> =
-      this.dialog.open(SearchResultDownloadCertificate);
+    const dialogRef: MatDialogRef<SearchResultDownloadCertificateDialog> =
+      this.dialog.open(SearchResultDownloadCertificateDialog);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -191,8 +208,8 @@ export class SearchResult implements OnInit, OnDestroy {
         this.downloadingItem.set(item);
 
         this.certificateService.download(item.code)
-          .then(() => this.downloadingItem.set(null))
-          .catch(() => this.downloadingItem.set(null));
+          .then((): void => this.downloadingItem.set(null))
+          .catch((): void => this.downloadingItem.set(null));
       }
     });
   }

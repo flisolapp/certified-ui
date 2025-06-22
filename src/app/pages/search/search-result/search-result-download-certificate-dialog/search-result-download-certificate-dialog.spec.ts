@@ -1,19 +1,19 @@
 import {TestBed} from '@angular/core/testing';
-import {SearchResultDownloadCertificate} from './search-result-download-certificate';
+import {SearchResultDownloadCertificateDialog} from './search-result-download-certificate-dialog';
 import {MatDialogRef} from '@angular/material/dialog';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideZonelessChangeDetection} from '@angular/core';
 
-describe('SearchResultDownloadCertificate', () => {
-  let component: SearchResultDownloadCertificate;
-  let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultDownloadCertificate>>;
+describe('SearchResultDownloadCertificateDialog', () => {
+  let component: SearchResultDownloadCertificateDialog;
+  let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultDownloadCertificateDialog>>;
 
   beforeEach(async () => {
     dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
       imports: [
-        SearchResultDownloadCertificate,
+        SearchResultDownloadCertificateDialog,
         TranslateModule.forRoot({
           loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
         })
@@ -24,7 +24,7 @@ describe('SearchResultDownloadCertificate', () => {
       ]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(SearchResultDownloadCertificate);
+    const fixture = TestBed.createComponent(SearchResultDownloadCertificateDialog);
     component = fixture.componentInstance;
   });
 
@@ -33,7 +33,7 @@ describe('SearchResultDownloadCertificate', () => {
   });
 
   it('should close dialog on onNoClick()', () => {
-    component.onNoClick();
+    component.close();
     expect(dialogRefMock.close).toHaveBeenCalled();
   });
 });

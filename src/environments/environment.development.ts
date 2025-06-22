@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://api.certified.flisol.app/api'
+  apiUrl: 'http://certified-api.test/api'
 };

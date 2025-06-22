@@ -20,12 +20,17 @@ export class CertificateService {
     return this.httpClient.get<any>(this.baseUrl + '/' + term);
   }
 
-  public async download(code: string): Promise<void> {
+  public async certificate(code: string): Promise<Blob> {
     const url: string = this.baseUrl + '/' + code + '/download';
-    const name: string = 'certificate_' + code + '.png';
 
     const response = await fetch(url);
-    const blob = await response.blob();
+    return await response.blob();
+  }
+
+  public async download(code: string, data: Blob | null = null): Promise<void> {
+    const name: string = 'certificate_' + code + '.png';
+    const blob: Blob | null = (data instanceof Blob) ? data : await this.certificate(code);
+
     const url_1: string = window.URL.createObjectURL(blob);
     const a: HTMLAnchorElement = document.createElement('a');
     a.style.display = 'none';

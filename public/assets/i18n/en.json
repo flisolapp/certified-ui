@@ -5,7 +5,8 @@
     "reject": "No",
     "turnOnLightMode": "Turn on light mode",
     "turnOnDarkMode": "Turn on dark mode",
-    "copied": "Copied"
+    "copied": "Copied",
+    "close": "Close"
   },
   "search": {
     "title": "Certificate Verifier",
@@ -21,6 +22,7 @@
     "enjoyedAs": "Enjoyed as",
     "code": "Code",
     "download": "Download",
+    "preview": "Preview",
     "role": {
       "organizer": "Organizer",
       "collaborator": "Collaborator",

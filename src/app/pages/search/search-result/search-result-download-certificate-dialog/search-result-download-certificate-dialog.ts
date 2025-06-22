@@ -10,7 +10,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {MatButton} from '@angular/material/button';
 
 @Component({
-  selector: 'app-search-result-download-certificate',
+  selector: 'app-search-result-download-certificate-dialog',
   standalone: true,
   imports: [
     MatDialogTitle,
@@ -20,17 +20,18 @@ import {MatButton} from '@angular/material/button';
     MatButton,
     MatDialogClose
   ],
-  templateUrl: './search-result-download-certificate.html',
-  styleUrl: './search-result-download-certificate.scss'
+  templateUrl: './search-result-download-certificate-dialog.html',
+  styleUrl: './search-result-download-certificate-dialog.scss'
 })
-export class SearchResultDownloadCertificate {
+export class SearchResultDownloadCertificateDialog {
 
   constructor(
-    public dialogRef: MatDialogRef<SearchResultDownloadCertificate>
+    public dialogRef: MatDialogRef<SearchResultDownloadCertificateDialog>
   ) {
   }
 
-  public onNoClick(): void {
+  public close(): void {
     this.dialogRef.close();
   }
+
 }

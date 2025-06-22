@@ -5,7 +5,8 @@
     "reject": "No",
     "turnOnLightMode": "Activar el modo claro",
     "turnOnDarkMode": "Activar el modo oscuro",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "close": "Cerrar"
   },
   "search": {
     "title": "Validador de Certificado",
@@ -21,6 +22,7 @@
     "enjoyedAs": "Fue como",
     "code": "Código",
     "download": "Descargar",
+    "preview": "Previa",
     "role": {
       "organizer": "Organizador",
       "collaborator": "Colaborador",

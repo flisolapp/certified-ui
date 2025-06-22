@@ -43,22 +43,6 @@ td .code .material-symbols-outlined {
 
 td.download {
   text-align: center;
-
-  .material-symbols-outlined {
-    // Fade In/Out effect
-    @keyframes fadeInOut {
-      0%, 100% {
-        opacity: .1;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-
-    &.icon-fadeInOut {
-      animation: fadeInOut 3s infinite;
-    }
-  }
 }
 
 .card {
@@ -82,13 +66,27 @@ td.download {
         color: #000;
       }
     }
+  }
 
-    mat-card-content {
-      margin-bottom: .5rem;
+  mat-card-content p:first-child {
+    margin-bottom: .5rem;
+    font-size: .8rem;
+  }
+}
 
-      p:first-child {
-        margin-bottom: 1rem;
-      }
+.material-symbols-outlined {
+  // Clockwise spinning effect (Z-axis)
+  @keyframes spinClockwise {
+    0% {
+      transform: rotate(0deg);
     }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  &.icon-spinClockwise {
+    display: inline-block;
+    animation: spinClockwise 2s linear infinite;
   }
 }

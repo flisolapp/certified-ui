@@ -1,6 +1,8 @@
+import {CertificateElementUnit} from '../certificate-element-unit/certificate-element-unit';
+
 export interface CertificateElement {
   edition: string;
-  unit: string;
+  unit: CertificateElementUnit;
   name: string;
   enjoyedAs: string;
   code: string;

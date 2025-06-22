@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{ 'search.preview' | translate }}</h1>
+
+<div mat-dialog-content>
+  <img [src]="data.imageUrl" alt="Preview" class="preview"/>
+</div>
+
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="download()">
+    <span class="material-symbols-outlined download">download</span>
+    {{ 'search.download' | translate }}
+  </button>
+
+  <button mat-button mat-dialog-close (click)="close()" cdkFocusInitial>
+    {{ 'common.close' | translate }}
+  </button>
+</div>
