@@ -1,34 +1,15 @@
-import {Component, computed, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, OnDestroy, OnInit, Signal, signal, WritableSignal} from '@angular/core';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable
-} from '@angular/material/table';
-import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
+import {TranslatePipe} from '@ngx-translate/core';
 import {CertificateElement} from '../../../models/certificate-element/certificate-element';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {CertificateService} from '../../../services/certificate/certificate-service';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ScrollService} from '../../../services/scroll/scroll-service';
 import {EventEmitterService} from '../../../services/event-emitter/event-emitter-service';
-import {
-  SearchResultDownloadCertificateDialog
-} from './search-result-download-certificate-dialog/search-result-download-certificate-dialog';
-import {Platform} from '@angular/cdk/platform';
-import {Clipboard} from '@angular/cdk/clipboard';
 import {first, firstValueFrom} from 'rxjs';
-import {SearchResultImagePreviewDialog} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
+import {PlatformService} from '../../../services/platform/platform-service';
+import {SearchResultTable} from './search-result-table/search-result-table';
+import {SearchResultCard} from './search-result-card/search-result-card';
 
 @Component({
   selector: 'app-search-result',
@@ -36,35 +17,17 @@ import {SearchResultImagePreviewDialog} from './search-result-image-preview-dial
   imports: [
     MatProgressSpinner,
     TranslatePipe,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderCellDef,
-    MatCell,
-    MatCellDef,
-    MatButton,
-    MatIconButton,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    MatCardActions
+    SearchResultTable,
+    SearchResultCard
   ],
   templateUrl: './search-result.html',
   styleUrl: './search-result.scss'
 })
 export class SearchResult implements OnInit, OnDestroy {
 
-  public searching = signal(false);
-  public searched = signal(false);
-  public dataSource = signal<CertificateElement[]>([]);
-  public downloadingItem = signal<CertificateElement | null>(null);
-
-  public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'preview'];
+  public searching: WritableSignal<boolean> = signal<boolean>(false);
+  public searched: WritableSignal<boolean> = signal(false);
+  public dataSource: WritableSignal<CertificateElement[]> = signal<CertificateElement[]>([]);
 
   private subscriptions: any[] = [];
   private doSearchSubscription: any;
@@ -72,12 +35,8 @@ export class SearchResult implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public platform: Platform,
     private certificateService: CertificateService,
-    private translate: TranslateService,
-    private clipboard: Clipboard,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    public platformService: PlatformService
   ) {
   }
 
@@ -85,8 +44,9 @@ export class SearchResult implements OnInit, OnDestroy {
     ScrollService.toTop();
 
     try {
-      const paramMap = await firstValueFrom(this.route.paramMap.pipe(first()));
-      const term = paramMap.get('term');
+      const paramMap: ParamMap = await firstValueFrom(this.route.paramMap.pipe(first()));
+      const term: string | null = paramMap.get('term');
+
       if (term) {
         await this.doSearch(term);
       }
@@ -94,7 +54,7 @@ export class SearchResult implements OnInit, OnDestroy {
     }
 
     this.doSearchSubscription = EventEmitterService.get('search-result-do-search')
-      .subscribe(async (term: string) => {
+      .subscribe(async (term: string): Promise<void> => {
         await this.doSearch(term);
       });
   }
@@ -107,7 +67,7 @@ export class SearchResult implements OnInit, OnDestroy {
   }
 
   private disposeSubscriptions(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub: any): void => sub.unsubscribe());
     this.subscriptions = [];
   }
 
@@ -120,13 +80,15 @@ export class SearchResult implements OnInit, OnDestroy {
     EventEmitterService.get('searching').emit(true);
 
     try {
-      const result = await firstValueFrom(this.certificateService.search(term));
+      const result: CertificateElement[] = await firstValueFrom(this.certificateService.search(term));
       this.dataSource.set(result);
     } catch (error) {
       this.searching.set(false);
+
       if (this.dataSource()?.length === 0) {
         EventEmitterService.get('search-items-not-found').emit();
       }
+
       return;
     }
 
@@ -137,15 +99,15 @@ export class SearchResult implements OnInit, OnDestroy {
     }
   }
 
-  public isStatusSearching = computed(() => this.searching());
+  public isStatusSearching: Signal<boolean> = computed((): boolean => this.searching());
 
-  public isStatusItemsNotFound = computed(() =>
+  public isStatusItemsNotFound: Signal<boolean> = computed((): boolean =>
     this.searched() &&
     !this.searching() &&
     this.dataSource().length === 0
   );
 
-  public isStatusItemsFound = computed(() =>
+  public isStatusItemsFound: Signal<boolean> = computed(() =>
     this.searched() &&
     !this.searching() &&
     this.dataSource().length > 0
@@ -162,55 +124,4 @@ export class SearchResult implements OnInit, OnDestroy {
     await this.router.navigate(['/']);
   }
 
-  public doCopyCodeToClipboard(item: CertificateElement): void {
-    this.translate.get(['common.copied']).subscribe({
-      next: (values: any): void => {
-        const content = `${window.location.origin}/${item.code}`;
-        this.clipboard.copy(content);
-        this.snackBar.open(`${values['common.copied']}: ${content}`, undefined, {
-          duration: 1000
-        });
-      }
-    });
-  }
-
-  public async doPreview(item: CertificateElement): Promise<void> {
-    this.disposeSubscriptions();
-    this.downloadingItem.set(item);
-
-    try {
-      const data: Blob = await this.certificateService.certificate(item.code);  // Assuming this returns a PNG Blob
-      this.downloadingItem.set(null);
-
-      const imageUrl: string = URL.createObjectURL(data);
-
-      const dialogRef: MatDialogRef<SearchResultImagePreviewDialog> = this.dialog.open(SearchResultImagePreviewDialog, {
-        data: {imageUrl, code: item.code},
-        width: '800px'
-      });
-
-      dialogRef.afterClosed().subscribe(() => {
-        URL.revokeObjectURL(imageUrl);  // Clean up memory after dialog closes
-      });
-    } catch (error) {
-      console.error('Preview failed', error);
-      this.downloadingItem.set(null);
-    }
-  }
-
-  public async doDownload(item: CertificateElement): Promise<void> {
-    const dialogRef: MatDialogRef<SearchResultDownloadCertificateDialog> =
-      this.dialog.open(SearchResultDownloadCertificateDialog);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.disposeSubscriptions();
-        this.downloadingItem.set(item);
-
-        this.certificateService.download(item.code)
-          .then((): void => this.downloadingItem.set(null))
-          .catch((): void => this.downloadingItem.set(null));
-      }
-    });
-  }
 }

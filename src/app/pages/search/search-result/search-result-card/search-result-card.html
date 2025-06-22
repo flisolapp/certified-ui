@@ -1,0 +1,29 @@
+@for (item of dataSource; track $index) {
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>
+        <div>
+          <div>{{ item.edition }}</div>
+          <div>
+            {{ 'search.role.' + item.enjoyedAs.toLocaleLowerCase() | translate }} #{{ item.code }}
+          </div>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ item.unit.name }} ({{ item.unit.acronym }})</p>
+      <p>{{ item.name }}</p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      @if (item.code === downloadingItem()?.code) {
+        <div class="mat-mdc-icon-button">
+          <span class="material-symbols-outlined icon-spinClockwise">progress_activity</span>
+        </div>
+      } @else {
+        <button mat-icon-button (click)="doDownload(item)">
+          <span class="material-symbols-outlined">download</span>
+        </button>
+      }
+    </mat-card-actions>
+  </mat-card>
+}

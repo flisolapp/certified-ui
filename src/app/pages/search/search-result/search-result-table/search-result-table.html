@@ -1,0 +1,56 @@
+<table mat-table [dataSource]="dataSource" class="striped-table mat-elevation-z8">
+
+  <!-- Edition Column -->
+  <ng-container matColumnDef="edition">
+    <th mat-header-cell *matHeaderCellDef>{{ 'search.edition' | translate }}</th>
+    <td mat-cell *matCellDef="let element">{{ element.edition }}</td>
+  </ng-container>
+
+  <!-- Unit Column -->
+  <ng-container matColumnDef="unit">
+    <th mat-header-cell *matHeaderCellDef>{{ 'search.unit' | translate }}</th>
+    <td mat-cell *matCellDef="let element" [title]="element.unit.name">{{ element.unit.acronym }}</td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>{{ 'search.name' | translate }}</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <!-- Enjoyed As Column -->
+  <ng-container matColumnDef="enjoyedAs">
+    <th mat-header-cell *matHeaderCellDef>{{ 'search.enjoyedAs' | translate }}</th>
+    <td mat-cell *matCellDef="let element">
+      {{ 'search.role.' + element.enjoyedAs.toLocaleLowerCase() | translate }}
+    </td>
+  </ng-container>
+
+  <!-- Code Column -->
+  <ng-container matColumnDef="code">
+    <th mat-header-cell *matHeaderCellDef>{{ 'search.code' | translate }}</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-button (click)="doCopyCodeToClipboard(element)" class="code">
+        {{ element.code }}
+        <span class="material-symbols-outlined">content_copy</span>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Preview Column -->
+  <ng-container matColumnDef="preview">
+    <th mat-header-cell *matHeaderCellDef><!-- {{ 'search.preview' | translate }} --></th>
+    <td mat-cell *matCellDef="let element" class="preview">
+      @if (element.code === downloadingItem()?.code) {
+        <span class="material-symbols-outlined icon-fadeInOut icon-spinClockwise">progress_activity</span>
+      } @else {
+        <button mat-icon-button (click)="doPreview(element)" [title]="'search.preview' | translate">
+          <span class="material-symbols-outlined">visibility</span>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

@@ -119,3 +119,20 @@ body.darkMode {
     background-color: rgba(33, 150, 243, 0.2); // Stronger hover in dark mode
   }
 }
+
+.material-symbols-outlined {
+  // Clockwise spinning effect (Z-axis)
+  @keyframes spinClockwise {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  &.icon-spinClockwise {
+    display: inline-block;
+    animation: spinClockwise 2s linear infinite;
+  }
+}

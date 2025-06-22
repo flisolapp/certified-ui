@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {PageStructure} from '../../components/page-structure/page-structure';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
@@ -7,7 +7,7 @@ import {MatIconButton} from '@angular/material/button';
 import {MatList, MatListItem} from '@angular/material/list';
 import {MatRipple} from '@angular/material/core';
 import {MatIcon} from '@angular/material/icon';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router, RouterOutlet} from '@angular/router';
 import {CustomValidators} from '../../forms/custom-validators/custom-validators';
 import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher/custom-error-state-matcher';
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
@@ -42,16 +42,16 @@ import {first, firstValueFrom} from 'rxjs';
 })
 export class Search implements OnInit, OnDestroy {
 
-  public termFormControl = new FormControl<string | null>('', [
+  public termFormControl: FormControl<string | null> = new FormControl<string | null>('', [
     Validators.required,
     CustomValidators.term,
   ]);
-  public matcher = new CustomErrorStateMatcher();
+  public matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
 
   private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
-  public searching = signal<boolean>(false);
-  public showHistory = signal<boolean>(true);
-  public history = signal<HistoryItem[]>([]);
+  public searching: WritableSignal<boolean> = signal<boolean>(false);
+  public showHistory: WritableSignal<boolean> = signal<boolean>(true);
+  public history: WritableSignal<HistoryItem[]> = signal<HistoryItem[]>([]);
 
   private subscriptions: any[] = [];
 
@@ -67,8 +67,8 @@ export class Search implements OnInit, OnDestroy {
     ScrollService.toTop();
 
     try {
-      const paramMap = await firstValueFrom(this.route.paramMap.pipe(first()));
-      const term = paramMap.get('term');
+      const paramMap: ParamMap = await firstValueFrom(this.route.paramMap.pipe(first()));
+      const term: string | null = paramMap.get('term');
       this.termFormControl.setValue(term);
 
       if (this.termFormControl.valid) {
@@ -103,12 +103,12 @@ export class Search implements OnInit, OnDestroy {
   }
 
   private disposeSubscriptions(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub: any): void => sub.unsubscribe());
     this.subscriptions = [];
   }
 
   private setFocusOnTermInputField(): void {
-    requestAnimationFrame(() => document.getElementById('term')?.focus());
+    requestAnimationFrame((): void | undefined => document.getElementById('term')?.focus());
   }
 
   public doSearch(term: string | undefined | null): void {
@@ -145,7 +145,7 @@ export class Search implements OnInit, OnDestroy {
   }
 
   private loadHistory(): void {
-    const historyFromStorage = localStorage.getItem('flisolapp.History');
+    const historyFromStorage: string | null = localStorage.getItem('flisolapp.History');
 
     if (historyFromStorage) {
       try {
@@ -179,4 +179,5 @@ export class Search implements OnInit, OnDestroy {
       this.doSearch(this.termFormControl.value);
     }
   }
+
 }

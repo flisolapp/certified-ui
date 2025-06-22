@@ -9,6 +9,7 @@ import {
 } from '@angular/material/dialog';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatButton} from '@angular/material/button';
+import {CertificateService} from '../../../../../services/certificate/certificate-service';
 
 @Component({
   selector: 'app-search-result-image-preview-dialog',
@@ -27,15 +28,16 @@ export class SearchResultImagePreviewDialog {
 
   constructor(
     private dialogRef: MatDialogRef<SearchResultImagePreviewDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { imageUrl: string, code: string }
+    @Inject(MAT_DIALOG_DATA) public data: { imageUrl: string, code: string },
+    private certificateService: CertificateService,
   ) {
   }
 
-  public download(): void {
-    const link: HTMLAnchorElement = document.createElement('a');
-    link.href = this.data.imageUrl;
-    link.download = 'certificate_' + this.data.code + '.png';
-    link.click();
+  public async download(): Promise<void> {
+    const response: Response = await fetch(this.data.imageUrl);
+    const blob: Blob = await response.blob();
+
+    await this.certificateService.download(this.data.code, blob);
   }
 
   public close(): void {
