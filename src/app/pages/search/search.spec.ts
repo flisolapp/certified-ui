@@ -17,6 +17,13 @@ describe('Search', () => {
   let snackBarMock: jasmine.SpyObj<MatSnackBar>;
   let paramMapSubject: ReplaySubject<any>;
 
+  const eventEmitters: Record<string, EventEmitter<any>> = {
+    searching: new EventEmitter<any>(),
+    'search-items-not-found': new EventEmitter<any>(),
+    'search-clear': new EventEmitter<any>(),
+    'search-result-do-search': new EventEmitter<any>()
+  };
+
   beforeEach(async () => {
     paramMapSubject = new ReplaySubject(1);
 
@@ -47,7 +54,7 @@ describe('Search', () => {
     snackBarMock = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
 
     spyOn(ScrollService, 'toTop');
-    spyOn(EventEmitterService, 'get').and.callFake(() => new EventEmitter<any>());
+    spyOn(EventEmitterService, 'get').and.callFake((eventName: string) => eventEmitters[eventName]);
     spyOn(TermService, 'prepare').and.returnValue('mock-term');
     spyOn(UuidService, 'generateUUID').and.returnValue('mock-uuid');
 
@@ -116,5 +123,104 @@ describe('Search', () => {
       expect(unsubscribeSpy1.unsubscribe).toHaveBeenCalled();
       expect(unsubscribeSpy2.unsubscribe).toHaveBeenCalled();
     });
+  });
+
+  it('should set searching to true when termFormControl is valid during ngOnInit', async () => {
+    paramMapSubject.next({
+      get: () => 'validemail@example.com'  // Valor que passa pelo CustomValidators.term
+    } as any);
+
+    component.termFormControl.setErrors(null);  // Força o estado válido
+    await component.ngOnInit();
+
+    expect(component.searching()).toBeTrue();
+  });
+
+  it('should dismiss snackbar if it exists before search', () => {
+    const dismissSpy = jasmine.createSpy('dismiss');
+    (component as any).snackBarRef = {dismiss: dismissSpy} as any;
+
+    component.doSearch('test-search');
+
+    expect(dismissSpy).toHaveBeenCalled();
+  });
+
+  it('should load history from localStorage and set it to signal', () => {
+    const mockHistory = [{
+      id: 'mock-uuid',
+      term: 'test-term',
+      searched: new Date().toISOString()
+    }];
+
+    localStorage.setItem('flisolapp.History', JSON.stringify(mockHistory));
+
+    component['loadHistory']();
+
+    expect(component.history()).toEqual(jasmine.arrayContaining([
+      jasmine.objectContaining({
+        id: 'mock-uuid',
+        term: 'test-term'
+      })
+    ]));
+  });
+
+  it('should filter out existing term from history before saving', () => {
+    component.history.set([
+      {id: 'old-uuid', term: 'Old Term', searched: new Date()}
+    ]);
+
+    spyOn(localStorage, 'setItem');
+
+    component['saveHistory']('New Term');
+
+    const historyResult = component.history();
+
+    expect(historyResult.length).toBe(2);
+    expect(historyResult.some(item => item.term === 'Old Term')).toBeTrue();
+    expect(historyResult.some(item => item.term === 'New Term')).toBeTrue();
+  });
+
+  it('should set searching signal when searching event is emitted', async () => {
+    await component.ngOnInit();
+
+    expect(component.searching()).toBeFalse();
+
+    eventEmitters['searching'].emit(true);
+    expect(component.searching()).toBeTrue();
+
+    eventEmitters['searching'].emit(false);
+    expect(component.searching()).toBeFalse();
+  });
+
+  it('should handle search-items-not-found event', async () => {
+    spyOn<any>(component, 'setFocusOnTermInputField');
+
+    await component.ngOnInit();
+
+    component.searching.set(true);
+    component.showHistory.set(true);
+
+    eventEmitters['search-items-not-found'].emit();
+
+    expect(component.searching()).toBeFalse();
+    expect(component.showHistory()).toBeFalse();
+    expect(component['setFocusOnTermInputField']).toHaveBeenCalled();
+  });
+
+  it('should handle search-clear event', async () => {
+    spyOn<any>(component, 'setFocusOnTermInputField');
+
+    await component.ngOnInit();
+
+    component.termFormControl.setValue('something');
+    component.searching.set(true);
+    component.showHistory.set(false);
+
+    eventEmitters['search-clear'].emit();
+
+    expect(component.termFormControl.value).toBeNull();
+    expect(component.searching()).toBeFalse();
+    expect(component.showHistory()).toBeTrue();
+    expect(component['setFocusOnTermInputField']).toHaveBeenCalled();
   });
 });
