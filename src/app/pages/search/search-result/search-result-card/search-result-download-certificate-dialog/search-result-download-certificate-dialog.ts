@@ -11,7 +11,6 @@ import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-search-result-download-certificate-dialog',
-  standalone: true,
   imports: [
     MatDialogTitle,
     TranslatePipe,

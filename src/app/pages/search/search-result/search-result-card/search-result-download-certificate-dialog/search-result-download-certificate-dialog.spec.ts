@@ -1,14 +1,14 @@
-import {TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SearchResultDownloadCertificateDialog} from './search-result-download-certificate-dialog';
 import {MatDialogRef} from '@angular/material/dialog';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideZonelessChangeDetection} from '@angular/core';
 
-describe('SearchResultDownloadCertificateDialog', () => {
+describe('SearchResultDownloadCertificateDialog', (): void => {
   let component: SearchResultDownloadCertificateDialog;
   let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultDownloadCertificateDialog>>;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
@@ -24,15 +24,15 @@ describe('SearchResultDownloadCertificateDialog', () => {
       ]
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(SearchResultDownloadCertificateDialog);
+    const fixture: ComponentFixture<SearchResultDownloadCertificateDialog> = TestBed.createComponent(SearchResultDownloadCertificateDialog);
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it('should create', (): void => {
     expect(component).toBeTruthy();
   });
 
-  it('should close dialog on onNoClick()', () => {
+  it('should close dialog on close()', (): void => {
     component.close();
     expect(dialogRefMock.close).toHaveBeenCalled();
   });

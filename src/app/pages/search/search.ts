@@ -20,7 +20,6 @@ import {first, firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-search',
-  standalone: true,
   imports: [
     PageStructure,
     TranslatePipe,

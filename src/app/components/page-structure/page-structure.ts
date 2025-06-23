@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, signal, WritableSignal} from '@angular/core';
 
 // FIX: Avoid named import for soon-to-be ESM-only default exports
 import packageInfo from '../../../../package.json';
@@ -6,7 +6,6 @@ import {Toolbar} from '../toolbar/toolbar';
 
 @Component({
   selector: 'app-page-structure',
-  standalone: true,
   imports: [
     Toolbar
   ],
@@ -15,6 +14,6 @@ import {Toolbar} from '../toolbar/toolbar';
 })
 export class PageStructure {
 
-  public version = signal<string>(packageInfo.version);
+  public version: WritableSignal<string> = signal<string>(packageInfo.version);
 
 }

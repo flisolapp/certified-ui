@@ -3,6 +3,7 @@ import {Toolbar} from './toolbar';
 import {LanguageService} from '../../services/language/language-service';
 import {Component, provideZonelessChangeDetection} from '@angular/core';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import Spy = jasmine.Spy;
 
 // Mock TranslatePipe to avoid real translation logic
 @Component({
@@ -12,12 +13,12 @@ import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-transl
 class MockTranslatePipe {
 }
 
-describe('Toolbar', () => {
+describe('Toolbar', (): void => {
   let component: Toolbar;
   let fixture: ComponentFixture<Toolbar>;
   let languageServiceMock: jasmine.SpyObj<LanguageService>;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     languageServiceMock = jasmine.createSpyObj('LanguageService', ['getSelected', 'setSelected', 'getLanguages']);
 
     languageServiceMock.getSelected.and.returnValue({code: 'en', name: 'English', flag: 'EN'});
@@ -30,11 +31,8 @@ describe('Toolbar', () => {
       imports: [
         Toolbar,
         TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
-        }),
+          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
+        })
       ],
       providers: [
         provideZonelessChangeDetection(),
@@ -51,12 +49,12 @@ describe('Toolbar', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create', (): void => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    it('should call detectAndLoadColorScheme and set language', () => {
+  describe('ngOnInit', (): void => {
+    it('should call detectAndLoadColorScheme and set language', (): void => {
       spyOn(component, 'detectAndLoadColorScheme').and.callThrough();
       component.ngOnInit();
       expect(component.detectAndLoadColorScheme).toHaveBeenCalled();
@@ -64,42 +62,42 @@ describe('Toolbar', () => {
     });
   });
 
-  describe('detectAndLoadColorScheme', () => {
+  describe('detectAndLoadColorScheme', (): void => {
     beforeEach(() => {
       spyOn(window, 'matchMedia').and.returnValue({matches: true} as MediaQueryList);
       spyOn(component as any, 'applyColorScheme').and.callThrough();
     });
 
-    it('should detect dark mode from system preference', () => {
+    it('should detect dark mode from system preference', (): void => {
       localStorage.removeItem('flisolapp.DarkMode');
       component.detectAndLoadColorScheme();
       expect(component.darkMode()).toBeTrue();
     });
 
-    it('should override dark mode if localStorage is set to false', () => {
+    it('should override dark mode if localStorage is set to false', (): void => {
       localStorage.setItem('flisolapp.DarkMode', 'false');
       component.detectAndLoadColorScheme();
       expect(component.darkMode()).toBeFalse();
     });
 
-    it('should override dark mode if localStorage is set to true', () => {
+    it('should override dark mode if localStorage is set to true', (): void => {
       localStorage.setItem('flisolapp.DarkMode', 'true');
       component.detectAndLoadColorScheme();
       expect(component.darkMode()).toBeTrue();
     });
 
-    it('should call applyColorScheme', () => {
+    it('should call applyColorScheme', (): void => {
       component.detectAndLoadColorScheme();
       expect((component as any).applyColorScheme).toHaveBeenCalled();
     });
   });
 
-  describe('toggleColorScheme', () => {
+  describe('toggleColorScheme', (): void => {
     beforeEach(() => {
       spyOn(component as any, 'applyColorScheme');
     });
 
-    it('should toggle darkMode and update localStorage', () => {
+    it('should toggle darkMode and update localStorage', (): void => {
       component.darkMode.set(false);
       component.toggleColorScheme();
       expect(component.darkMode()).toBeTrue();
@@ -110,30 +108,30 @@ describe('Toolbar', () => {
       expect(localStorage.getItem('flisolapp.DarkMode')).toBe('false');
     });
 
-    it('should call applyColorScheme on toggle', () => {
+    it('should call applyColorScheme on toggle', (): void => {
       component.toggleColorScheme();
       expect((component as any).applyColorScheme).toHaveBeenCalled();
     });
   });
 
-  describe('applyColorScheme', () => {
-    it('should add darkMode class when darkMode is true', () => {
+  describe('applyColorScheme', (): void => {
+    it('should add darkMode class when darkMode is true', (): void => {
       component.darkMode.set(true);
-      const addSpy = spyOn(document.body.classList, 'add');
+      const addSpy: Spy<(...tokens: string[]) => void> = spyOn(document.body.classList, 'add');
       component['applyColorScheme']();
       expect(addSpy).toHaveBeenCalledWith('darkMode');
     });
 
-    it('should remove darkMode class when darkMode is false', () => {
+    it('should remove darkMode class when darkMode is false', (): void => {
       component.darkMode.set(false);
-      const removeSpy = spyOn(document.body.classList, 'remove');
+      const removeSpy: Spy<(...tokens: string[]) => void> = spyOn(document.body.classList, 'remove');
       component['applyColorScheme']();
       expect(removeSpy).toHaveBeenCalledWith('darkMode');
     });
   });
 
-  describe('selectLanguage', () => {
-    it('should set language and call languageService.setSelected', () => {
+  describe('selectLanguage', (): void => {
+    it('should set language and call languageService.setSelected', (): void => {
       const lang = {code: 'pt-BR', name: 'Português', flag: 'BR'};
       component.selectLanguage(lang);
       expect(component.language()).toEqual(lang);

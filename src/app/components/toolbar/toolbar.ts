@@ -9,7 +9,6 @@ import {LanguageService} from '../../services/language/language-service';
 
 @Component({
   selector: 'app-toolbar',
-  standalone: true,
   imports: [
     NgOptimizedImage,
     MatIconButton,

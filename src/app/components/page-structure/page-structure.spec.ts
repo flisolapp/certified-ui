@@ -4,34 +4,29 @@ import {Component, provideZonelessChangeDetection} from '@angular/core';
 import packageInfo from '../../../../package.json';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
-
 // Mock ToolbarComponent as Standalone
 @Component({
   selector: 'app-toolbar',
-  standalone: true,
   template: ''
 })
 class MockToolbarComponent {
 }
 
-describe('PageStructure', () => {
+describe('PageStructure', (): void => {
   let component: PageStructure;
   let fixture: ComponentFixture<PageStructure>;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     await TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection()
       ],
       imports: [
-        PageStructure,   // Import your standalone component
-        MockToolbarComponent,     // Mocked toolbar to avoid real dependencies
+        PageStructure,
+        MockToolbarComponent,
         TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader
-          }
-        }),
+          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
+        })
       ]
     }).compileComponents();
 
@@ -40,11 +35,12 @@ describe('PageStructure', () => {
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('should create the component', (): void => {
     expect(component).toBeTruthy();
   });
 
-  it('should have version set from package.json', () => {
-    expect(component.version()).toBe(packageInfo.version);  // Should be "2.5.0"
+  it('should have version set from package.json', (): void => {
+    // Should be "2.5.0"
+    expect(component.version()).toBe(packageInfo.version);
   });
 });

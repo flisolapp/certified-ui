@@ -13,7 +13,6 @@ import {SearchResultCard} from './search-result-card/search-result-card';
 
 @Component({
   selector: 'app-search-result',
-  standalone: true,
   imports: [
     MatProgressSpinner,
     TranslatePipe,
