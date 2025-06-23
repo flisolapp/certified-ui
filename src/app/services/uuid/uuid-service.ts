@@ -5,9 +5,6 @@ import {Injectable} from '@angular/core';
 })
 export class UuidService {
 
-  constructor() {
-  }
-
   /**
    * Generates a version 4 UUID (Universally Unique Identifier).
    *

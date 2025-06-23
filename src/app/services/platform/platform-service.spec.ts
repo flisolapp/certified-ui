@@ -1,5 +1,5 @@
-import { PlatformService } from './platform-service';
-import { Platform } from '@angular/cdk/platform';
+import {PlatformService} from './platform-service';
+import {Platform} from '@angular/cdk/platform';
 
 describe('PlatformService', () => {
   let service: PlatformService;

@@ -82,5 +82,16 @@ describe('CertificateService', () => {
       expect(clickSpy).toHaveBeenCalled();
       expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob://mock-url');
     });
+
+    it('should fetch the certificate (as Blob) and trigger download', async () => {
+      const code = 'ABC123';
+      const mockBlob = new Blob(['mock content'], {type: 'image/png'});
+      await service.download(code, mockBlob);
+
+      expect(createElementSpy).toHaveBeenCalledWith('a');
+      expect(appendChildSpy).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob://mock-url');
+    });
   });
 });

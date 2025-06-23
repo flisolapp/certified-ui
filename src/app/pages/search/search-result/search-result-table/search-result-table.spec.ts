@@ -95,4 +95,18 @@ describe('SearchResultTable', () => {
     expect(revokeSpy).toHaveBeenCalledWith('blob://fake-url');
     expect(component.downloadingItem()).toBeNull();
   });
+
+  it('should handle error when preview fails', async () => {
+    const item: CertificateElement = {code: 'XYZ789'} as CertificateElement;
+    const error = new Error('Service error');
+
+    certificateServiceMock.certificate.and.rejectWith(error);
+    const consoleSpy = spyOn(console, 'error');
+
+    await component.doPreview(item);
+
+    expect(certificateServiceMock.certificate).toHaveBeenCalledWith('XYZ789');
+    expect(consoleSpy).toHaveBeenCalledWith('Preview failed', error);
+    expect(component.downloadingItem()).toBeNull();
+  });
 });

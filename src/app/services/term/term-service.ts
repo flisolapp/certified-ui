@@ -29,25 +29,6 @@ import {Injectable} from '@angular/core';
 export class TermService {
 
   /**
-   * Constructor for the TermService.
-   *
-   * As an Angular service, TermService is designed to be a singleton that is injected
-   * and shared across components and other services in the application. This constructor
-   * is responsible for any initial setup the service requires when it is instantiated by
-   * the Angular Dependency Injection system. Currently, the constructor has no specific
-   * implementation, indicating that the service does not require any special initialization
-   * logic at the time of its creation.
-   *
-   * Usage:
-   * - The constructor is automatically called by Angular's Dependency Injection system when
-   *   the service is first required. There is generally no need to call it manually.
-   * - The service is provided at the root level (`providedIn: 'root'`), ensuring a single
-   *   instance throughout the application.
-   */
-  constructor() {
-  }
-
-  /**
    * Prepares a given search term by trimming it, converting it to lowercase if it's an email,
    * and removing non-alphanumeric characters if it's not an email.
    *
