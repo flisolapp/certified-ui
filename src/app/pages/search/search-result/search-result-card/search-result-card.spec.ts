@@ -57,7 +57,8 @@ describe('SearchResultCard', () => {
     await component.doDownload(item);
 
     expect(dialogMock.open).toHaveBeenCalled();
-    expect(component.downloadingItem()).toBe(null);  // Confirma que limpou depois
+    // Confirm that you cleaned up afterward
+    expect(component.downloadingItem()).toBe(null);
     expect(certificateServiceMock.download).toHaveBeenCalledWith('XYZ789');
   });
 });

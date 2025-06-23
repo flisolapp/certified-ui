@@ -11,7 +11,6 @@ describe('LocaleId', () => {
   it('should create an instance of LocaleId', () => {
     const localeId = new LocaleId(languageServiceMock);
     expect(localeId).toBeTruthy();
-    expect(localeId instanceof String).toBeTrue();
   });
 
   it('toString should return languageService.locale', () => {

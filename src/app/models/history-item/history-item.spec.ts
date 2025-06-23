@@ -11,6 +11,6 @@ describe('HistoryItem Interface', () => {
     expect(historyItem).toBeTruthy();
     expect(historyItem.id).toBe('1');
     expect(historyItem.term).toBe('angular');
-    expect(historyItem.searched instanceof Date).toBeTrue();
+    expect(historyItem.searched).toEqual(new Date('2025-04-27T00:00:00Z'));
   });
 });

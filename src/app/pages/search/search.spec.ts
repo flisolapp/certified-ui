@@ -127,10 +127,12 @@ describe('Search', () => {
 
   it('should set searching to true when termFormControl is valid during ngOnInit', async () => {
     paramMapSubject.next({
-      get: () => 'validemail@example.com'  // Valor que passa pelo CustomValidators.term
+      // Value passed through CustomValidators.term
+      get: () => 'validemail@example.com'
     } as any);
 
-    component.termFormControl.setErrors(null);  // Força o estado válido
+    // Force valid state
+    component.termFormControl.setErrors(null);
     await component.ngOnInit();
 
     expect(component.searching()).toBeTrue();

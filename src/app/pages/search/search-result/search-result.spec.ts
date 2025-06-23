@@ -97,7 +97,7 @@ describe('SearchResult', (): void => {
 
     eventEmitters['search-result-do-search'].emit('new-term');
 
-    // Aguarda event loop para garantir execução da subscription async
+    // Wait for event loop to ensure execution of async subscription
     await Promise.resolve();
 
     expect(doSearchSpy).toHaveBeenCalledWith('new-term');
