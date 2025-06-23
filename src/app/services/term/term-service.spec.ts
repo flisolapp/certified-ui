@@ -16,6 +16,12 @@ describe('TermService', () => {
       expect(result).toBe('ABC123def456GHI');
     });
 
+    it('should clean non-alphanumeric characters and return valid code', () => {
+      const term = '##ABC123_def456_GHI789!!';
+      const result = TermService.prepare(term);
+      expect(result).toBe('ABC123def456GHI789');
+    });
+
     it('should extract term after last slash and process it', () => {
       const term = '/path/to/Test@Example.COM';
       const result = TermService.prepare(term);
