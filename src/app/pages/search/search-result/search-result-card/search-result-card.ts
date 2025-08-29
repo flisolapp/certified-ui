@@ -7,7 +7,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {
   SearchResultDownloadCertificateDialog
 } from './search-result-download-certificate-dialog/search-result-download-certificate-dialog';
-import {CertificateService} from '../../../../services/certificate/certificate-service';
+import {DownloadService} from '../../../../services/download/download.service';
 
 @Component({
   selector: 'app-search-result-card',
@@ -30,7 +30,7 @@ export class SearchResultCard {
 
   public downloadingItem: WritableSignal<CertificateElement | null> = signal<CertificateElement | null>(null);
 
-  constructor(private dialog: MatDialog, private certificateService: CertificateService) {
+  constructor(private dialog: MatDialog, private downloadService: DownloadService) {
   }
 
   public async doDownload(item: CertificateElement): Promise<void> {
@@ -45,7 +45,7 @@ export class SearchResultCard {
       this.downloadingItem.set(item);
 
       try {
-        await this.certificateService.download(item.code);
+        await this.downloadService.download(item.code);
       } finally {
         this.downloadingItem.set(null);
       }

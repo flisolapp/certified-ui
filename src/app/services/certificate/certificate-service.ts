@@ -27,19 +27,4 @@ export class CertificateService {
     return await response.blob();
   }
 
-  public async download(code: string, data: Blob | null = null): Promise<void> {
-    const name: string = 'certificate_' + code + '.png';
-    const blob: Blob | null = (data instanceof Blob) ? data : await this.certificate(code);
-
-    const url_1: string = window.URL.createObjectURL(blob);
-    const a: HTMLAnchorElement = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url_1;
-    // the filename you want
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url_1);
-  }
-
 }

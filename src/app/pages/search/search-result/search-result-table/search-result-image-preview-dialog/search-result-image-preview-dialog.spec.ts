@@ -3,16 +3,16 @@ import {SearchResultImagePreviewDialog} from './search-result-image-preview-dial
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideZonelessChangeDetection} from '@angular/core';
-import {CertificateService} from '../../../../../services/certificate/certificate-service';
+import {DownloadService} from '../../../../../services/download/download.service';
 
 describe('SearchResultImagePreviewDialog', () => {
   let component: SearchResultImagePreviewDialog;
   let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultImagePreviewDialog>>;
-  let certificateServiceMock: jasmine.SpyObj<CertificateService>;
+  let downloadServiceMock: jasmine.SpyObj<DownloadService>;
 
   beforeEach(async () => {
     dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
-    certificateServiceMock = jasmine.createSpyObj('CertificateService', ['download']);
+    downloadServiceMock = jasmine.createSpyObj('DownloadService', ['download']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -23,9 +23,8 @@ describe('SearchResultImagePreviewDialog', () => {
       ],
       providers: [
         provideZonelessChangeDetection(),
-        provideZonelessChangeDetection(),
         {provide: MatDialogRef, useValue: dialogRefMock},
-        {provide: CertificateService, useValue: certificateServiceMock},
+        {provide: DownloadService, useValue: downloadServiceMock},
         {
           provide: MAT_DIALOG_DATA,
           useValue: {imageUrl: 'https://example.com/image.png', code: 'CERT123'}
@@ -46,16 +45,26 @@ describe('SearchResultImagePreviewDialog', () => {
     expect(dialogRefMock.close).toHaveBeenCalled();
   });
 
-  it('should download image and call certificateService.download', async () => {
-    // Mock do fetch
+  it('download(): fetches the image blob and delegates to DownloadService', async () => {
     const blobMock = new Blob(['fake data'], {type: 'image/png'});
     const responseMock = new Response(blobMock);
 
-    spyOn(window, 'fetch').and.resolveTo(responseMock);
+    // Ensure the service returns a resolved promise to await cleanly
+    downloadServiceMock.download.and.returnValue(Promise.resolve());
+
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve(responseMock));
 
     await component.download();
 
-    expect(fetch).toHaveBeenCalledWith('https://example.com/image.png');
-    expect(certificateServiceMock.download).toHaveBeenCalledWith('CERT123', blobMock);
+    expect(window.fetch).toHaveBeenCalledOnceWith('https://example.com/image.png');
+    expect(downloadServiceMock.download).toHaveBeenCalledOnceWith('CERT123', blobMock);
+  });
+
+  it('download(): propagates error when fetch fails and does not call DownloadService', async () => {
+    const err = new Error('network down');
+    spyOn(window, 'fetch').and.returnValue(Promise.reject(err));
+
+    await expectAsync(component.download()).toBeRejectedWith(err);
+    expect(downloadServiceMock.download).not.toHaveBeenCalled();
   });
 });

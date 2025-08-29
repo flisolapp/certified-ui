@@ -55,10 +55,13 @@ export class Toolbar implements OnInit {
 
   private applyColorScheme(): void {
     const darkClassName = 'darkMode';
+
     if (this.darkMode()) {
       document.body.classList.add(darkClassName);
+      window.flutter_inappwebview?.callHandler('setDarkMode', true);
     } else {
       document.body.classList.remove(darkClassName);
+      window.flutter_inappwebview?.callHandler('setDarkMode', false);
     }
   }
 

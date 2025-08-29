@@ -16,82 +16,59 @@ describe('CertificateService', () => {
       providers: [
         provideZonelessChangeDetection(),
         CertificateService,
-        {provide: HttpClient, useValue: httpClientSpy}
-      ]
+        {provide: HttpClient, useValue: httpClientSpy},
+      ],
     });
 
     service = TestBed.inject(CertificateService);
   });
 
-  it('should be created', () => {
+  it('should be created and set baseUrl', () => {
     expect(service).toBeTruthy();
-    expect(service['baseUrl']).toBe(environment.apiUrl + '/certificates');
+    expect((service as any)['baseUrl']).toBe(`${environment.apiUrl}/certificates`);
   });
 
-  describe('search', () => {
-    it('should call httpClient.get with correct URL', () => {
+  describe('search()', () => {
+    it('calls HttpClient.get with the correct URL', () => {
       const term = 'test-term';
-      const expectedResponse = {data: 'mockData'};
+      const expected = {data: 'mockData'};
+      httpClientSpy.get.and.returnValue(of(expected));
 
-      httpClientSpy.get.and.returnValue(of(expectedResponse));
-
-      service.search(term).subscribe(response => {
-        expect(response).toEqual(expectedResponse);
+      service.search(term).subscribe(resp => {
+        expect(resp).toEqual(expected);
       });
 
-      expect(httpClientSpy.get).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${term}`);
+      expect(httpClientSpy.get)
+        .toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${term}`);
     });
   });
 
-  describe('download', () => {
-    let fetchSpy: jasmine.Spy;
-    let createElementSpy: jasmine.Spy;
-    let appendChildSpy: jasmine.Spy;
-    let clickSpy: jasmine.Spy;
-    let revokeObjectURLSpy: jasmine.Spy;
-
-    beforeEach(() => {
-      const mockBlob = new Blob(['mock content'], {type: 'image/png'});
-
-      fetchSpy = spyOn(window, 'fetch').and.resolveTo({
-        blob: async () => mockBlob
-      } as Response);
-
-      const anchorMock = {
-        style: {display: ''},
-        href: '',
-        download: '',
-        click: jasmine.createSpy('click')
-      };
-
-      createElementSpy = spyOn(document, 'createElement').and.returnValue(anchorMock as unknown as HTMLAnchorElement);
-      appendChildSpy = spyOn(document.body, 'appendChild');
-      revokeObjectURLSpy = spyOn(window.URL, 'revokeObjectURL');
-      spyOn(window.URL, 'createObjectURL').and.returnValue('blob://mock-url');
-
-      clickSpy = anchorMock.click;
-    });
-
-    it('should fetch the certificate and trigger download', async () => {
-      const code = 'ABC123';
-      await service.download(code);
-
-      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${code}/download`);
-      expect(createElementSpy).toHaveBeenCalledWith('a');
-      expect(appendChildSpy).toHaveBeenCalled();
-      expect(clickSpy).toHaveBeenCalled();
-      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob://mock-url');
-    });
-
-    it('should fetch the certificate (as Blob) and trigger download', async () => {
+  describe('certificate()', () => {
+    it('fetches the Blob and returns it', async () => {
       const code = 'ABC123';
       const mockBlob = new Blob(['mock content'], {type: 'image/png'});
-      await service.download(code, mockBlob);
+      const response = new Response(mockBlob);
 
-      expect(createElementSpy).toHaveBeenCalledWith('a');
-      expect(appendChildSpy).toHaveBeenCalled();
-      expect(clickSpy).toHaveBeenCalled();
-      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob://mock-url');
+      spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+
+      const blob = await service.certificate(code);
+
+      expect(window.fetch)
+        .toHaveBeenCalledOnceWith(`${environment.apiUrl}/certificates/${code}/download`);
+      // compare by size/type since Blob equality is by reference
+      expect(blob.size).toBe(mockBlob.size);
+      expect(blob.type).toBe(mockBlob.type);
+    });
+
+    it('propagates errors if fetch rejects', async () => {
+      const code = 'ERR001';
+      const err = new Error('network down');
+
+      spyOn(window, 'fetch').and.returnValue(Promise.reject(err));
+
+      await expectAsync(service.certificate(code)).toBeRejectedWith(err);
+      expect(window.fetch)
+        .toHaveBeenCalledOnceWith(`${environment.apiUrl}/certificates/${code}/download`);
     });
   });
 });
