@@ -1,16 +1,18 @@
-import {HistoryItem} from './history-item';
+import { describe, expect, it } from 'vitest';
+import { HistoryItem } from './history-item';
 
-describe('HistoryItem Interface', () => {
-  it('should create a valid HistoryItem object', () => {
-    const historyItem: HistoryItem = {
+describe('HistoryItem', () => {
+  it('should conform to the HistoryItem interface', () => {
+    const searched = new Date('2025-04-27T00:00:00Z');
+    const item: HistoryItem = {
       id: '1',
       term: 'angular',
-      searched: new Date('2025-04-27T00:00:00Z')
-    };
+      searched
+    } satisfies HistoryItem;
 
-    expect(historyItem).toBeTruthy();
-    expect(historyItem.id).toBe('1');
-    expect(historyItem.term).toBe('angular');
-    expect(historyItem.searched).toEqual(new Date('2025-04-27T00:00:00Z'));
+    expect(item.id).toBe('1');
+    expect(item.term).toBe('angular');
+    expect(item.searched).toBe(searched);
+    expect(item.searched.toISOString()).toBe('2025-04-27T00:00:00.000Z');
   });
 });

@@ -1,13 +1,13 @@
-import {Component, Input, signal, WritableSignal} from '@angular/core';
-import {CertificateElement} from '../../../../models/certificate-element/certificate-element';
-import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
-import {MatIconButton} from '@angular/material/button';
-import {TranslatePipe} from '@ngx-translate/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { CertificateElement } from '../../../../models/certificate-element/certificate-element';
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatIconButton } from '@angular/material/button';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   SearchResultDownloadCertificateDialog
 } from './search-result-download-certificate-dialog/search-result-download-certificate-dialog';
-import {DownloadService} from '../../../../services/download/download.service';
+import { DownloadService } from '../../../../services/download/download-service';
 
 @Component({
   selector: 'app-search-result-card',
@@ -18,7 +18,7 @@ import {DownloadService} from '../../../../services/download/download.service';
     MatCardContent,
     MatCardActions,
     MatIconButton,
-    TranslatePipe,
+    TranslatePipe
   ],
   templateUrl: './search-result-card.html',
   styleUrl: './search-result-card.scss'
@@ -28,6 +28,7 @@ export class SearchResultCard {
   @Input()
   dataSource: CertificateElement[] = [];
 
+  /* v8 ignore next -- @preserve */
   public downloadingItem: WritableSignal<CertificateElement | null> = signal<CertificateElement | null>(null);
 
   constructor(private dialog: MatDialog, private downloadService: DownloadService) {

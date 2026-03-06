@@ -1,14 +1,14 @@
-import {CertificateElementUnit} from './certificate-element-unit';
+import { describe, expect, it } from 'vitest';
+import { CertificateElementUnit } from './certificate-element-unit';
 
-describe('CertificateElement Interface', () => {
-  it('should create a valid CertificateElement object', () => {
+describe('CertificateElementUnit', () => {
+  it('should match the interface structure', () => {
     const unit: CertificateElementUnit = {
       name: 'IT Department',
       acronym: 'IT'
-    };
+    } satisfies CertificateElementUnit;
 
-    expect(unit).toBeTruthy();
     expect(unit.name).toBe('IT Department');
-    expect(unit.acronym).toContain('IT');
+    expect(unit.acronym).toBe('IT');
   });
 });

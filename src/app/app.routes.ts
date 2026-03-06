@@ -1,6 +1,6 @@
-import {Routes} from '@angular/router';
-import {Search} from './pages/search/search';
-import {SearchResult} from './pages/search/search-result/search-result';
+import { Routes } from '@angular/router';
+import { Search } from './pages/search/search';
+import { SearchResult } from './pages/search/search-result/search-result';
 
 export const routes: Routes = [
   {

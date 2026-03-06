@@ -3,9 +3,9 @@
   <a href="/">
     @if (darkMode()) {
       <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"
-           [priority]="true"/>
+           [priority]="true" />
     } @else {
-      <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89" [priority]="true"/>
+      <img ngSrc="assets/images/logo-slim.svg" class="logo" alt="FLISoL" height="40" width="89" [priority]="true" />
     }
   </a>
 
@@ -28,10 +28,10 @@
           xPosition="before">
     @if (darkMode()) {
       <img [ngSrc]="'assets/images/flags/' + (language()?.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
-           height="18" width="24"/>
+           height="18" width="24" />
     } @else {
       <img [ngSrc]="'assets/images/flags/' + (language()?.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
-           width="24"/>
+           width="24" />
     }
   </button>
 
@@ -42,10 +42,10 @@
               (click)="selectLanguage(item)">
         @if (darkMode()) {
           <img [ngSrc]="'assets/images/flags/' + (item.flag?.toLowerCase() || 'default') + '-white.svg'" alt=""
-               height="18" width="24"/>
+               height="18" width="24" />
         } @else {
           <img [ngSrc]="'assets/images/flags/' + (item.flag?.toLowerCase() || 'default') + '.svg'" alt="" height="18"
-               width="24"/>
+               width="24" />
         }
         <span>{{ item.name }}</span>
       </button>

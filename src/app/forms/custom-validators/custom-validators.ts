@@ -1,4 +1,4 @@
-import {AbstractControl, ValidationErrors} from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 /**
  * A regular expression that matches valid e-mail addresses.
@@ -47,7 +47,7 @@ export class CustomValidators {
     // This ensures that we have a valid, non-empty string to process.
     if (control.value === undefined || control.value === null || control.value.trim() === '') {
       // throw new EvalError('The term is invalid to search. It is required.', {cause: -1});
-      return {'required': true};
+      return { 'required': true };
     }
 
     // Process the term to extract the last segment after the last '/' character.
@@ -58,7 +58,7 @@ export class CustomValidators {
     // Throw an error if the processed term is empty after trimming.
     if (processedTerm === undefined || processedTerm === null || processedTerm === '') {
       // throw new EvalError('The term is invalid to search.', {cause: -2});
-      return {'invalid': true};
+      return { 'invalid': true };
     }
 
     // Convert the term to lowercase if it's an email to ensure consistency.
@@ -74,7 +74,7 @@ export class CustomValidators {
     if (!EMAIL_REGEXP.test(processedTerm) && !CODE_REGEXP.test(processedTerm)) {
       // throw new EvalError('The term is invalid to search. Must be an e-mail or certificate\'s code.', //
       //   {cause: -3});
-      return {'term': true};
+      return { 'term': true };
     }
 
     // Return null if it's valid.

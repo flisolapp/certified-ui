@@ -1,107 +1,152 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {SearchResultTable} from './search-result-table';
-import {provideZonelessChangeDetection} from '@angular/core';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {CertificateService} from '../../../../services/certificate/certificate-service';
-import {Clipboard} from '@angular/cdk/clipboard';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
-import {of} from 'rxjs';
-import {CertificateElement} from '../../../../models/certificate-element/certificate-element';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { SearchResultTable } from './search-result-table';
+import {
+  SearchResultImagePreviewDialog
+} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
+
+import { CertificateService } from '../../../../services/certificate/certificate-service';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+
+import { of, Subject } from 'rxjs';
+import { CertificateElement } from '../../../../models/certificate-element/certificate-element';
 
 describe('SearchResultTable', () => {
   let component: SearchResultTable;
   let fixture: ComponentFixture<SearchResultTable>;
-  let certificateServiceMock: jasmine.SpyObj<CertificateService>;
-  let clipboardMock: jasmine.SpyObj<Clipboard>;
-  let snackBarMock: jasmine.SpyObj<MatSnackBar>;
-  let dialogMock: jasmine.SpyObj<MatDialog>;
+
+  let certificateServiceMock: { certificate: ReturnType<typeof vi.fn> };
+  let clipboardMock: { copy: ReturnType<typeof vi.fn> };
+  let snackBarMock: { open: ReturnType<typeof vi.fn> };
+  let dialogMock: { open: ReturnType<typeof vi.fn> };
+  let translateMock: { get: ReturnType<typeof vi.fn> };
 
   const mockCertificate: CertificateElement = {
     edition: '2024',
-    unit: {
-      name: 'Unit Test',
-      acronym: 'UT'
-    },
+    unit: { name: 'Unit Test', acronym: 'UT' },
     name: 'Test User',
     enjoyedAs: 'Participant',
     code: '123',
-    download: 'http://example.com',
-  };
+    download: 'http://example.com'
+  } as any;
 
   beforeEach(async () => {
-    certificateServiceMock = jasmine.createSpyObj('CertificateService', ['certificate']);
-    clipboardMock = jasmine.createSpyObj('Clipboard', ['copy']);
-    snackBarMock = jasmine.createSpyObj('MatSnackBar', ['open']);
-    dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
+    certificateServiceMock = {
+      certificate: vi.fn()
+    };
+
+    clipboardMock = {
+      copy: vi.fn()
+    };
+
+    snackBarMock = {
+      open: vi.fn()
+    };
+
+    dialogMock = {
+      open: vi.fn()
+    };
+
+    translateMock = {
+      get: vi.fn().mockReturnValue(of({ 'common.copied': 'Copied' }))
+    };
 
     await TestBed.configureTestingModule({
-      imports: [
-        SearchResultTable,
-        TranslateModule.forRoot({
-          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
-        })
-      ],
+      imports: [SearchResultTable],
       providers: [
         provideZonelessChangeDetection(),
-        {provide: ActivatedRoute, useValue: {paramMap: of({get: () => 'test-term'})}},
-        {provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate'])},
-        {provide: CertificateService, useValue: certificateServiceMock},
-        {provide: Clipboard, useValue: clipboardMock},
-        {provide: MatSnackBar, useValue: snackBarMock},
-        {provide: MatDialog, useValue: dialogMock}
+        { provide: CertificateService, useValue: certificateServiceMock },
+        { provide: Clipboard, useValue: clipboardMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
+        { provide: MatDialog, useValue: dialogMock },
+        { provide: TranslateService, useValue: translateMock }
       ]
-    }).compileComponents();
+    })
+      // keep tests focused on class behavior
+      .overrideComponent(SearchResultTable, { set: { template: '' } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(SearchResultTable);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    fixture.destroy();
+    vi.restoreAllMocks();
   });
 
-  it('should copy code to clipboard and show snackbar', () => {
+  it('should create', () => {
+    expect(component).toBeDefined();
+  });
+
+  it('doCopyCodeToClipboard: copies code URL and shows snackbar', async () => {
+    const content = `${window.location.origin}/${mockCertificate.code}`;
+
     component.doCopyCodeToClipboard(mockCertificate);
 
-    expect(clipboardMock.copy).toHaveBeenCalledWith(`${window.location.origin}/${mockCertificate.code}`);
-    expect(snackBarMock.open).toHaveBeenCalledWith(`common.copied: ${window.location.origin}/${mockCertificate.code}`,
-      undefined, {duration: 1000});
+    // translate.get() emits synchronously (of(...)), so next() runs right away
+    expect(translateMock.get).toHaveBeenCalledWith(['common.copied']);
+    expect(clipboardMock.copy).toHaveBeenCalledWith(content);
+    expect(snackBarMock.open).toHaveBeenCalledWith(`Copied: ${content}`, undefined, {
+      duration: 1000
+    });
   });
 
-  it('should preview image and open dialog', async () => {
-    const item: CertificateElement = {code: 'XYZ789'} as CertificateElement;
-    const blobMock = new Blob(['fake data'], {type: 'image/png'});
-    const dialogRefMock = jasmine.createSpyObj<MatDialogRef<any>>('MatDialogRef',
-      ['afterClosed']);
+  it('doPreview: downloads blob, opens dialog, revokes object URL after close, clears downloadingItem', async () => {
+    const item = { code: 'XYZ789' } as CertificateElement;
 
-    certificateServiceMock.certificate.and.resolveTo(blobMock);
-    dialogMock.open.and.returnValue(dialogRefMock);
-    dialogRefMock.afterClosed.and.returnValue(of(true));
+    const blobMock = new Blob(['fake'], { type: 'image/png' });
+    certificateServiceMock.certificate.mockResolvedValue(blobMock);
 
-    const urlSpy = spyOn(URL, 'createObjectURL').and.returnValue('blob://fake-url');
-    const revokeSpy = spyOn(URL, 'revokeObjectURL');
+    const closed$ = new Subject<void>();
+    dialogMock.open.mockReturnValue({
+      afterClosed: () => closed$.asObservable()
+    } as any);
 
-    await component.doPreview(item);
+    const createUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob://fake-url');
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {
+    });
+
+    const promise = component.doPreview(item);
+
+    // during download/open dialog
+    expect(component.downloadingItem()).toEqual(item);
+
+    await promise;
 
     expect(certificateServiceMock.certificate).toHaveBeenCalledWith('XYZ789');
-    expect(urlSpy).toHaveBeenCalledWith(blobMock);
-    expect(dialogMock.open).toHaveBeenCalledWith(jasmine.any(Function), jasmine.objectContaining({
-      data: {imageUrl: 'blob://fake-url', code: 'XYZ789'},
-      width: '800px'
-    }));
+    expect(createUrlSpy).toHaveBeenCalledWith(blobMock);
+
+    expect(dialogMock.open).toHaveBeenCalledWith(
+      SearchResultImagePreviewDialog,
+      expect.objectContaining({
+        data: { imageUrl: 'blob://fake-url', code: 'XYZ789' },
+        width: '800px'
+      })
+    );
+
+    // now emit "closed" to trigger revoke
+    closed$.next();
+    closed$.complete();
+
     expect(revokeSpy).toHaveBeenCalledWith('blob://fake-url');
     expect(component.downloadingItem()).toBeNull();
   });
 
-  it('should handle error when preview fails', async () => {
-    const item: CertificateElement = {code: 'XYZ789'} as CertificateElement;
+  it('doPreview: logs error and clears downloadingItem when certificateService throws', async () => {
+    const item = { code: 'XYZ789' } as CertificateElement;
     const error = new Error('Service error');
 
-    certificateServiceMock.certificate.and.rejectWith(error);
-    const consoleSpy = spyOn(console, 'error');
+    certificateServiceMock.certificate.mockRejectedValue(error);
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+    });
 
     await component.doPreview(item);
 

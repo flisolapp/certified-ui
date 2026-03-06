@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Platform} from '@angular/cdk/platform';
+import { Injectable } from '@angular/core';
+import { Platform } from '@angular/cdk/platform';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +10,11 @@ export class PlatformService {
   }
 
   public isDesktop(): boolean {
-    return !this.platform.ANDROID && !this.platform.IOS;
+    return !(this.platform.ANDROID || this.platform.IOS);
   }
 
   public isMobile(): boolean {
-    return this.platform.ANDROID || this.platform.IOS
+    return this.platform.ANDROID || this.platform.IOS;
   }
 
 }

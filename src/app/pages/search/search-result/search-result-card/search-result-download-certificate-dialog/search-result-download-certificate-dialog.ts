@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import {
   MatDialogActions,
   MatDialogClose,
@@ -6,8 +6,8 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {TranslatePipe} from '@ngx-translate/core';
-import {MatButton} from '@angular/material/button';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-search-result-download-certificate-dialog',

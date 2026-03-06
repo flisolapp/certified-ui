@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {CertificateService} from '../certificate/certificate-service';
+import { Injectable } from '@angular/core';
+import { CertificateService } from '../certificate/certificate-service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class DownloadService {
 
   constructor(private certificateService: CertificateService) {
