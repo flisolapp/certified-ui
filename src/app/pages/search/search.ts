@@ -1,22 +1,22 @@
-import {Component, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
-import {PageStructure} from '../../components/page-structure/page-structure';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatIconButton} from '@angular/material/button';
-import {MatList, MatListItem} from '@angular/material/list';
-import {MatRipple} from '@angular/material/core';
-import {MatIcon} from '@angular/material/icon';
-import {ActivatedRoute, ParamMap, Router, RouterOutlet} from '@angular/router';
-import {CustomValidators} from '../../forms/custom-validators/custom-validators';
-import {CustomErrorStateMatcher} from '../../forms/custom-error-state-matcher/custom-error-state-matcher';
-import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
-import {HistoryItem} from '../../models/history-item/history-item';
-import {ScrollService} from '../../services/scroll/scroll-service';
-import {EventEmitterService} from '../../services/event-emitter/event-emitter-service';
-import {TermService} from '../../services/term/term-service';
-import {UuidService} from '../../services/uuid/uuid-service';
-import {first, firstValueFrom} from 'rxjs';
+import { Component, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { PageStructure } from '../../components/page-structure/page-structure';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatRipple } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
+import { ActivatedRoute, ParamMap, Router, RouterOutlet } from '@angular/router';
+import { CustomValidators } from '../../forms/custom-validators/custom-validators';
+import { CustomErrorStateMatcher } from '../../forms/custom-error-state-matcher/custom-error-state-matcher';
+import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import { HistoryItem } from '../../models/history-item/history-item';
+import { ScrollService } from '../../services/scroll/scroll-service';
+import { EventEmitterService } from '../../services/event-emitter/event-emitter-service';
+import { TermService } from '../../services/term/term-service';
+import { UuidService } from '../../services/uuid/uuid-service';
+import { first, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -43,7 +43,7 @@ export class Search implements OnInit, OnDestroy {
 
   public termFormControl: FormControl<string | null> = new FormControl<string | null>('', [
     Validators.required,
-    CustomValidators.term,
+    CustomValidators.term
   ]);
   public matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
 
@@ -136,7 +136,7 @@ export class Search implements OnInit, OnDestroy {
 
       this.translate.get(['search.error.' + e?.cause, 'common.ok']).subscribe(values => {
         this.snackBarRef = this.snackBar.open(values['search.error.' + e?.cause], values['common.ok'], {
-          duration: 3000,
+          duration: 3000
         });
         this.setFocusOnTermInputField();
       });

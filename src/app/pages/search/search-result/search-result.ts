@@ -1,15 +1,15 @@
-import {Component, computed, OnDestroy, OnInit, Signal, signal, WritableSignal} from '@angular/core';
-import {MatProgressSpinner} from '@angular/material/progress-spinner';
-import {TranslatePipe} from '@ngx-translate/core';
-import {CertificateElement} from '../../../models/certificate-element/certificate-element';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {CertificateService} from '../../../services/certificate/certificate-service';
-import {ScrollService} from '../../../services/scroll/scroll-service';
-import {EventEmitterService} from '../../../services/event-emitter/event-emitter-service';
-import {first, firstValueFrom} from 'rxjs';
-import {PlatformService} from '../../../services/platform/platform-service';
-import {SearchResultTable} from './search-result-table/search-result-table';
-import {SearchResultCard} from './search-result-card/search-result-card';
+import { Component, computed, OnDestroy, OnInit, Signal, signal, WritableSignal } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CertificateElement } from '../../../models/certificate-element/certificate-element';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { CertificateService } from '../../../services/certificate/certificate-service';
+import { ScrollService } from '../../../services/scroll/scroll-service';
+import { EventEmitterService } from '../../../services/event-emitter/event-emitter-service';
+import { first, firstValueFrom } from 'rxjs';
+import { PlatformService } from '../../../services/platform/platform-service';
+import { SearchResultTable } from './search-result-table/search-result-table';
+import { SearchResultCard } from './search-result-card/search-result-card';
 
 @Component({
   selector: 'app-search-result',

@@ -1,11 +1,11 @@
-import {Component, OnInit, signal} from '@angular/core';
-import {NgOptimizedImage} from '@angular/common';
-import {MatIconButton} from '@angular/material/button';
-import {MatTooltip} from '@angular/material/tooltip';
-import {MatIcon} from '@angular/material/icon';
-import {TranslatePipe} from '@ngx-translate/core';
-import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
-import {LanguageService} from '../../services/language/language-service';
+import { Component, OnInit, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { LanguageService } from '../../services/language/language-service';
 
 @Component({
   selector: 'app-toolbar',
@@ -24,7 +24,9 @@ import {LanguageService} from '../../services/language/language-service';
 })
 export class Toolbar implements OnInit {
 
+  /* v8 ignore next -- @preserve */
   public darkMode = signal<boolean>(false);
+  /* v8 ignore next -- @preserve */
   public language = signal<any>(null);
 
   constructor(public languageService: LanguageService) {
@@ -58,10 +60,12 @@ export class Toolbar implements OnInit {
 
     if (this.darkMode()) {
       document.body.classList.add(darkClassName);
-      window.flutter_inappwebview?.callHandler('setDarkMode', true);
     } else {
       document.body.classList.remove(darkClassName);
-      window.flutter_inappwebview?.callHandler('setDarkMode', false);
+    }
+
+    if (window.flutter_inappwebview) {
+      window.flutter_inappwebview.callHandler('setDarkMode', this.darkMode());
     }
   }
 

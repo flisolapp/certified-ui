@@ -1,20 +1,20 @@
-import {TestBed} from '@angular/core/testing';
-import {LOCALE_ID, provideZonelessChangeDetection} from '@angular/core';
-import {LanguageProvider} from './language-provider';
-import {LanguageService} from '../../services/language/language-service';
-import {LocaleId} from './locale-id';
+import { TestBed } from '@angular/core/testing';
+import { LOCALE_ID, provideZonelessChangeDetection } from '@angular/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { LanguageProvider } from './language-provider';
+import { LanguageService } from '../../services/language/language-service';
+import { LocaleId } from './locale-id';
 
 describe('LanguageProvider', () => {
-  let languageServiceMock: jasmine.SpyObj<LanguageService>;
-
   beforeEach(() => {
-    languageServiceMock = jasmine.createSpyObj('LanguageService', [], {locale: 'pt-BR'});
+    const languageServiceMock = { locale: 'pt-BR' } as LanguageService;
 
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         LanguageProvider,
-        {provide: LanguageService, useValue: languageServiceMock}
+        { provide: LanguageService, useValue: languageServiceMock }
       ]
     });
   });
@@ -23,6 +23,6 @@ describe('LanguageProvider', () => {
     const localeId = TestBed.inject(LOCALE_ID);
 
     expect(localeId).toBeInstanceOf(LocaleId);
-    expect(localeId.toString()).toBe('pt-BR');
+    expect(String(localeId)).toBe('pt-BR');
   });
 });

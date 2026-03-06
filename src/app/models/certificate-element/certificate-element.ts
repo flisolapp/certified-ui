@@ -1,4 +1,4 @@
-import {CertificateElementUnit} from '../certificate-element-unit/certificate-element-unit';
+import { CertificateElementUnit } from '../certificate-element-unit/certificate-element-unit';
 
 export interface CertificateElement {
   edition: string;

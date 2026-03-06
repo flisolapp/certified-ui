@@ -1,16 +1,18 @@
-import {TestBed} from '@angular/core/testing';
-import {DownloadService} from './download.service';
-import {CertificateService} from '../certificate/certificate-service';
-import {provideZonelessChangeDetection} from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { DownloadService } from './download-service';
+import { CertificateService } from '../certificate/certificate-service';
 
 class CertificateServiceMock {
-  certificate = jasmine.createSpy('certificate');
+  certificate = vi.fn();
 }
 
 declare global {
   interface Window {
     flutter_inappwebview?: {
-      callHandler(name: string, ...args: any[]): Promise<any>;
+      callHandler(name: string, ...args: any): Promise<any>;
     };
   }
 }
@@ -21,10 +23,13 @@ describe('DownloadService', () => {
 
   const originalCreateObjectURL = window.URL.createObjectURL;
   const originalRevokeObjectURL = window.URL.revokeObjectURL;
-  const originalCreateElement = document.createElement;
+
+  // IMPORTANT: bind() to preserve correct `this` and avoid overload typing issues
+  const originalCreateElement = document.createElement.bind(document);
+
   const originalAppendChild = document.body.appendChild;
   const originalRemoveChild = document.body.removeChild;
-  const OriginalFileReader = (window as any).FileReader; // keep original FileReader
+  const OriginalFileReader = (window as any).FileReader;
 
   class FakeFileReader {
     public result: unknown = null;
@@ -33,19 +38,16 @@ describe('DownloadService', () => {
 
     readAsDataURL(blob: Blob): void {
       this.result = `data:${blob.type || 'application/octet-stream'};base64,QUJD`;
-      // @ts-ignore
       this.onload?.call(this as any, {} as any);
     }
   }
 
-  // Extra fakes to cover the remaining branches
   class FileReaderNullResult {
     public result: unknown = null;
     public onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
     public onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
 
     readAsDataURL(_blob: Blob): void {
-      // result stays null → String(r.result || '') === '' → split()[1] undefined → ?? '' yields ''
       this.onload?.call(this as any, {} as any);
     }
   }
@@ -57,7 +59,6 @@ describe('DownloadService', () => {
     public onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null = null;
 
     readAsDataURL(_blob: Blob): void {
-      // triggers r.onerror = () => reject(r.error)
       this.onerror?.call(this as any, {} as any);
     }
   }
@@ -67,8 +68,8 @@ describe('DownloadService', () => {
       providers: [
         provideZonelessChangeDetection(),
         DownloadService,
-        {provide: CertificateService, useClass: CertificateServiceMock},
-      ],
+        { provide: CertificateService, useClass: CertificateServiceMock }
+      ]
     });
 
     service = TestBed.inject(DownloadService);
@@ -78,26 +79,32 @@ describe('DownloadService', () => {
   afterEach(() => {
     window.URL.createObjectURL = originalCreateObjectURL;
     window.URL.revokeObjectURL = originalRevokeObjectURL;
+
+    // restore DOM APIs
     (document as any).createElement = originalCreateElement;
     document.body.appendChild = originalAppendChild;
     document.body.removeChild = originalRemoveChild;
-    (window as any).FileReader = OriginalFileReader; // restore FileReader
+
+    (window as any).FileReader = OriginalFileReader;
     delete window.flutter_inappwebview;
+
+    vi.restoreAllMocks();
   });
 
   it('hands off to Flutter InAppWebView...', async () => {
     (window as any).FileReader = FakeFileReader as any;
 
-    const callHandlerSpy = jasmine.createSpy('callHandler').and.resolveTo(undefined);
-    window.flutter_inappwebview = {
-      callHandler: callHandlerSpy as unknown as (name: string, ...args: any[]) => Promise<any>,
-    };
+    const callHandlerSpy = vi.fn().mockResolvedValue(undefined);
+    window.flutter_inappwebview = { callHandler: callHandlerSpy };
 
-    const blob = new Blob(['abc'], {type: 'image/png'});
+    const blob = new Blob(['abc'], { type: 'image/png' });
     await service.download('X123', blob);
 
     expect(certSvc.certificate).not.toHaveBeenCalled();
-    const [handlerName, payload] = callHandlerSpy.calls.mostRecent().args as any[];
+
+    expect(callHandlerSpy).toHaveBeenCalledTimes(1);
+    const [handlerName, payload] = callHandlerSpy.mock.calls[0] as any[];
+
     expect(handlerName).toBe('downloadFile');
     expect(payload.name).toBe('certificate_X123.png');
     expect(payload.mime).toBe('image/png');
@@ -107,137 +114,156 @@ describe('DownloadService', () => {
   it('fetches the Blob when data is null, then hands off to Flutter', async () => {
     (window as any).FileReader = FakeFileReader as any;
 
-    const callHandlerSpy = jasmine.createSpy('callHandler').and.resolveTo(undefined);
-    window.flutter_inappwebview = {
-      callHandler: callHandlerSpy as unknown as (name: string, ...args: any[]) => Promise<any>,
-    };
+    const callHandlerSpy = vi.fn().mockResolvedValue(undefined);
+    window.flutter_inappwebview = { callHandler: callHandlerSpy };
 
-    const fetched = new Blob(['xyz'], {type: 'image/png'});
-    certSvc.certificate.and.resolveTo(fetched);
+    const fetched = new Blob(['xyz'], { type: 'image/png' });
+    certSvc.certificate.mockResolvedValue(fetched);
 
     await service.download('ABC', null);
 
-    expect(certSvc.certificate).toHaveBeenCalledOnceWith('ABC');
+    expect(certSvc.certificate).toHaveBeenCalledTimes(1);
+    expect(certSvc.certificate).toHaveBeenCalledWith('ABC');
     expect(callHandlerSpy).toHaveBeenCalled();
   });
 
   it('performs a regular browser download when Flutter bridge is absent', async () => {
     const urlStub = 'blob://test-object-url';
-    const createObjectURLSpy = spyOn(window.URL, 'createObjectURL').and.returnValue(urlStub);
-    const revokeSpy = spyOn(window.URL, 'revokeObjectURL').and.callThrough();
+
+    const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
+    });
 
     // Use a REAL anchor element
-    const realAnchor = document.createElement('a');
-    spyOn(realAnchor, 'click').and.callFake(() => {
+    const realAnchor = originalCreateElement('a') as HTMLAnchorElement;
+    const clickSpy = vi.spyOn(realAnchor, 'click').mockImplementation(() => {
     });
 
-    spyOn(document as any, 'createElement').and.callFake((tag: string) => {
-      if (tag === 'a') return realAnchor;
-      return originalCreateElement.call(document, tag);
-    });
+    // Fix overload typing: accept any args
+    vi.spyOn(document, 'createElement').mockImplementation(
+      ((...args: any[]) => {
+        const [tag] = args;
+        if (tag === 'a') return realAnchor;
+        return originalCreateElement(...(args as [any]));
+      }) as any
+    );
 
-    const appendSpy = spyOn(document.body, 'appendChild').and.callThrough();
-    const removeSpy = spyOn(document.body, 'removeChild').and.callThrough();
+    const appendSpy = vi.spyOn(document.body, 'appendChild');
+    const removeSpy = vi.spyOn(document.body, 'removeChild');
 
-    const blob = new Blob(['payload'], {type: 'image/png'});
+    const blob = new Blob(['payload'], { type: 'image/png' });
     await service.download('DLD', blob);
 
     expect(createObjectURLSpy).toHaveBeenCalledWith(blob);
     expect(appendSpy).toHaveBeenCalledWith(realAnchor);
+
     expect(realAnchor.href).toBe(urlStub);
     expect(realAnchor.download).toBe('certificate_DLD.png');
-    expect((realAnchor.click as any)).toHaveBeenCalled();
+
+    expect(clickSpy).toHaveBeenCalled();
     expect(removeSpy).toHaveBeenCalledWith(realAnchor);
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });
 
   it('revokes object URL even if anchor.click() throws', async () => {
     const urlStub = 'blob://oops';
-    spyOn(window.URL, 'createObjectURL').and.returnValue(urlStub);
-    const revokeSpy = spyOn(window.URL, 'revokeObjectURL').and.callThrough();
+
+    vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
+    });
 
     // Force click() to throw on ANY <a>
-    spyOn(HTMLAnchorElement.prototype, 'click').and.callFake(() => {
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
       throw new Error('boom');
     });
 
-    const blob = new Blob(['payload'], {type: 'image/png'});
+    const blob = new Blob(['payload'], { type: 'image/png' });
 
-    await expectAsync(service.download('ERR', blob)).toBeRejected();
+    await expect(service.download('ERR', blob)).rejects.toThrow('boom');
 
-    // finally{} executed
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });
 
   // --- Extra branches ---
 
-  it('Flutter path: uses empty base64 when FileReader result is null (covers r.result || "")', async () => {
+  it('Flutter path: uses empty base64 when FileReader result is null', async () => {
     (window as any).FileReader = FileReaderNullResult as any;
 
-    const callHandlerSpy = jasmine.createSpy('callHandler').and.resolveTo(undefined);
-    window.flutter_inappwebview = {callHandler: callHandlerSpy as any};
+    const callHandlerSpy = vi.fn().mockResolvedValue(undefined);
+    window.flutter_inappwebview = { callHandler: callHandlerSpy };
 
-    const blob = new Blob(['abc'], {type: 'image/png'});
+    const blob = new Blob(['abc'], { type: 'image/png' });
     await service.download('NULLRES', blob);
 
-    const [, payload] = callHandlerSpy.calls.mostRecent().args as any[];
+    const [, payload] = callHandlerSpy.mock.calls[0] as any[];
     expect(payload.base64).toBe('');
     expect(payload.mime).toBe('image/png');
   });
 
-  it('Flutter path: defaults mime to "image/png" when blob.type is empty (covers blob.type || "image/png")', async () => {
+  it('Flutter path: defaults mime to "image/png" when blob.type is empty', async () => {
     (window as any).FileReader = FakeFileReader as any;
 
-    const callHandlerSpy = jasmine.createSpy('callHandler').and.resolveTo(undefined);
-    window.flutter_inappwebview = {callHandler: callHandlerSpy as any};
+    const callHandlerSpy = vi.fn().mockResolvedValue(undefined);
+    window.flutter_inappwebview = { callHandler: callHandlerSpy };
 
-    const blob = new Blob(['abc'], {type: ''});
+    const blob = new Blob(['abc'], { type: '' });
     await service.download('DEFMIME', blob);
 
-    const [, payload] = callHandlerSpy.calls.mostRecent().args as any[];
+    const [, payload] = callHandlerSpy.mock.calls[0] as any[];
     expect(payload.mime).toBe('image/png');
     expect(payload.base64).toBe('QUJD');
   });
 
-  it('Flutter path: propagates FileReader error (covers r.onerror => reject(r.error))', async () => {
+  it('Flutter path: propagates FileReader error', async () => {
     (window as any).FileReader = FileReaderError as any;
 
-    const callHandlerSpy = jasmine.createSpy('callHandler').and.resolveTo(undefined);
-    window.flutter_inappwebview = {callHandler: callHandlerSpy as any};
+    const callHandlerSpy = vi.fn().mockResolvedValue(undefined);
+    window.flutter_inappwebview = { callHandler: callHandlerSpy };
 
-    const blob = new Blob(['abc'], {type: 'image/png'});
+    const blob = new Blob(['abc'], { type: 'image/png' });
 
-    await expectAsync(service.download('ONERROR', blob)).toBeRejected();
+    await expect(service.download('ONERROR', blob)).rejects.toThrow();
+
     expect(callHandlerSpy).not.toHaveBeenCalled();
   });
 
   it('when data is null and Flutter bridge is absent: fetches via CertificateService then performs browser download', async () => {
     const urlStub = 'blob://fetched';
-    const createObjectURLSpy = spyOn(window.URL, 'createObjectURL').and.returnValue(urlStub);
-    const revokeSpy = spyOn(window.URL, 'revokeObjectURL').and.callThrough();
 
-    const anchor = document.createElement('a');
-    spyOn(anchor, 'click').and.callFake(() => {
-    });
-    spyOn(document as any, 'createElement').and.callFake((tag: string) => {
-      if (tag === 'a') return anchor;
-      return originalCreateElement.call(document, tag);
+    const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
     });
 
-    const appendSpy = spyOn(document.body, 'appendChild').and.callThrough();
-    const removeSpy = spyOn(document.body, 'removeChild').and.callThrough();
+    const anchor = originalCreateElement('a') as HTMLAnchorElement;
+    const clickSpy = vi.spyOn(anchor, 'click').mockImplementation(() => {
+    });
 
-    const fetched = new Blob(['from-service'], {type: 'image/png'});
-    certSvc.certificate.and.resolveTo(fetched);
+    vi.spyOn(document, 'createElement').mockImplementation(
+      ((...args: any[]) => {
+        const [tag] = args;
+        if (tag === 'a') return anchor;
+        return originalCreateElement(...(args as [any]));
+      }) as any
+    );
+
+    const appendSpy = vi.spyOn(document.body, 'appendChild');
+    const removeSpy = vi.spyOn(document.body, 'removeChild');
+
+    const fetched = new Blob(['from-service'], { type: 'image/png' });
+    certSvc.certificate.mockResolvedValue(fetched);
 
     await service.download('NULLWEB');
 
-    expect(certSvc.certificate).toHaveBeenCalledOnceWith('NULLWEB');
+    expect(certSvc.certificate).toHaveBeenCalledTimes(1);
+    expect(certSvc.certificate).toHaveBeenCalledWith('NULLWEB');
+
     expect(createObjectURLSpy).toHaveBeenCalledWith(fetched);
     expect(appendSpy).toHaveBeenCalledWith(anchor);
+
     expect(anchor.href).toBe(urlStub);
     expect(anchor.download).toBe('certificate_NULLWEB.png');
-    expect((anchor.click as any)).toHaveBeenCalled();
+
+    expect(clickSpy).toHaveBeenCalled();
     expect(removeSpy).toHaveBeenCalledWith(anchor);
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });

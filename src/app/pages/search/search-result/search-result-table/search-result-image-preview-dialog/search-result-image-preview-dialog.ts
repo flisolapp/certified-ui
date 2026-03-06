@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -7,9 +7,9 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {TranslatePipe} from '@ngx-translate/core';
-import {MatButton} from '@angular/material/button';
-import {DownloadService} from '../../../../../services/download/download.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MatButton } from '@angular/material/button';
+import { DownloadService } from '../../../../../services/download/download-service';
 
 @Component({
   selector: 'app-search-result-image-preview-dialog',
@@ -29,7 +29,7 @@ export class SearchResultImagePreviewDialog {
   constructor(
     private dialogRef: MatDialogRef<SearchResultImagePreviewDialog>,
     @Inject(MAT_DIALOG_DATA) public data: { imageUrl: string, code: string },
-    private downloadService: DownloadService,
+    private downloadService: DownloadService
   ) {
   }
 

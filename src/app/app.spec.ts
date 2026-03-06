@@ -1,39 +1,42 @@
-import {TestBed} from '@angular/core/testing';
-import {App} from './app';
-import {RouterOutlet} from '@angular/router';
-import {LanguageService} from './services/language/language-service';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {provideZonelessChangeDetection} from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { App } from './app';
+import { LanguageService } from './services/language/language-service';
+
+import { createTranslateTestingModule } from './tests/translate-testing.module';
 
 describe('App', () => {
-  let languageServiceMock: jasmine.SpyObj<LanguageService>;
+  let languageServiceMock: { init: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    languageServiceMock = jasmine.createSpyObj('LanguageService', ['init']);
+    languageServiceMock = {
+      init: vi.fn()
+    };
 
     await TestBed.configureTestingModule({
       imports: [
         App,
         RouterOutlet,
-        TranslateModule.forRoot({
-          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
-        })
+        createTranslateTestingModule()
       ],
       providers: [
         provideZonelessChangeDetection(),
-        {provide: LanguageService, useValue: languageServiceMock}
+        { provide: LanguageService, useValue: languageServiceMock }
       ]
     }).compileComponents();
   });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should call languageService.init() on construction', () => {
+  it('should call languageService.init()', () => {
     TestBed.createComponent(App);
-    expect(languageServiceMock.init).toHaveBeenCalled();
+    expect(languageServiceMock.init).toHaveBeenCalledTimes(1);
   });
 });

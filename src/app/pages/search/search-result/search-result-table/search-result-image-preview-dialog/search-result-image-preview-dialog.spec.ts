@@ -1,70 +1,73 @@
-import {TestBed} from '@angular/core/testing';
-import {SearchResultImagePreviewDialog} from './search-result-image-preview-dialog';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {provideZonelessChangeDetection} from '@angular/core';
-import {DownloadService} from '../../../../../services/download/download.service';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { SearchResultImagePreviewDialog } from './search-result-image-preview-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DownloadService } from '../../../../../services/download/download-service';
 
 describe('SearchResultImagePreviewDialog', () => {
   let component: SearchResultImagePreviewDialog;
-  let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultImagePreviewDialog>>;
-  let downloadServiceMock: jasmine.SpyObj<DownloadService>;
+
+  let dialogRefMock: { close: ReturnType<typeof vi.fn> };
+  let downloadServiceMock: { download: ReturnType<typeof vi.fn> };
+
+  const dataMock = { imageUrl: 'https://example.com/image.png', code: 'CERT123' };
 
   beforeEach(async () => {
-    dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
-    downloadServiceMock = jasmine.createSpyObj('DownloadService', ['download']);
+    dialogRefMock = { close: vi.fn() };
+    downloadServiceMock = { download: vi.fn().mockResolvedValue(undefined) };
 
     await TestBed.configureTestingModule({
-      imports: [
-        SearchResultImagePreviewDialog,
-        TranslateModule.forRoot({
-          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
-        })
-      ],
+      imports: [SearchResultImagePreviewDialog],
       providers: [
         provideZonelessChangeDetection(),
-        {provide: MatDialogRef, useValue: dialogRefMock},
-        {provide: DownloadService, useValue: downloadServiceMock},
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {imageUrl: 'https://example.com/image.png', code: 'CERT123'}
-        }
+        { provide: MatDialogRef, useValue: dialogRefMock },
+        { provide: DownloadService, useValue: downloadServiceMock },
+        { provide: MAT_DIALOG_DATA, useValue: dataMock }
       ]
-    }).compileComponents();
+    })
+      // keep it as unit test (template irrelevant)
+      .overrideComponent(SearchResultImagePreviewDialog, { set: { template: '' } })
+      .compileComponents();
 
     const fixture = TestBed.createComponent(SearchResultImagePreviewDialog);
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it('should close dialog on close()', () => {
+  it('should create', () => {
+    expect(component).toBeDefined();
+  });
+
+  it('close(): closes the dialog', () => {
     component.close();
-    expect(dialogRefMock.close).toHaveBeenCalled();
+    expect(dialogRefMock.close).toHaveBeenCalledTimes(1);
   });
 
   it('download(): fetches the image blob and delegates to DownloadService', async () => {
-    const blobMock = new Blob(['fake data'], {type: 'image/png'});
+    const blobMock = new Blob(['fake data'], { type: 'image/png' });
     const responseMock = new Response(blobMock);
 
-    // Ensure the service returns a resolved promise to await cleanly
-    downloadServiceMock.download.and.returnValue(Promise.resolve());
-
-    spyOn(window, 'fetch').and.returnValue(Promise.resolve(responseMock));
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(responseMock);
 
     await component.download();
 
-    expect(window.fetch).toHaveBeenCalledOnceWith('https://example.com/image.png');
-    expect(downloadServiceMock.download).toHaveBeenCalledOnceWith('CERT123', blobMock);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledWith('https://example.com/image.png');
+
+    expect(downloadServiceMock.download).toHaveBeenCalledTimes(1);
+    expect(downloadServiceMock.download).toHaveBeenCalledWith('CERT123', blobMock);
   });
 
   it('download(): propagates error when fetch fails and does not call DownloadService', async () => {
     const err = new Error('network down');
-    spyOn(window, 'fetch').and.returnValue(Promise.reject(err));
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(err);
 
-    await expectAsync(component.download()).toBeRejectedWith(err);
+    await expect(component.download()).rejects.toThrow('network down');
     expect(downloadServiceMock.download).not.toHaveBeenCalled();
   });
 });

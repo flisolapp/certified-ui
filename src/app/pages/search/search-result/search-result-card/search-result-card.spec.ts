@@ -1,97 +1,131 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {SearchResultCard} from './search-result-card';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {CertificateElement} from '../../../../models/certificate-element/certificate-element';
-import {of} from 'rxjs';
-import {provideZonelessChangeDetection} from '@angular/core';
-import {DownloadService} from '../../../../services/download/download.service';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Simple microtask flusher for zoneless tests
-const flushMicrotasks = async (times = 2) => {
-  for (let i = 0; i < times; i++) await Promise.resolve();
-};
+import { SearchResultCard } from './search-result-card';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CertificateElement } from '../../../../models/certificate-element/certificate-element';
+import { of, Subject } from 'rxjs';
+import { DownloadService } from '../../../../services/download/download-service';
 
-describe('SearchResultCard (zoneless)', () => {
+describe('SearchResultCard', () => {
   let component: SearchResultCard;
-  let fixture: ComponentFixture<SearchResultCard>;
-  let dialogMock: jasmine.SpyObj<MatDialog>;
-  let dialogRefMock: jasmine.SpyObj<MatDialogRef<any>>;
-  let downloadServiceMock: jasmine.SpyObj<DownloadService>;
+
+  let dialogMock: { open: ReturnType<typeof vi.fn> };
+  let downloadServiceMock: { download: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-    downloadServiceMock = jasmine.createSpyObj('DownloadService', ['download']);
+    dialogMock = { open: vi.fn() };
+    downloadServiceMock = { download: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [SearchResultCard],
       providers: [
         provideZonelessChangeDetection(),
-        {provide: MatDialog, useValue: dialogMock},
-        {provide: DownloadService, useValue: downloadServiceMock},
-      ],
-    }).compileComponents();
+        { provide: MatDialog, useValue: dialogMock },
+        { provide: DownloadService, useValue: downloadServiceMock }
+      ]
+    })
+      // template not relevant for these unit tests
+      .overrideComponent(SearchResultCard, { set: { template: '' } })
+      .compileComponents();
 
-    fixture = TestBed.createComponent(SearchResultCard);
+    const fixture = TestBed.createComponent(SearchResultCard);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeDefined();
   });
 
-  it('doDownload(): does nothing if dialog closes without result (zoneless)', async () => {
-    dialogMock.open.and.returnValue(dialogRefMock);
-    dialogRefMock.afterClosed.and.returnValue(of(null));
+  it('doDownload(): does nothing if dialog closes without result', async () => {
+    const dialogRefMock = { afterClosed: vi.fn().mockReturnValue(of(null)) } as Partial<
+      MatDialogRef<any>
+    > as MatDialogRef<any>;
 
-    const item = {code: 'ABC123'} as CertificateElement;
+    dialogMock.open.mockReturnValue(dialogRefMock);
 
-    component.doDownload(item);
-    await flushMicrotasks(); // allow subscription/microtasks (even though none should run)
+    const item = { code: 'ABC123' } as CertificateElement;
 
-    expect(dialogMock.open).toHaveBeenCalled();
+    await component.doDownload(item);
+
+    expect(dialogMock.open).toHaveBeenCalledTimes(1);
     expect(downloadServiceMock.download).not.toHaveBeenCalled();
     expect(component.downloadingItem()).toBeNull();
   });
 
-  it('doDownload(): calls DownloadService and resets downloadingItem (zoneless)', async () => {
-    dialogMock.open.and.returnValue(dialogRefMock);
-    dialogRefMock.afterClosed.and.returnValue(of(true));
-    downloadServiceMock.download.and.returnValue(Promise.resolve());
+  it('doDownload(): calls DownloadService and clears downloadingItem after resolve', async () => {
+    // Use Subject so we can emit "afterClosed" when we want
+    const closed$ = new Subject<any>();
+    const dialogRefMock = { afterClosed: vi.fn().mockReturnValue(closed$.asObservable()) } as Partial<
+      MatDialogRef<any>
+    > as MatDialogRef<any>;
 
-    const item = {code: 'XYZ789'} as CertificateElement;
+    dialogMock.open.mockReturnValue(dialogRefMock);
 
-    component.doDownload(item);
+    // Hold the promise to assert intermediate state deterministically
+    let resolveDownload!: () => void;
+    const downloadPromise = new Promise<void>((resolve) => (resolveDownload = resolve));
+    downloadServiceMock.download.mockReturnValue(downloadPromise);
 
-    // afterClosed emits synchronously; subscription sets downloadingItem immediately
+    const item = { code: 'XYZ789' } as CertificateElement;
+
+    const call = component.doDownload(item);
+
+    // nothing happens until dialog closes
+    expect(component.downloadingItem()).toBeNull();
+
+    // close dialog with "truthy" result => triggers download path
+    closed$.next(true);
+    closed$.complete();
+
+    // now it should set downloadingItem immediately
     expect(component.downloadingItem()).toBe(item);
+    expect(downloadServiceMock.download).toHaveBeenCalledTimes(1);
+    expect(downloadServiceMock.download).toHaveBeenCalledWith('XYZ789');
 
-    // let the awaited download() resolve and finally{} clear the signal
-    await flushMicrotasks();
+    // finish download => finally clears the signal
+    resolveDownload();
+    await downloadPromise;
+    await call;
 
-    expect(downloadServiceMock.download).toHaveBeenCalledOnceWith('XYZ789');
     expect(component.downloadingItem()).toBeNull();
   });
 
-  it('doDownload(): clears downloadingItem even if DownloadService rejects (zoneless)', async () => {
-    dialogMock.open.and.returnValue(dialogRefMock);
-    dialogRefMock.afterClosed.and.returnValue(of(true));
+  it('doDownload(): clears downloadingItem even if DownloadService rejects', async () => {
+    const closed$ = new Subject<any>();
+    const dialogRefMock = { afterClosed: vi.fn().mockReturnValue(closed$.asObservable()) } as Partial<
+      MatDialogRef<any>
+    > as MatDialogRef<any>;
 
-    // swallow rejection to avoid unhandled promise in test env
-    downloadServiceMock.download.and.callFake(() =>
-      Promise.reject(new Error('fail')).catch(() => {
-      })
+    dialogMock.open.mockReturnValue(dialogRefMock);
+
+    // IMPORTANT: swallow rejection to avoid unhandled rejection from async subscribe callback
+    downloadServiceMock.download.mockImplementation(() =>
+      Promise.reject(new Error('fail')).catch(() => undefined)
     );
 
-    const item = {code: 'ERR001'} as CertificateElement;
+    const item = { code: 'ERR001' } as CertificateElement;
 
-    component.doDownload(item);
+    const call = component.doDownload(item);
+
+    closed$.next(true);
+    closed$.complete();
+
     expect(component.downloadingItem()).toBe(item);
 
-    await flushMicrotasks();
+    // let the async callback run
+    await Promise.resolve();
+    await Promise.resolve();
 
-    expect(downloadServiceMock.download).toHaveBeenCalledOnceWith('ERR001');
+    expect(downloadServiceMock.download).toHaveBeenCalledTimes(1);
+    expect(downloadServiceMock.download).toHaveBeenCalledWith('ERR001');
     expect(component.downloadingItem()).toBeNull();
+
+    await call;
   });
 });

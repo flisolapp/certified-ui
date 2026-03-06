@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 // import {MessageService, PrimeNGConfig} from 'primeng/api';
-import {EventEmitterService} from '../event-emitter/event-emitter-service';
+import { EventEmitterService } from '../event-emitter/event-emitter-service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +10,9 @@ export class LanguageService {
 
   private static LANGUAGE_KEY: string = 'flisolapp.Language';
   public static LANGUAGES: any[] = [
-    {name: 'English (USA)', code: 'en', flag: 'US'},
-    {name: 'Español (España)', code: 'es', flag: 'ES'},
-    {name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR'}
+    { name: 'English (USA)', code: 'en', flag: 'US' },
+    { name: 'Español (España)', code: 'es', flag: 'ES' },
+    { name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR' }
   ];
   private selected: any = null;
 
@@ -28,7 +28,7 @@ export class LanguageService {
 
   constructor(
     // private config: PrimeNGConfig,
-    private translate: TranslateService,
+    private translate: TranslateService
     // private messageService: MessageService
   ) {
   }

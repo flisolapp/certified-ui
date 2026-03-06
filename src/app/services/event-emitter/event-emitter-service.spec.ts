@@ -1,8 +1,8 @@
-import {EventEmitter} from '@angular/core';
-import {EventEmitterService} from './event-emitter-service';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { EventEmitter } from '@angular/core';
+import { EventEmitterService } from './event-emitter-service';
 
 describe('EventEmitterService', () => {
-
   beforeEach(() => {
     // Clear emitters before each test to avoid cross-test pollution
     (EventEmitterService as any).emitters = {};
@@ -10,8 +10,9 @@ describe('EventEmitterService', () => {
 
   it('should create a new EventEmitter if not existing', () => {
     const emitter = EventEmitterService.get('testEvent');
-    expect(emitter).toBeTruthy();
-    expect(emitter instanceof EventEmitter).toBeTrue();
+
+    expect(emitter).toBeDefined();
+    expect(emitter instanceof EventEmitter).toBe(true);
   });
 
   it('should return the same EventEmitter instance for the same name', () => {
@@ -21,15 +22,18 @@ describe('EventEmitterService', () => {
     expect(emitter1).toBe(emitter2);
   });
 
-  it('should emit and listen to events', (done) => {
+  it('should emit and listen to events', async () => {
     const emitter = EventEmitterService.get('customEvent');
 
-    emitter.subscribe(value => {
-      expect(value).toBe('Hello World');
-      done();  // Mark async test as complete
+    const received = await new Promise<string>((resolve) => {
+      const sub = emitter.subscribe((value: string) => {
+        sub.unsubscribe(); // avoid leaking subscriptions in tests
+        resolve(value);
+      });
+
+      emitter.emit('Hello World');
     });
 
-    emitter.emit('Hello World');
+    expect(received).toBe('Hello World');
   });
-
 });

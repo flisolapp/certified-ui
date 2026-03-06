@@ -1,14 +1,15 @@
-import {ScrollService} from './scroll-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ScrollService } from './scroll-service';
 
 describe('ScrollService', () => {
   beforeEach(() => {
-    spyOn(window, 'scrollTo');
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {
+    });
   });
 
   it('should scroll to top with smooth behavior', () => {
     ScrollService.toTop();
 
-    // @ts-ignore
     expect(window.scrollTo).toHaveBeenCalledWith({
       top: 0,
       behavior: 'smooth'

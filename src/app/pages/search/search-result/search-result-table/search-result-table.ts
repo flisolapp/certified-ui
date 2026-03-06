@@ -1,5 +1,5 @@
-import {Component, Input, signal, WritableSignal} from '@angular/core';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import {
   MatCell,
   MatCellDef,
@@ -12,13 +12,15 @@ import {
   MatRowDef,
   MatTable
 } from '@angular/material/table';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {CertificateElement} from '../../../../models/certificate-element/certificate-element';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {Clipboard} from '@angular/cdk/clipboard';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {CertificateService} from '../../../../services/certificate/certificate-service';
-import {SearchResultImagePreviewDialog} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CertificateElement } from '../../../../models/certificate-element/certificate-element';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CertificateService } from '../../../../services/certificate/certificate-service';
+import {
+  SearchResultImagePreviewDialog
+} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
 
 @Component({
   selector: 'app-search-result-table',
@@ -45,6 +47,7 @@ export class SearchResultTable {
   @Input()
   dataSource: CertificateElement[] = [];
 
+  /* v8 ignore next -- @preserve */
   public downloadingItem: WritableSignal<CertificateElement | null> = signal<CertificateElement | null>(null);
 
   public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'preview'];
@@ -79,7 +82,7 @@ export class SearchResultTable {
       const imageUrl: string = URL.createObjectURL(data);
 
       const dialogRef: MatDialogRef<SearchResultImagePreviewDialog> = this.dialog.open(SearchResultImagePreviewDialog, {
-        data: {imageUrl, code: item.code},
+        data: { imageUrl, code: item.code },
         width: '800px'
       });
 

@@ -1,20 +1,23 @@
-.content {
+:host {
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-direction: column;
+
   margin: 82px auto 32px;
   padding: 0 16px;
   max-width: 960px;
-  flex-direction: column;
-  //align-items: center;
-
-  min-height: 90%;
-
-  /* Equal to height of footer */
-  /* But also accounting for potential margin-bottom of last child */
-  margin-bottom: -20px;
+  width: 90%;
 }
 
 footer {
-  align-items: center;
+  flex: 0 0 auto;
   line-height: 20px;
   text-align: center;
   display: block;

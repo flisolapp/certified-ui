@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 /**
  * A service for handling and processing search terms.
@@ -53,7 +53,7 @@ export class TermService {
     // Check if the term is null, undefined, or an empty string and throw an error if any.
     // This ensures that we have a valid, non-empty string to process.
     if (term === undefined || term === null || term.trim() === '') {
-      throw new EvalError('The term is invalid to search. It is required.', {cause: -1});
+      throw new EvalError('The term is invalid to search. It is required.', { cause: -1 });
     }
 
     // Define a function to check if a string is a valid email.
@@ -71,7 +71,7 @@ export class TermService {
     // Further validate the processed term to ensure it's not an empty string.
     // Throw an error if the processed term is empty after trimming.
     if (processedTerm === undefined || processedTerm === null || processedTerm === '') {
-      throw new EvalError('The term is invalid to search.', {cause: -2});
+      throw new EvalError('The term is invalid to search.', { cause: -2 });
     }
 
     // Convert the term to lowercase if it's an email to ensure consistency.
@@ -86,7 +86,7 @@ export class TermService {
     // If it doesn't fit either pattern, throw an error indicating the term is invalid.
     if (!isEmail(processedTerm) && !isCode(processedTerm)) {
       throw new EvalError('The term is invalid to search. Must be an e-mail or certificate\'s code.', //
-        {cause: -3});
+        { cause: -3 });
     }
 
     // Return the processed term if it's valid.

@@ -1,39 +1,43 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {SearchResultDownloadCertificateDialog} from './search-result-download-certificate-dialog';
-import {MatDialogRef} from '@angular/material/dialog';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {provideZonelessChangeDetection} from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('SearchResultDownloadCertificateDialog', (): void => {
+import { SearchResultDownloadCertificateDialog } from './search-result-download-certificate-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
+
+describe('SearchResultDownloadCertificateDialog', () => {
   let component: SearchResultDownloadCertificateDialog;
-  let dialogRefMock: jasmine.SpyObj<MatDialogRef<SearchResultDownloadCertificateDialog>>;
 
-  beforeEach(async (): Promise<void> => {
-    dialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
+  const dialogRefMock = {
+    close: vi.fn()
+  };
 
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        SearchResultDownloadCertificateDialog,
-        TranslateModule.forRoot({
-          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
-        })
-      ],
+      imports: [SearchResultDownloadCertificateDialog],
       providers: [
         provideZonelessChangeDetection(),
-        {provide: MatDialogRef, useValue: dialogRefMock}
+        { provide: MatDialogRef, useValue: dialogRefMock }
       ]
-    }).compileComponents();
+    })
+      // Template is irrelevant to this unit test and avoids TranslatePipe/module concerns
+      .overrideComponent(SearchResultDownloadCertificateDialog, { set: { template: '' } })
+      .compileComponents();
 
-    const fixture: ComponentFixture<SearchResultDownloadCertificateDialog> = TestBed.createComponent(SearchResultDownloadCertificateDialog);
+    const fixture = TestBed.createComponent(SearchResultDownloadCertificateDialog);
     component = fixture.componentInstance;
   });
 
-  it('should create', (): void => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('should close dialog on close()', (): void => {
+  it('should create', () => {
+    expect(component).toBeDefined();
+  });
+
+  it('close(): should call dialogRef.close()', () => {
     component.close();
-    expect(dialogRefMock.close).toHaveBeenCalled();
+    expect(dialogRefMock.close).toHaveBeenCalledTimes(1);
   });
 });

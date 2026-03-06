@@ -1,46 +1,33 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {PageStructure} from './page-structure';
-import {Component, provideZonelessChangeDetection} from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { PageStructure } from './page-structure';
 import packageInfo from '../../../../package.json';
-import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
-// Mock ToolbarComponent as Standalone
-@Component({
-  selector: 'app-toolbar',
-  template: ''
-})
-class MockToolbarComponent {
-}
-
-describe('PageStructure', (): void => {
+describe('PageStructure', () => {
   let component: PageStructure;
   let fixture: ComponentFixture<PageStructure>;
 
-  beforeEach(async (): Promise<void> => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [PageStructure],
       providers: [
         provideZonelessChangeDetection()
-      ],
-      imports: [
-        PageStructure,
-        MockToolbarComponent,
-        TranslateModule.forRoot({
-          loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
-        })
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(PageStructure, { set: { template: '' } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(PageStructure);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create the component', (): void => {
-    expect(component).toBeTruthy();
+  it('should create the component', () => {
+    expect(component).toBeDefined();
   });
 
-  it('should have version set from package.json', (): void => {
-    // Should be "2.5.0"
+  it('should have version set from package.json', () => {
     expect(component.version()).toBe(packageInfo.version);
   });
 });

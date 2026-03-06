@@ -4,11 +4,14 @@
   left: 0;
   right: 0;
   height: 60px;
+
   display: flex;
   align-items: center;
 
+  padding: 0 16px;
+
   img.logo {
-    margin: 0 16px;
+    margin: 0;
   }
 
   .spacer {
