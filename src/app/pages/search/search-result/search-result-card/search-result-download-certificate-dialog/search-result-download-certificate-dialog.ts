@@ -4,7 +4,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
@@ -17,20 +17,15 @@ import { MatButton } from '@angular/material/button';
     MatDialogContent,
     MatDialogActions,
     MatButton,
-    MatDialogClose
+    MatDialogClose,
   ],
   templateUrl: './search-result-download-certificate-dialog.html',
-  styleUrl: './search-result-download-certificate-dialog.scss'
+  styleUrl: './search-result-download-certificate-dialog.scss',
 })
 export class SearchResultDownloadCertificateDialog {
-
-  constructor(
-    public dialogRef: MatDialogRef<SearchResultDownloadCertificateDialog>
-  ) {
-  }
+  constructor(public dialogRef: MatDialogRef<SearchResultDownloadCertificateDialog>) {}
 
   public close(): void {
     this.dialogRef.close();
   }
-
 }

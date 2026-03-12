@@ -40,7 +40,9 @@ describe('UuidService', () => {
 
     it('should match UUID v4 regex pattern', () => {
       const uuid = UuidService.generateUUID();
-      expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(uuid).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
     });
 
     it('should generate a deterministic UUID when Math.random is mocked', () => {

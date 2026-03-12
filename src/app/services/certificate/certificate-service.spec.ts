@@ -16,15 +16,15 @@ describe('CertificateService', () => {
 
   beforeEach(() => {
     httpClientMock = {
-      get: vi.fn()
+      get: vi.fn(),
     };
 
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         CertificateService,
-        { provide: HttpClient, useValue: httpClientMock }
-      ]
+        { provide: HttpClient, useValue: httpClientMock },
+      ],
     });
 
     service = TestBed.inject(CertificateService);
@@ -50,9 +50,7 @@ describe('CertificateService', () => {
         expect(resp).toEqual(expected);
       });
 
-      expect(httpClientMock.get).toHaveBeenCalledWith(
-        `${environment.apiUrl}/certificates/${term}`
-      );
+      expect(httpClientMock.get).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${term}`);
     });
   });
 
@@ -63,18 +61,14 @@ describe('CertificateService', () => {
 
       // Response(blob) is supported in jsdom
       const response = {
-        blob: vi.fn().mockResolvedValue(mockBlob)
+        blob: vi.fn().mockResolvedValue(mockBlob),
       };
 
-      const fetchSpy = vi
-        .spyOn(window, 'fetch')
-        .mockResolvedValue(response as any);
+      const fetchSpy = vi.spyOn(window, 'fetch').mockResolvedValue(response as any);
 
       const blob = await service.certificate(code);
 
-      expect(fetchSpy).toHaveBeenCalledWith(
-        `${environment.apiUrl}/certificates/${code}/download`
-      );
+      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${code}/download`);
 
       // compare by size/type since Blob equality is by reference
       expect(blob).toBeInstanceOf(Blob);
@@ -86,15 +80,11 @@ describe('CertificateService', () => {
       const code = 'ERR001';
       const err = new Error('network down');
 
-      const fetchSpy = vi
-        .spyOn(window, 'fetch')
-        .mockRejectedValue(err);
+      const fetchSpy = vi.spyOn(window, 'fetch').mockRejectedValue(err);
 
       await expect(service.certificate(code)).rejects.toBe(err);
 
-      expect(fetchSpy).toHaveBeenCalledWith(
-        `${environment.apiUrl}/certificates/${code}/download`
-      );
+      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${code}/download`);
     });
   });
 });

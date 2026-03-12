@@ -14,8 +14,8 @@ describe('LanguageProvider', () => {
       providers: [
         provideZonelessChangeDetection(),
         LanguageProvider,
-        { provide: LanguageService, useValue: languageServiceMock }
-      ]
+        { provide: LanguageService, useValue: languageServiceMock },
+      ],
     });
   });
 

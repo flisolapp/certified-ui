@@ -4,15 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { EventEmitterService } from '../event-emitter/event-emitter-service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LanguageService {
-
   private static LANGUAGE_KEY: string = 'flisolapp.Language';
   public static LANGUAGES: any[] = [
     { name: 'English (USA)', code: 'en', flag: 'US' },
     { name: 'Español (España)', code: 'es', flag: 'ES' },
-    { name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR' }
+    { name: 'Português (Brasil)', code: 'pt-BR', flag: 'BR' },
   ];
   private selected: any = null;
 
@@ -28,10 +27,9 @@ export class LanguageService {
 
   constructor(
     // private config: PrimeNGConfig,
-    private translate: TranslateService
+    private translate: TranslateService,
     // private messageService: MessageService
-  ) {
-  }
+  ) {}
 
   init(): void {
     // let language = window.navigator.userLanguage || window.navigator.language;
@@ -41,7 +39,8 @@ export class LanguageService {
     if (browserLang !== undefined) {
       // console.log(browserLang);
 
-      if (browserLang.substring(0, 2) === 'pt') //
+      if (browserLang.substring(0, 2) === 'pt')
+        //
         language = 'pt-BR';
 
       try {
@@ -55,8 +54,13 @@ export class LanguageService {
         // Do nothing.
       }
 
-      for (let i = 0; i < LanguageService.LANGUAGES.length; i++) //
-        if (LanguageService.LANGUAGES[i].code === language) //
+      for (
+        let i = 0;
+        i < LanguageService.LANGUAGES.length;
+        i++ //
+      )
+        if (LanguageService.LANGUAGES[i].code === language)
+          //
           this.selected = LanguageService.LANGUAGES[i];
 
       this.translate.addLangs(['en', 'pt-BR']);
@@ -109,5 +113,4 @@ export class LanguageService {
 
     return '';
   }
-
 }

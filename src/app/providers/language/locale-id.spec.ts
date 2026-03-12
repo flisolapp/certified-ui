@@ -7,7 +7,7 @@ describe('LocaleId', () => {
 
   beforeEach(() => {
     languageServiceMock = {
-      locale: 'en-US'
+      locale: 'en-US',
     } as LanguageService;
   });
 

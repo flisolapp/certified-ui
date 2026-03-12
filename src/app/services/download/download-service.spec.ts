@@ -68,8 +68,8 @@ describe('DownloadService', () => {
       providers: [
         provideZonelessChangeDetection(),
         DownloadService,
-        { provide: CertificateService, useClass: CertificateServiceMock }
-      ]
+        { provide: CertificateService, useClass: CertificateServiceMock },
+      ],
     });
 
     service = TestBed.inject(DownloadService);
@@ -131,22 +131,18 @@ describe('DownloadService', () => {
     const urlStub = 'blob://test-object-url';
 
     const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
-    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
-    });
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {});
 
     // Use a REAL anchor element
     const realAnchor = originalCreateElement('a') as HTMLAnchorElement;
-    const clickSpy = vi.spyOn(realAnchor, 'click').mockImplementation(() => {
-    });
+    const clickSpy = vi.spyOn(realAnchor, 'click').mockImplementation(() => {});
 
     // Fix overload typing: accept any args
-    vi.spyOn(document, 'createElement').mockImplementation(
-      ((...args: any[]) => {
-        const [tag] = args;
-        if (tag === 'a') return realAnchor;
-        return originalCreateElement(...(args as [any]));
-      }) as any
-    );
+    vi.spyOn(document, 'createElement').mockImplementation(((...args: any[]) => {
+      const [tag] = args;
+      if (tag === 'a') return realAnchor;
+      return originalCreateElement(...(args as [any]));
+    }) as any);
 
     const appendSpy = vi.spyOn(document.body, 'appendChild');
     const removeSpy = vi.spyOn(document.body, 'removeChild');
@@ -169,8 +165,7 @@ describe('DownloadService', () => {
     const urlStub = 'blob://oops';
 
     vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
-    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
-    });
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {});
 
     // Force click() to throw on ANY <a>
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
@@ -231,20 +226,16 @@ describe('DownloadService', () => {
     const urlStub = 'blob://fetched';
 
     const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
-    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {
-    });
+    const revokeSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {});
 
     const anchor = originalCreateElement('a') as HTMLAnchorElement;
-    const clickSpy = vi.spyOn(anchor, 'click').mockImplementation(() => {
-    });
+    const clickSpy = vi.spyOn(anchor, 'click').mockImplementation(() => {});
 
-    vi.spyOn(document, 'createElement').mockImplementation(
-      ((...args: any[]) => {
-        const [tag] = args;
-        if (tag === 'a') return anchor;
-        return originalCreateElement(...(args as [any]));
-      }) as any
-    );
+    vi.spyOn(document, 'createElement').mockImplementation(((...args: any[]) => {
+      const [tag] = args;
+      if (tag === 'a') return anchor;
+      return originalCreateElement(...(args as [any]));
+    }) as any);
 
     const appendSpy = vi.spyOn(document.body, 'appendChild');
     const removeSpy = vi.spyOn(document.body, 'removeChild');

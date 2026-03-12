@@ -10,7 +10,7 @@ import {
   MatHeaderRowDef,
   MatRow,
   MatRowDef,
-  MatTable
+  MatTable,
 } from '@angular/material/table';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CertificateElement } from '../../../../models/certificate-element/certificate-element';
@@ -18,9 +18,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../../../../services/certificate/certificate-service';
-import {
-  SearchResultImagePreviewDialog
-} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
+import { SearchResultImagePreviewDialog } from './search-result-image-preview-dialog/search-result-image-preview-dialog';
 
 @Component({
   selector: 'app-search-result-table',
@@ -37,18 +35,18 @@ import {
     MatRowDef,
     MatTable,
     TranslatePipe,
-    MatHeaderCellDef
+    MatHeaderCellDef,
   ],
   templateUrl: './search-result-table.html',
-  styleUrl: './search-result-table.scss'
+  styleUrl: './search-result-table.scss',
 })
 export class SearchResultTable {
-
   @Input()
   dataSource: CertificateElement[] = [];
 
   /* v8 ignore next -- @preserve */
-  public downloadingItem: WritableSignal<CertificateElement | null> = signal<CertificateElement | null>(null);
+  public downloadingItem: WritableSignal<CertificateElement | null> =
+    signal<CertificateElement | null>(null);
 
   public displayedColumns: string[] = ['edition', 'unit', 'name', 'enjoyedAs', 'code', 'preview'];
 
@@ -57,8 +55,8 @@ export class SearchResultTable {
     private clipboard: Clipboard,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private certificateService: CertificateService) {
-  }
+    private certificateService: CertificateService,
+  ) {}
 
   public doCopyCodeToClipboard(item: CertificateElement): void {
     this.translate.get(['common.copied']).subscribe({
@@ -66,9 +64,9 @@ export class SearchResultTable {
         const content = `${window.location.origin}/${item.code}`;
         this.clipboard.copy(content);
         this.snackBar.open(`${values['common.copied']}: ${content}`, undefined, {
-          duration: 1000
+          duration: 1000,
         });
-      }
+      },
     });
   }
 
@@ -81,10 +79,13 @@ export class SearchResultTable {
 
       const imageUrl: string = URL.createObjectURL(data);
 
-      const dialogRef: MatDialogRef<SearchResultImagePreviewDialog> = this.dialog.open(SearchResultImagePreviewDialog, {
-        data: { imageUrl, code: item.code },
-        width: '800px'
-      });
+      const dialogRef: MatDialogRef<SearchResultImagePreviewDialog> = this.dialog.open(
+        SearchResultImagePreviewDialog,
+        {
+          data: { imageUrl, code: item.code },
+          width: '800px',
+        },
+      );
 
       dialogRef.afterClosed().subscribe((): void => {
         // Clean up memory after dialog closes
@@ -96,5 +97,4 @@ export class SearchResultTable {
       this.downloadingItem.set(null);
     }
   }
-
 }

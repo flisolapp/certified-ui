@@ -6,15 +6,11 @@ import { Toolbar } from '../toolbar/toolbar';
 
 @Component({
   selector: 'app-page-structure',
-  imports: [
-    Toolbar
-  ],
+  imports: [Toolbar],
   templateUrl: './page-structure.html',
-  styleUrl: './page-structure.scss'
+  styleUrl: './page-structure.scss',
 })
 export class PageStructure {
-
   /* v8 ignore next -- @preserve */
   public version: WritableSignal<string> = signal<string>(packageInfo.version);
-
 }

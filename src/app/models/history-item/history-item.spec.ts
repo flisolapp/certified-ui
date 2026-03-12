@@ -7,7 +7,7 @@ describe('HistoryItem', () => {
     const item: HistoryItem = {
       id: '1',
       term: 'angular',
-      searched
+      searched,
     } satisfies HistoryItem;
 
     expect(item.id).toBe('1');

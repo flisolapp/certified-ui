@@ -12,9 +12,7 @@ describe('PageStructure', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageStructure],
-      providers: [
-        provideZonelessChangeDetection()
-      ]
+      providers: [provideZonelessChangeDetection()],
     })
       .overrideComponent(PageStructure, { set: { template: '' } })
       .compileComponents();

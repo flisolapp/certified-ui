@@ -5,7 +5,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
@@ -19,19 +19,17 @@ import { DownloadService } from '../../../../../services/download/download-servi
     MatDialogContent,
     MatDialogActions,
     MatButton,
-    MatDialogClose
+    MatDialogClose,
   ],
   templateUrl: './search-result-image-preview-dialog.html',
-  styleUrl: './search-result-image-preview-dialog.scss'
+  styleUrl: './search-result-image-preview-dialog.scss',
 })
 export class SearchResultImagePreviewDialog {
-
   constructor(
     private dialogRef: MatDialogRef<SearchResultImagePreviewDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { imageUrl: string, code: string },
-    private downloadService: DownloadService
-  ) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: { imageUrl: string; code: string },
+    private downloadService: DownloadService,
+  ) {}
 
   public async download(): Promise<void> {
     const response: Response = await fetch(this.data.imageUrl);
@@ -43,5 +41,4 @@ export class SearchResultImagePreviewDialog {
   public close(): void {
     this.dialogRef.close();
   }
-
 }

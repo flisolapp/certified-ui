@@ -9,8 +9,8 @@ export const routes: Routes = [
     children: [
       {
         path: ':term',
-        component: SearchResult
-      }
-    ]
-  }
+        component: SearchResult,
+      },
+    ],
+  },
 ];

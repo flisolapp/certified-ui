@@ -3,9 +3,7 @@ import { CertificateService } from '../certificate/certificate-service';
 
 @Injectable({ providedIn: 'root' })
 export class DownloadService {
-
-  constructor(private certificateService: CertificateService) {
-  }
+  constructor(private certificateService: CertificateService) {}
 
   private blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject): void => {
@@ -21,7 +19,8 @@ export class DownloadService {
 
   public async download(code: string, data: Blob | null = null): Promise<void> {
     const name = `certificate_${code}.png`;
-    const blob: Blob = (data instanceof Blob) ? data : await this.certificateService.certificate(code);
+    const blob: Blob =
+      data instanceof Blob ? data : await this.certificateService.certificate(code);
 
     // If running inside Flutter InAppWebView, hand off to native
     if (window.flutter_inappwebview?.callHandler) {
@@ -29,7 +28,7 @@ export class DownloadService {
       await window.flutter_inappwebview.callHandler('downloadFile', {
         name,
         mime: blob.type || 'image/png',
-        base64
+        base64,
       });
       return;
     }
@@ -49,5 +48,4 @@ export class DownloadService {
       window.URL.revokeObjectURL(url);
     }
   }
-
 }

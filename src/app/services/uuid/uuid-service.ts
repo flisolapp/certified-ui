@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UuidService {
-
   /**
    * Generates a version 4 UUID (Universally Unique Identifier).
    *
@@ -27,11 +26,10 @@ export class UuidService {
    */
   public static generateUUID(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string) => {
-      const r: number = Math.random() * 16 | 0;
-      const v: number = c === 'x' ? r : (r & 0x3 | 0x8);
+      const r: number = (Math.random() * 16) | 0;
+      const v: number = c === 'x' ? r : (r & 0x3) | 0x8;
 
       return v.toString(16);
     });
   }
-
 }

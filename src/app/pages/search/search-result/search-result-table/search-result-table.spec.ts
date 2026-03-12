@@ -3,9 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SearchResultTable } from './search-result-table';
-import {
-  SearchResultImagePreviewDialog
-} from './search-result-image-preview-dialog/search-result-image-preview-dialog';
+import { SearchResultImagePreviewDialog } from './search-result-image-preview-dialog/search-result-image-preview-dialog';
 
 import { CertificateService } from '../../../../services/certificate/certificate-service';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -32,28 +30,28 @@ describe('SearchResultTable', () => {
     name: 'Test User',
     enjoyedAs: 'Participant',
     code: '123',
-    download: 'http://example.com'
+    download: 'http://example.com',
   } as any;
 
   beforeEach(async () => {
     certificateServiceMock = {
-      certificate: vi.fn()
+      certificate: vi.fn(),
     };
 
     clipboardMock = {
-      copy: vi.fn()
+      copy: vi.fn(),
     };
 
     snackBarMock = {
-      open: vi.fn()
+      open: vi.fn(),
     };
 
     dialogMock = {
-      open: vi.fn()
+      open: vi.fn(),
     };
 
     translateMock = {
-      get: vi.fn().mockReturnValue(of({ 'common.copied': 'Copied' }))
+      get: vi.fn().mockReturnValue(of({ 'common.copied': 'Copied' })),
     };
 
     await TestBed.configureTestingModule({
@@ -64,8 +62,8 @@ describe('SearchResultTable', () => {
         { provide: Clipboard, useValue: clipboardMock },
         { provide: MatSnackBar, useValue: snackBarMock },
         { provide: MatDialog, useValue: dialogMock },
-        { provide: TranslateService, useValue: translateMock }
-      ]
+        { provide: TranslateService, useValue: translateMock },
+      ],
     })
       // keep tests focused on class behavior
       .overrideComponent(SearchResultTable, { set: { template: '' } })
@@ -94,7 +92,7 @@ describe('SearchResultTable', () => {
     expect(translateMock.get).toHaveBeenCalledWith(['common.copied']);
     expect(clipboardMock.copy).toHaveBeenCalledWith(content);
     expect(snackBarMock.open).toHaveBeenCalledWith(`Copied: ${content}`, undefined, {
-      duration: 1000
+      duration: 1000,
     });
   });
 
@@ -106,12 +104,11 @@ describe('SearchResultTable', () => {
 
     const closed$ = new Subject<void>();
     dialogMock.open.mockReturnValue({
-      afterClosed: () => closed$.asObservable()
+      afterClosed: () => closed$.asObservable(),
     } as any);
 
     const createUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob://fake-url');
-    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {
-    });
+    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
     const promise = component.doPreview(item);
 
@@ -127,8 +124,8 @@ describe('SearchResultTable', () => {
       SearchResultImagePreviewDialog,
       expect.objectContaining({
         data: { imageUrl: 'blob://fake-url', code: 'XYZ789' },
-        width: '800px'
-      })
+        width: '800px',
+      }),
     );
 
     // now emit "closed" to trigger revoke
@@ -145,8 +142,7 @@ describe('SearchResultTable', () => {
 
     certificateServiceMock.certificate.mockRejectedValue(error);
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-    });
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     await component.doPreview(item);
 

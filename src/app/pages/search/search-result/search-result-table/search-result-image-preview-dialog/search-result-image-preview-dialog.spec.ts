@@ -24,8 +24,8 @@ describe('SearchResultImagePreviewDialog', () => {
         provideZonelessChangeDetection(),
         { provide: MatDialogRef, useValue: dialogRefMock },
         { provide: DownloadService, useValue: downloadServiceMock },
-        { provide: MAT_DIALOG_DATA, useValue: dataMock }
-      ]
+        { provide: MAT_DIALOG_DATA, useValue: dataMock },
+      ],
     })
       // keep it as unit test (template irrelevant)
       .overrideComponent(SearchResultImagePreviewDialog, { set: { template: '' } })

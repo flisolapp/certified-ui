@@ -7,8 +7,8 @@ export function createTranslateTestingModule() {
       provide: TranslateLoader,
       useValue: {
         /* v8 ignore next -- @preserve */
-        getTranslation: () => of({})
-      }
-    }
+        getTranslation: () => of({}),
+      },
+    },
   });
 }

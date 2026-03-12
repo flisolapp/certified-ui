@@ -9,7 +9,7 @@ describe('SearchResultDownloadCertificateDialog', () => {
   let component: SearchResultDownloadCertificateDialog;
 
   const dialogRefMock = {
-    close: vi.fn()
+    close: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -17,8 +17,8 @@ describe('SearchResultDownloadCertificateDialog', () => {
       imports: [SearchResultDownloadCertificateDialog],
       providers: [
         provideZonelessChangeDetection(),
-        { provide: MatDialogRef, useValue: dialogRefMock }
-      ]
+        { provide: MatDialogRef, useValue: dialogRefMock },
+      ],
     })
       // Template is irrelevant to this unit test and avoids TranslatePipe/module concerns
       .overrideComponent(SearchResultDownloadCertificateDialog, { set: { template: '' } })

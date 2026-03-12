@@ -24,10 +24,9 @@ import { Injectable } from '@angular/core';
  *    manner and other search terms are cleaned from any non-alphanumeric characters.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TermService {
-
   /**
    * Prepares a given search term by trimming it, converting it to lowercase if it's an email,
    * and removing non-alphanumeric characters if it's not an email.
@@ -85,12 +84,13 @@ export class TermService {
     // Ensure the term is either a valid email or code.
     // If it doesn't fit either pattern, throw an error indicating the term is invalid.
     if (!isEmail(processedTerm) && !isCode(processedTerm)) {
-      throw new EvalError('The term is invalid to search. Must be an e-mail or certificate\'s code.', //
-        { cause: -3 });
+      throw new EvalError(
+        "The term is invalid to search. Must be an e-mail or certificate's code.", //
+        { cause: -3 },
+      );
     }
 
     // Return the processed term if it's valid.
     return processedTerm;
   }
-
 }

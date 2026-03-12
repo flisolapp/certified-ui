@@ -1,7 +1,6 @@
 import { LanguageService } from '../../services/language/language-service';
 
 export class LocaleId extends String {
-
   constructor(private languageService: LanguageService) {
     super();
   }
@@ -13,5 +12,4 @@ export class LocaleId extends String {
   override valueOf(): string {
     return this.toString();
   }
-
 }

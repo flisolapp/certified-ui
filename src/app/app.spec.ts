@@ -14,19 +14,15 @@ describe('App', () => {
 
   beforeEach(async () => {
     languageServiceMock = {
-      init: vi.fn()
+      init: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        App,
-        RouterOutlet,
-        createTranslateTestingModule()
-      ],
+      imports: [App, RouterOutlet, createTranslateTestingModule()],
       providers: [
         provideZonelessChangeDetection(),
-        { provide: LanguageService, useValue: languageServiceMock }
-      ]
+        { provide: LanguageService, useValue: languageServiceMock },
+      ],
     }).compileComponents();
   });
 

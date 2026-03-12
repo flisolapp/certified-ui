@@ -20,13 +20,16 @@ describe('SearchResult', () => {
 
   let routerMock: { navigate: ReturnType<typeof vi.fn> };
   let certificateServiceMock: { search: ReturnType<typeof vi.fn> };
-  let platformServiceMock: { isDesktop: ReturnType<typeof vi.fn>; isMobile: ReturnType<typeof vi.fn> };
+  let platformServiceMock: {
+    isDesktop: ReturnType<typeof vi.fn>;
+    isMobile: ReturnType<typeof vi.fn>;
+  };
 
   const eventEmitters: Record<string, EventEmitter<any>> = {
     'search-result-do-search': new EventEmitter<any>(),
     'search-items-not-found': new EventEmitter<any>(),
-    'searching': new EventEmitter<any>(),
-    'search-clear': new EventEmitter<any>()
+    searching: new EventEmitter<any>(),
+    'search-clear': new EventEmitter<any>(),
   };
 
   const mockCertificate: CertificateElement = {
@@ -35,23 +38,23 @@ describe('SearchResult', () => {
     name: 'Test User',
     enjoyedAs: 'Participant',
     code: '123',
-    download: 'http://example.com'
+    download: 'http://example.com',
   } as any;
 
   beforeEach(async () => {
     routeParamMap$ = new ReplaySubject(1);
 
     routerMock = {
-      navigate: vi.fn().mockResolvedValue(true)
+      navigate: vi.fn().mockResolvedValue(true),
     };
 
     certificateServiceMock = {
-      search: vi.fn().mockReturnValue(of([]))
+      search: vi.fn().mockReturnValue(of([])),
     };
 
     platformServiceMock = {
       isDesktop: vi.fn().mockReturnValue(true),
-      isMobile: vi.fn().mockReturnValue(false)
+      isMobile: vi.fn().mockReturnValue(false),
     };
 
     // Emit term BEFORE component init
@@ -64,8 +67,8 @@ describe('SearchResult', () => {
         { provide: ActivatedRoute, useValue: { paramMap: routeParamMap$.asObservable() } },
         { provide: Router, useValue: routerMock },
         { provide: CertificateService, useValue: certificateServiceMock },
-        { provide: PlatformService, useValue: platformServiceMock }
-      ]
+        { provide: PlatformService, useValue: platformServiceMock },
+      ],
     })
       // Prevent template execution (TranslatePipe / child components irrelevant for unit tests)
       .overrideComponent(SearchResult, { set: { template: '' } })
@@ -74,8 +77,7 @@ describe('SearchResult', () => {
     fixture = TestBed.createComponent(SearchResult);
     component = fixture.componentInstance;
 
-    vi.spyOn(ScrollService, 'toTop').mockImplementation(() => {
-    });
+    vi.spyOn(ScrollService, 'toTop').mockImplementation(() => {});
     vi.spyOn(EventEmitterService, 'get').mockImplementation((eventName: string) => {
       return eventEmitters[eventName] ?? new EventEmitter<any>();
     });
@@ -129,7 +131,7 @@ describe('SearchResult', () => {
 
     (component as any).subscriptions = [
       { unsubscribe: unsubscribeSpy1 },
-      { unsubscribe: unsubscribeSpy2 }
+      { unsubscribe: unsubscribeSpy2 },
     ];
 
     (component as any).disposeSubscriptions();
@@ -162,9 +164,7 @@ describe('SearchResult', () => {
   it('should handle error in doSearch and emit search-items-not-found if dataSource is empty', async () => {
     const notFoundEmitSpy = vi.spyOn(eventEmitters['search-items-not-found'], 'emit');
 
-    certificateServiceMock.search.mockReturnValue(
-      throwError(() => new Error('Search failed'))
-    );
+    certificateServiceMock.search.mockReturnValue(throwError(() => new Error('Search failed')));
 
     await component.doSearch('failing-term');
 

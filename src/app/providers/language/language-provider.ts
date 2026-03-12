@@ -5,5 +5,5 @@ import { LanguageService } from '../../services/language/language-service';
 export const LanguageProvider: Provider = {
   provide: LOCALE_ID,
   useClass: LocaleId,
-  deps: [LanguageService]
+  deps: [LanguageService],
 };

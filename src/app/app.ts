@@ -6,7 +6,7 @@ import { LanguageService } from './services/language/language-service';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   protected title = 'certified-ui';

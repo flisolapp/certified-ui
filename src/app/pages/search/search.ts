@@ -34,16 +34,15 @@ import { first, firstValueFrom } from 'rxjs';
     MatRipple,
     MatIcon,
     RouterOutlet,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './search.html',
-  styleUrl: './search.scss'
+  styleUrl: './search.scss',
 })
 export class Search implements OnInit, OnDestroy {
-
   public termFormControl: FormControl<string | null> = new FormControl<string | null>('', [
     Validators.required,
-    CustomValidators.term
+    CustomValidators.term,
   ]);
   public matcher: CustomErrorStateMatcher = new CustomErrorStateMatcher();
 
@@ -58,9 +57,8 @@ export class Search implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public translate: TranslateService,
-    private snackBar: MatSnackBar
-  ) {
-  }
+    private snackBar: MatSnackBar,
+  ) {}
 
   public async ngOnInit(): Promise<void> {
     ScrollService.toTop();
@@ -73,28 +71,33 @@ export class Search implements OnInit, OnDestroy {
       if (this.termFormControl.valid) {
         this.searching.set(true);
       }
-    } catch {
-    }
+    } catch {}
 
     this.loadHistory();
     this.setFocusOnTermInputField();
 
-    this.subscriptions.push(EventEmitterService.get('searching').subscribe((searching: boolean) => {
-      this.searching.set(searching);
-    }));
+    this.subscriptions.push(
+      EventEmitterService.get('searching').subscribe((searching: boolean) => {
+        this.searching.set(searching);
+      }),
+    );
 
-    this.subscriptions.push(EventEmitterService.get('search-items-not-found').subscribe(() => {
-      this.searching.set(false);
-      this.showHistory.set(false);
-      this.setFocusOnTermInputField();
-    }));
+    this.subscriptions.push(
+      EventEmitterService.get('search-items-not-found').subscribe(() => {
+        this.searching.set(false);
+        this.showHistory.set(false);
+        this.setFocusOnTermInputField();
+      }),
+    );
 
-    this.subscriptions.push(EventEmitterService.get('search-clear').subscribe(() => {
-      this.termFormControl.setValue(null);
-      this.searching.set(false);
-      this.showHistory.set(true);
-      this.setFocusOnTermInputField();
-    }));
+    this.subscriptions.push(
+      EventEmitterService.get('search-clear').subscribe(() => {
+        this.termFormControl.setValue(null);
+        this.searching.set(false);
+        this.showHistory.set(true);
+        this.setFocusOnTermInputField();
+      }),
+    );
   }
 
   public ngOnDestroy(): void {
@@ -125,8 +128,7 @@ export class Search implements OnInit, OnDestroy {
       this.termFormControl.setValue(TermService.prepare(this.termFormControl.value));
 
       this.searching.set(true);
-      this.router.navigate(['/', this.termFormControl.value]).then(() => {
-      });
+      this.router.navigate(['/', this.termFormControl.value]).then(() => {});
       EventEmitterService.get('search-result-do-search').emit(this.termFormControl.value);
 
       this.showHistory.set(true);
@@ -134,10 +136,14 @@ export class Search implements OnInit, OnDestroy {
     } catch (e: any) {
       console.error(e?.message, e?.cause);
 
-      this.translate.get(['search.error.' + e?.cause, 'common.ok']).subscribe(values => {
-        this.snackBarRef = this.snackBar.open(values['search.error.' + e?.cause], values['common.ok'], {
-          duration: 3000
-        });
+      this.translate.get(['search.error.' + e?.cause, 'common.ok']).subscribe((values) => {
+        this.snackBarRef = this.snackBar.open(
+          values['search.error.' + e?.cause],
+          values['common.ok'],
+          {
+            duration: 3000,
+          },
+        );
         this.setFocusOnTermInputField();
       });
     }
@@ -161,9 +167,9 @@ export class Search implements OnInit, OnDestroy {
         {
           id: UuidService.generateUUID(),
           term,
-          searched: new Date()
+          searched: new Date(),
         },
-        ...this.history().filter(item => item.term.toLowerCase() !== term.toLowerCase())
+        ...this.history().filter((item) => item.term.toLowerCase() !== term.toLowerCase()),
       ].slice(0, 5);
 
       this.history.set(updatedHistory);
@@ -178,5 +184,4 @@ export class Search implements OnInit, OnDestroy {
       this.doSearch(this.termFormControl.value);
     }
   }
-
 }

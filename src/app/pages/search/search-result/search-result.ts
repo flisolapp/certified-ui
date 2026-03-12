@@ -1,4 +1,12 @@
-import { Component, computed, OnDestroy, OnInit, Signal, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  OnDestroy,
+  OnInit,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CertificateElement } from '../../../models/certificate-element/certificate-element';
@@ -13,17 +21,11 @@ import { SearchResultCard } from './search-result-card/search-result-card';
 
 @Component({
   selector: 'app-search-result',
-  imports: [
-    MatProgressSpinner,
-    TranslatePipe,
-    SearchResultTable,
-    SearchResultCard
-  ],
+  imports: [MatProgressSpinner, TranslatePipe, SearchResultTable, SearchResultCard],
   templateUrl: './search-result.html',
-  styleUrl: './search-result.scss'
+  styleUrl: './search-result.scss',
 })
 export class SearchResult implements OnInit, OnDestroy {
-
   public searching: WritableSignal<boolean> = signal<boolean>(false);
   public searched: WritableSignal<boolean> = signal(false);
   public dataSource: WritableSignal<CertificateElement[]> = signal<CertificateElement[]>([]);
@@ -35,9 +37,8 @@ export class SearchResult implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private certificateService: CertificateService,
-    public platformService: PlatformService
-  ) {
-  }
+    public platformService: PlatformService,
+  ) {}
 
   public async ngOnInit(): Promise<void> {
     ScrollService.toTop();
@@ -49,13 +50,13 @@ export class SearchResult implements OnInit, OnDestroy {
       if (term) {
         await this.doSearch(term);
       }
-    } catch {
-    }
+    } catch {}
 
-    this.doSearchSubscription = EventEmitterService.get('search-result-do-search')
-      .subscribe(async (term: string): Promise<void> => {
+    this.doSearchSubscription = EventEmitterService.get('search-result-do-search').subscribe(
+      async (term: string): Promise<void> => {
         await this.doSearch(term);
-      });
+      },
+    );
   }
 
   public ngOnDestroy(): void {
@@ -79,7 +80,9 @@ export class SearchResult implements OnInit, OnDestroy {
     EventEmitterService.get('searching').emit(true);
 
     try {
-      const result: CertificateElement[] = await firstValueFrom(this.certificateService.search(term));
+      const result: CertificateElement[] = await firstValueFrom(
+        this.certificateService.search(term),
+      );
       this.dataSource.set(result);
     } catch (error) {
       this.searching.set(false);
@@ -100,16 +103,12 @@ export class SearchResult implements OnInit, OnDestroy {
 
   public isStatusSearching: Signal<boolean> = computed((): boolean => this.searching());
 
-  public isStatusItemsNotFound: Signal<boolean> = computed((): boolean =>
-    this.searched() &&
-    !this.searching() &&
-    this.dataSource().length === 0
+  public isStatusItemsNotFound: Signal<boolean> = computed(
+    (): boolean => this.searched() && !this.searching() && this.dataSource().length === 0,
   );
 
-  public isStatusItemsFound: Signal<boolean> = computed(() =>
-    this.searched() &&
-    !this.searching() &&
-    this.dataSource().length > 0
+  public isStatusItemsFound: Signal<boolean> = computed(
+    () => this.searched() && !this.searching() && this.dataSource().length > 0,
   );
 
   public async doClear(): Promise<void> {
@@ -122,5 +121,4 @@ export class SearchResult implements OnInit, OnDestroy {
     EventEmitterService.get('search-clear').emit();
     await this.router.navigate(['/']);
   }
-
 }

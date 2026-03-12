@@ -28,7 +28,7 @@ describe('Search', () => {
     searching: new EventEmitter<any>(),
     'search-items-not-found': new EventEmitter<any>(),
     'search-clear': new EventEmitter<any>(),
-    'search-result-do-search': new EventEmitter<any>()
+    'search-result-do-search': new EventEmitter<any>(),
   };
 
   const originalRAF = globalThis.requestAnimationFrame;
@@ -43,16 +43,16 @@ describe('Search', () => {
     paramMapSubject = new ReplaySubject(1);
 
     routerMock = {
-      navigate: vi.fn().mockResolvedValue(true)
+      navigate: vi.fn().mockResolvedValue(true),
     };
 
     snackBarMock = {
-      open: vi.fn().mockReturnValue({ dismiss: vi.fn() })
+      open: vi.fn().mockReturnValue({ dismiss: vi.fn() }),
     };
 
     translateMock = {
       // component calls: translate.get([...]).subscribe(...)
-      get: vi.fn().mockReturnValue(of({}))
+      get: vi.fn().mockReturnValue(of({})),
     };
 
     // Make CustomValidators.term always pass (we are not testing validator here)
@@ -60,7 +60,7 @@ describe('Search', () => {
 
     // Emit BEFORE component creation (same as your Jasmine test)
     paramMapSubject.next({
-      get: () => 'test-term'
+      get: () => 'test-term',
     });
 
     await TestBed.configureTestingModule({
@@ -70,8 +70,8 @@ describe('Search', () => {
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
         { provide: Router, useValue: routerMock },
         { provide: MatSnackBar, useValue: snackBarMock },
-        { provide: TranslateService, useValue: translateMock }
-      ]
+        { provide: TranslateService, useValue: translateMock },
+      ],
     })
       // IMPORTANT: Avoid template rendering (TranslatePipe + material view concerns)
       .overrideComponent(Search, { set: { template: '' } })
@@ -80,8 +80,7 @@ describe('Search', () => {
     fixture = TestBed.createComponent(Search);
     component = fixture.componentInstance;
 
-    vi.spyOn(ScrollService, 'toTop').mockImplementation(() => {
-    });
+    vi.spyOn(ScrollService, 'toTop').mockImplementation(() => {});
     vi.spyOn(EventEmitterService, 'get').mockImplementation((name: string) => eventEmitters[name]);
     vi.spyOn(TermService, 'prepare').mockReturnValue('mock-term');
     vi.spyOn(UuidService, 'generateUUID').mockReturnValue('mock-uuid');
@@ -108,7 +107,7 @@ describe('Search', () => {
     it('should set searching to true when termFormControl is valid during ngOnInit', async () => {
       // emit a new param value
       paramMapSubject.next({
-        get: () => 'validemail@example.com'
+        get: () => 'validemail@example.com',
       });
 
       await component.ngOnInit();
@@ -128,8 +127,8 @@ describe('Search', () => {
           { provide: ActivatedRoute, useValue: errorRoute as any },
           { provide: Router, useValue: routerMock },
           { provide: MatSnackBar, useValue: snackBarMock },
-          { provide: TranslateService, useValue: translateMock }
-        ]
+          { provide: TranslateService, useValue: translateMock },
+        ],
       })
         .overrideComponent(Search, { set: { template: '' } })
         .compileComponents();
@@ -170,9 +169,7 @@ describe('Search', () => {
 
     it('should handle TermService.prepare throwing error and show snackbar', () => {
       // translate.get returns the translations used in snackBar.open
-      translateMock.get.mockReturnValue(
-        of({ 'search.error.-3': 'Invalid', 'common.ok': 'OK' })
-      );
+      translateMock.get.mockReturnValue(of({ 'search.error.-3': 'Invalid', 'common.ok': 'OK' }));
 
       (TermService.prepare as any).mockImplementation(() => {
         throw { message: 'Invalid term', cause: -3 };
@@ -230,8 +227,7 @@ describe('Search', () => {
 
   describe('onSubmit', () => {
     it('should call doSearch if form is valid', () => {
-      const spy = vi.spyOn(component, 'doSearch').mockImplementation(() => {
-      });
+      const spy = vi.spyOn(component, 'doSearch').mockImplementation(() => {});
       component.termFormControl.setValue('validemail@example.com');
 
       // ensure valid
@@ -248,8 +244,7 @@ describe('Search', () => {
     });
 
     it('should not call doSearch if form is invalid', () => {
-      const spy = vi.spyOn(component, 'doSearch').mockImplementation(() => {
-      });
+      const spy = vi.spyOn(component, 'doSearch').mockImplementation(() => {});
       component.termFormControl.setValue(''); // invalid (required)
 
       component.termFormControl.updateValueAndValidity();
@@ -278,7 +273,7 @@ describe('Search', () => {
   describe('history load/save helpers', () => {
     it('should load history from localStorage and set it to signal', () => {
       const mockHistory = [
-        { id: 'mock-uuid', term: 'test-term', searched: new Date().toISOString() }
+        { id: 'mock-uuid', term: 'test-term', searched: new Date().toISOString() },
       ];
 
       localStorage.setItem('flisolapp.History', JSON.stringify(mockHistory));
@@ -286,16 +281,12 @@ describe('Search', () => {
       (component as any).loadHistory();
 
       expect(component.history()).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 'mock-uuid', term: 'test-term' })
-        ])
+        expect.arrayContaining([expect.objectContaining({ id: 'mock-uuid', term: 'test-term' })]),
       );
     });
 
     it('should filter out existing term (case-insensitive) before saving', () => {
-      component.history.set([
-        { id: 'old-uuid', term: 'Old Term', searched: new Date() } as any
-      ]);
+      component.history.set([{ id: 'old-uuid', term: 'Old Term', searched: new Date() } as any]);
 
       const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 

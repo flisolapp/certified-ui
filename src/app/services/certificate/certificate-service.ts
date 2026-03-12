@@ -4,15 +4,12 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CertificateService {
-
   private readonly baseUrl: string | null = null;
 
-  constructor(
-    private httpClient: HttpClient
-  ) {
+  constructor(private httpClient: HttpClient) {
     this.baseUrl = environment.apiUrl + '/certificates';
   }
 
@@ -26,5 +23,4 @@ export class CertificateService {
     const response = await fetch(url);
     return await response.blob();
   }
-
 }

@@ -17,20 +17,18 @@ import { LanguageService } from '../../services/language/language-service';
     TranslatePipe,
     MatMenuTrigger,
     MatMenu,
-    MatMenuItem
+    MatMenuItem,
   ],
   templateUrl: './toolbar.html',
-  styleUrl: './toolbar.scss'
+  styleUrl: './toolbar.scss',
 })
 export class Toolbar implements OnInit {
-
   /* v8 ignore next -- @preserve */
   public darkMode = signal<boolean>(false);
   /* v8 ignore next -- @preserve */
   public language = signal<any>(null);
 
-  constructor(public languageService: LanguageService) {
-  }
+  constructor(public languageService: LanguageService) {}
 
   public ngOnInit(): void {
     this.detectAndLoadColorScheme();
@@ -73,5 +71,4 @@ export class Toolbar implements OnInit {
     this.language.set(item);
     this.languageService.setSelected(item);
   }
-
 }

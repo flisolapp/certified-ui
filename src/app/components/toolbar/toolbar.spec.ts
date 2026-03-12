@@ -31,13 +31,13 @@ describe('Toolbar', () => {
       getSelected: vi.fn().mockReturnValue({
         code: 'en',
         name: 'English',
-        flag: 'EN'
+        flag: 'EN',
       }),
       setSelected: vi.fn(),
       getLanguages: vi.fn().mockReturnValue([
         { code: 'en', name: 'English', flag: 'EN' },
-        { code: 'pt-BR', name: 'Português', flag: 'BR' }
-      ])
+        { code: 'pt-BR', name: 'Português', flag: 'BR' },
+      ]),
     };
 
     window.matchMedia = vi.fn().mockReturnValue({
@@ -48,7 +48,7 @@ describe('Toolbar', () => {
       removeListener: vi.fn(),
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      dispatchEvent: vi.fn(),
     } as MediaQueryList);
 
     localStorage.clear();
@@ -59,11 +59,11 @@ describe('Toolbar', () => {
       imports: [Toolbar],
       providers: [
         provideZonelessChangeDetection(),
-        { provide: LanguageService, useValue: languageServiceMock }
-      ]
+        { provide: LanguageService, useValue: languageServiceMock },
+      ],
     })
       .overrideComponent(Toolbar, {
-        set: { template: '' }
+        set: { template: '' },
       })
       .compileComponents();
 
@@ -94,7 +94,7 @@ describe('Toolbar', () => {
       expect(component.language()).toEqual({
         code: 'en',
         name: 'English',
-        flag: 'EN'
+        flag: 'EN',
       });
     });
   });
@@ -102,12 +102,10 @@ describe('Toolbar', () => {
   describe('detectAndLoadColorScheme', () => {
     it('should use system preference when localStorage is empty', () => {
       window.matchMedia = vi.fn().mockReturnValue({
-        matches: true
+        matches: true,
       } as MediaQueryList);
 
-      const applySpy = vi
-        .spyOn(component as any, 'applyColorScheme')
-        .mockImplementation(() => {});
+      const applySpy = vi.spyOn(component as any, 'applyColorScheme').mockImplementation(() => {});
 
       localStorage.removeItem('flisolapp.DarkMode');
 
@@ -119,12 +117,10 @@ describe('Toolbar', () => {
 
     it('should override system preference with localStorage false', () => {
       window.matchMedia = vi.fn().mockReturnValue({
-        matches: true
+        matches: true,
       } as MediaQueryList);
 
-      const applySpy = vi
-        .spyOn(component as any, 'applyColorScheme')
-        .mockImplementation(() => {});
+      const applySpy = vi.spyOn(component as any, 'applyColorScheme').mockImplementation(() => {});
 
       localStorage.setItem('flisolapp.DarkMode', 'false');
 
@@ -136,12 +132,10 @@ describe('Toolbar', () => {
 
     it('should override system preference with localStorage true', () => {
       window.matchMedia = vi.fn().mockReturnValue({
-        matches: false
+        matches: false,
       } as MediaQueryList);
 
-      const applySpy = vi
-        .spyOn(component as any, 'applyColorScheme')
-        .mockImplementation(() => {});
+      const applySpy = vi.spyOn(component as any, 'applyColorScheme').mockImplementation(() => {});
 
       localStorage.setItem('flisolapp.DarkMode', 'true');
 
@@ -154,9 +148,7 @@ describe('Toolbar', () => {
 
   describe('toggleColorScheme', () => {
     it('should toggle from false to true and persist in localStorage', () => {
-      const applySpy = vi
-        .spyOn(component as any, 'applyColorScheme')
-        .mockImplementation(() => {});
+      const applySpy = vi.spyOn(component as any, 'applyColorScheme').mockImplementation(() => {});
 
       component.darkMode.set(false);
 
@@ -168,9 +160,7 @@ describe('Toolbar', () => {
     });
 
     it('should toggle from true to false and persist in localStorage', () => {
-      const applySpy = vi
-        .spyOn(component as any, 'applyColorScheme')
-        .mockImplementation(() => {});
+      const applySpy = vi.spyOn(component as any, 'applyColorScheme').mockImplementation(() => {});
 
       component.darkMode.set(true);
 
@@ -230,7 +220,7 @@ describe('Toolbar', () => {
       const lang = {
         code: 'pt-BR',
         name: 'Português',
-        flag: 'BR'
+        flag: 'BR',
       };
 
       component.selectLanguage(lang);

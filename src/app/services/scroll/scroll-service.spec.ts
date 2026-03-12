@@ -3,8 +3,7 @@ import { ScrollService } from './scroll-service';
 
 describe('ScrollService', () => {
   beforeEach(() => {
-    vi.spyOn(window, 'scrollTo').mockImplementation(() => {
-    });
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   it('should scroll to top with smooth behavior', () => {
@@ -12,7 +11,7 @@ describe('ScrollService', () => {
 
     expect(window.scrollTo).toHaveBeenCalledWith({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   });
 });

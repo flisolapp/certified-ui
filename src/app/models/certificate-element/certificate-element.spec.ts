@@ -7,12 +7,12 @@ describe('CertificateElement', () => {
       edition: '2025',
       unit: {
         name: 'IT Department',
-        acronym: 'IT'
+        acronym: 'IT',
       },
       name: 'Francisco Ernesto',
       enjoyedAs: 'Participant',
       code: 'CERT12345',
-      download: 'https://example.com/certificates/CERT12345.pdf'
+      download: 'https://example.com/certificates/CERT12345.pdf',
     } satisfies CertificateElement;
 
     expect(certificate.edition).toBe('2025');

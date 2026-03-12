@@ -1,5 +1,5 @@
 export interface HistoryItem {
-  id: string,
+  id: string;
   term: string;
   searched: Date;
 }

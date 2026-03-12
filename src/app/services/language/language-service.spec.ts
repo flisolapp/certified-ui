@@ -20,7 +20,7 @@ describe('LanguageService', () => {
       getBrowserLang: vi.fn(),
       addLangs: vi.fn(),
       use: vi.fn(),
-      setDefaultLang: vi.fn()
+      setDefaultLang: vi.fn(),
     };
 
     eventEmitterSpy = { emit: vi.fn() };

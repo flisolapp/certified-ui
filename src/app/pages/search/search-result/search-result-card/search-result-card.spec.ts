@@ -23,8 +23,8 @@ describe('SearchResultCard', () => {
       providers: [
         provideZonelessChangeDetection(),
         { provide: MatDialog, useValue: dialogMock },
-        { provide: DownloadService, useValue: downloadServiceMock }
-      ]
+        { provide: DownloadService, useValue: downloadServiceMock },
+      ],
     })
       // template not relevant for these unit tests
       .overrideComponent(SearchResultCard, { set: { template: '' } })
@@ -61,9 +61,9 @@ describe('SearchResultCard', () => {
   it('doDownload(): calls DownloadService and clears downloadingItem after resolve', async () => {
     // Use Subject so we can emit "afterClosed" when we want
     const closed$ = new Subject<any>();
-    const dialogRefMock = { afterClosed: vi.fn().mockReturnValue(closed$.asObservable()) } as Partial<
-      MatDialogRef<any>
-    > as MatDialogRef<any>;
+    const dialogRefMock = {
+      afterClosed: vi.fn().mockReturnValue(closed$.asObservable()),
+    } as Partial<MatDialogRef<any>> as MatDialogRef<any>;
 
     dialogMock.open.mockReturnValue(dialogRefMock);
 
@@ -98,15 +98,15 @@ describe('SearchResultCard', () => {
 
   it('doDownload(): clears downloadingItem even if DownloadService rejects', async () => {
     const closed$ = new Subject<any>();
-    const dialogRefMock = { afterClosed: vi.fn().mockReturnValue(closed$.asObservable()) } as Partial<
-      MatDialogRef<any>
-    > as MatDialogRef<any>;
+    const dialogRefMock = {
+      afterClosed: vi.fn().mockReturnValue(closed$.asObservable()),
+    } as Partial<MatDialogRef<any>> as MatDialogRef<any>;
 
     dialogMock.open.mockReturnValue(dialogRefMock);
 
     // IMPORTANT: swallow rejection to avoid unhandled rejection from async subscribe callback
     downloadServiceMock.download.mockImplementation(() =>
-      Promise.reject(new Error('fail')).catch(() => undefined)
+      Promise.reject(new Error('fail')).catch(() => undefined),
     );
 
     const item = { code: 'ERR001' } as CertificateElement;
