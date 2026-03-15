@@ -1,6 +1,6 @@
 <div class="toolbar" role="banner">
 
-  <a href="/">
+  <a href="/" class="h-10 object-contain mr-2">
     @if (darkMode()) {
       <img ngSrc="assets/images/logo-slim-white.svg" class="logo" alt="FLISoL" height="40" width="89"
            [priority]="true"/>
@@ -12,13 +12,15 @@
   <div class="spacer"></div>
 
   <button mat-icon-button (click)="toggleColorScheme()"
-          matTooltip="{{ (darkMode() ? 'common.turnOnLightMode' : 'common.turnOnDarkMode') | translate }}"
+          matTooltip="{{ (darkMode() ? 'header.turnOnLightMode' : 'header.turnOnDarkMode') | translate }}"
           [matTooltipPosition]="'below'">
-    @if (darkMode()) {
-      <mat-icon fontIcon="dark_mode"></mat-icon>
-    } @else {
-      <mat-icon fontIcon="light_mode"></mat-icon>
-    }
+    <mat-icon fontSet="outlined">
+      @if (darkMode()) {
+        dark_mode
+      } @else {
+        light_mode
+      }
+    </mat-icon>
   </button>
 
   <button mat-icon-button class="language-menu"

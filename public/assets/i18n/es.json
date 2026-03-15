@@ -3,14 +3,16 @@
     "ok": "OK",
     "accept": "Sí",
     "reject": "No",
-    "turnOnLightMode": "Activar el modo claro",
-    "turnOnDarkMode": "Activar el modo oscuro",
     "copied": "Copiado",
     "close": "Cerrar"
   },
+  "header": {
+    "turnOnLightMode": "Activar el modo claro",
+    "turnOnDarkMode": "Activar el modo oscuro"
+  },
   "search": {
     "title": "Validador de Certificado",
-    "description": "Valide de forma centralizada, fácil y rápido o certificado emitido pelo FLISoL.",
+    "description": "Valide de forma centralizada, fácil y rápido el certificado emitido por FLISoL.",
     "termSearchPlace": "Introduce tu email o código",
     "notFound": "No se han encontrado resultados.",
     "oneFound": "certificado encontrado.",

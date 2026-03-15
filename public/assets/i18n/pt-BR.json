@@ -3,10 +3,12 @@
     "ok": "OK",
     "accept": "Sim",
     "reject": "Não",
-    "turnOnLightMode": "Ativar o modo claro",
-    "turnOnDarkMode": "Ativar o modo escuro",
     "copied": "Copiado",
     "close": "Fechar"
+  },
+  "header": {
+    "turnOnLightMode": "Ativar o modo claro",
+    "turnOnDarkMode": "Ativar o modo escuro"
   },
   "search": {
     "title": "Validador de Certificado",
