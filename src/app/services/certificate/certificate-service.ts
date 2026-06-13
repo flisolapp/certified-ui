@@ -10,7 +10,8 @@ export class CertificateService {
   private readonly baseUrl: string | null = null;
 
   constructor(private httpClient: HttpClient) {
-    this.baseUrl = environment.apiUrl + '/certificates';
+    // this.baseUrl = environment.apiUrl + '/certificates';
+    this.baseUrl = environment.apiUrl;
   }
 
   public search(term: string): Observable<any> {
