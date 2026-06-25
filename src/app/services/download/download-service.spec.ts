@@ -77,6 +77,7 @@ describe('DownloadService', () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     window.URL.createObjectURL = originalCreateObjectURL;
     window.URL.revokeObjectURL = originalRevokeObjectURL;
 
@@ -128,6 +129,8 @@ describe('DownloadService', () => {
   });
 
   it('performs a regular browser download when Flutter bridge is absent', async () => {
+    vi.useFakeTimers();
+
     const urlStub = 'blob://test-object-url';
 
     const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
@@ -157,11 +160,18 @@ describe('DownloadService', () => {
     expect(realAnchor.download).toBe('certificate_DLD.png');
 
     expect(clickSpy).toHaveBeenCalled();
+    expect(removeSpy).not.toHaveBeenCalled();
+    expect(revokeSpy).not.toHaveBeenCalled();
+
+    await vi.runAllTimersAsync();
+
     expect(removeSpy).toHaveBeenCalledWith(realAnchor);
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });
 
   it('revokes object URL even if anchor.click() throws', async () => {
+    vi.useFakeTimers();
+
     const urlStub = 'blob://oops';
 
     vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
@@ -175,6 +185,10 @@ describe('DownloadService', () => {
     const blob = new Blob(['payload'], { type: 'image/png' });
 
     await expect(service.download('ERR', blob)).rejects.toThrow('boom');
+
+    expect(revokeSpy).not.toHaveBeenCalled();
+
+    await vi.runAllTimersAsync();
 
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });
@@ -223,6 +237,8 @@ describe('DownloadService', () => {
   });
 
   it('when data is null and Flutter bridge is absent: fetches via CertificateService then performs browser download', async () => {
+    vi.useFakeTimers();
+
     const urlStub = 'blob://fetched';
 
     const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue(urlStub);
@@ -255,6 +271,11 @@ describe('DownloadService', () => {
     expect(anchor.download).toBe('certificate_NULLWEB.png');
 
     expect(clickSpy).toHaveBeenCalled();
+    expect(removeSpy).not.toHaveBeenCalled();
+    expect(revokeSpy).not.toHaveBeenCalled();
+
+    await vi.runAllTimersAsync();
+
     expect(removeSpy).toHaveBeenCalledWith(anchor);
     expect(revokeSpy).toHaveBeenCalledWith(urlStub);
   });

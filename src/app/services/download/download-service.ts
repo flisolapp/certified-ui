@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CertificateService } from '../certificate/certificate-service';
+import { DeviceService } from '../device/device-service';
 
 @Injectable({ providedIn: 'root' })
 export class DownloadService {
@@ -33,19 +34,40 @@ export class DownloadService {
       return;
     }
 
-    // Web fallback: regular browser download
+    // Web fallback.
+    // iOS browsers run on WebKit and can recurse when a programmatic <a>.click()
+    // happens on pages modified by browser translation tools (for example,
+    // html.translated-ltr). Opening the Blob URL avoids the stack overflow seen
+    // in Sentry while still allowing the user to save/share the certificate.
     const url: string = window.URL.createObjectURL(blob);
+
+    if (DeviceService.isIos()) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+
+      setTimeout((): void => {
+        window.URL.revokeObjectURL(url);
+      }, 30000);
+
+      return;
+    }
+
     const a: HTMLAnchorElement = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
     a.download = name;
+    a.rel = 'noopener noreferrer';
     document.body.appendChild(a);
 
     try {
       a.click();
     } finally {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      setTimeout((): void => {
+        if (a.isConnected) {
+          document.body.removeChild(a);
+        }
+
+        window.URL.revokeObjectURL(url);
+      }, 1000);
     }
   }
 }

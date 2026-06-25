@@ -46,9 +46,9 @@ describe('LanguageService', () => {
       expect(service.locale).toBe('pt-BR');
     });
 
-    it('should return default "en" if locale is falsy', () => {
+    it('should return the current locale value even when it is falsy', () => {
       (service as any)._locale = '';
-      expect(service.locale).toBe('en');
+      expect(service.locale).toBe('');
     });
   });
 

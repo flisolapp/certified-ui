@@ -177,12 +177,12 @@ describe('Toolbar', () => {
       const callHandler = vi.fn().mockResolvedValue(undefined);
       window.flutter_inappwebview = { callHandler };
 
-      const addSpy = vi.spyOn(document.body.classList, 'add');
+      const toggleSpy = vi.spyOn(document.body.classList, 'toggle');
 
       component.darkMode.set(true);
       component['applyColorScheme']();
 
-      expect(addSpy).toHaveBeenCalledWith('darkMode');
+      expect(toggleSpy).toHaveBeenCalledWith('darkMode', true);
       expect(callHandler).toHaveBeenCalledWith('setDarkMode', true);
     });
 
@@ -190,12 +190,12 @@ describe('Toolbar', () => {
       const callHandler = vi.fn().mockResolvedValue(undefined);
       window.flutter_inappwebview = { callHandler };
 
-      const removeSpy = vi.spyOn(document.body.classList, 'remove');
+      const toggleSpy = vi.spyOn(document.body.classList, 'toggle');
 
       component.darkMode.set(false);
       component['applyColorScheme']();
 
-      expect(removeSpy).toHaveBeenCalledWith('darkMode');
+      expect(toggleSpy).toHaveBeenCalledWith('darkMode', false);
       expect(callHandler).toHaveBeenCalledWith('setDarkMode', false);
     });
 

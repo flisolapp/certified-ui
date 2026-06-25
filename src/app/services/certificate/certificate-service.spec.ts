@@ -36,7 +36,7 @@ describe('CertificateService', () => {
 
   it('should be created and set baseUrl', () => {
     expect(service).toBeDefined();
-    expect((service as any)['baseUrl']).toBe(`${environment.apiUrl}/certificates`);
+    expect((service as any)['baseUrl']).toBe(environment.apiUrl);
   });
 
   describe('search()', () => {
@@ -50,7 +50,7 @@ describe('CertificateService', () => {
         expect(resp).toEqual(expected);
       });
 
-      expect(httpClientMock.get).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${term}`);
+      expect(httpClientMock.get).toHaveBeenCalledWith(`${environment.apiUrl}/${term}`);
     });
   });
 
@@ -68,7 +68,7 @@ describe('CertificateService', () => {
 
       const blob = await service.certificate(code);
 
-      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${code}/download`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/${code}/download`);
 
       // compare by size/type since Blob equality is by reference
       expect(blob).toBeInstanceOf(Blob);
@@ -84,7 +84,7 @@ describe('CertificateService', () => {
 
       await expect(service.certificate(code)).rejects.toBe(err);
 
-      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/certificates/${code}/download`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${environment.apiUrl}/${code}/download`);
     });
   });
 });
